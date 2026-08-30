@@ -5,12 +5,12 @@ export const content = {
     role: "QA Automation Engineer / SDET",
     location: "Los Angeles, CA",
     email: "jonathan@biro.dev",
-    headshotUrl: "https://avatars.githubusercontent.com/u/35150204?v=4&size=192",
+    headshotUrl: "assets/headshot.jpg",
     resumeUrl: "https://www.kickresume.com/cv/biro-cv/",
-    availability: "Building calmer, more trustworthy release pipelines in Los Angeles.",
-    headline: "I turn flaky test suites into fast, trustworthy release signals.",
+    focusLine: "Full-stack roots → quality engineering",
+    headline: "I build reliable automation that turns test results into clear release decisions.",
     subheadline:
-      "I build UI, API, and CI automation with readable tests, useful failure evidence, and fast feedback—from Los Angeles.",
+      "QA Automation Engineer / SDET in Los Angeles, combining full-stack debugging with risk-based UI, API, and CI coverage.",
     links: [
       { label: "GitHub", url: "https://github.com/jonbiro", icon: "github" },
       { label: "LinkedIn", url: "https://www.linkedin.com/in/jonathanbiro/", icon: "linkedin" },
@@ -20,44 +20,68 @@ export const content = {
       { label: "Email", url: "mailto:jonathan@biro.dev", icon: "mail" },
     ],
     impact: [
-      { label: "Current public suite", value: "36/36 passing" },
-      { label: "Cross-browser", value: "Chrome + Firefox" },
-      { label: "Connected sites", value: "7 platforms" },
+      {
+        label: "Super Seerr suite",
+        value: "36/36 passing",
+        href: "https://github.com/jonbiro/super-seerr-extension/commit/49fca11",
+      },
+      { label: "External adapters", value: "7 + Seerr overlay", href: "#project-super-seerr" },
+      { label: "Lighthouse", value: "98–100 perf", href: "#qualityDossier" },
     ],
   },
 
   about: {
     subtitle:
-      "QA Automation Engineer / SDET in Los Angeles with a full-stack background and a systems mindset.",
-    lead: "I design automation around release risk: critical user journeys, explicit test data, fast feedback, and failures that tell the next person what to do.",
+      "I came to quality engineering through full-stack development—and that changes how I test.",
+    lead: "I can follow a failure across the browser, service, data, and CI layers, then improve testability at the source instead of adding another brittle check around the edge.",
     bullets: [
-      "Start with risk: map critical journeys and failure modes before choosing what to automate.",
-      "Make red builds useful: attach the logs, traces, screenshots, and data needed to act.",
-      "Use full-stack context to improve testability across browser, services, data, and CI.",
-      "Keep smoke suites small and deterministic; grow coverage where it improves release decisions.",
+      "Based in Los Angeles and focused on QA automation, SDET work, and release confidence.",
+      "Built products with React, Node.js, Ruby on Rails, TypeScript, and PostgreSQL before specializing in quality.",
+      "A Flatiron School graduate with earlier experience across medical technology, retail, and IT support.",
+      "Most interested in the seam between a useful test, a debuggable failure, and a confident release decision.",
     ],
     cards: [
       {
-        title: "UI + Mobile Automation",
-        text: "Stable selectors, reusable fixtures, cross-browser coverage, and maintainable flows with Playwright, Selenium, Cypress, and Appium.",
+        title: "01 · Full-stack foundation",
+        text: "Building front ends, services, and data-backed products taught me to debug across boundaries—not stop at the browser symptom.",
       },
       {
-        title: "API + Integration",
-        text: "Contract-aware API coverage, explicit test data, useful logs, and checks that fail for one understandable reason.",
+        title: "02 · Quality engineering focus",
+        text: "UI, API, mobile, and CI automation organized around release risk, observable outcomes, and useful failure evidence.",
       },
       {
-        title: "CI Quality Systems",
-        text: "Parallel suites, sensible retries, failure artifacts, and quality gates that turn a red build into a quick decision.",
+        title: "03 · Current chapter",
+        text: "Designing calmer quality systems in Los Angeles: small smoke gates, explicit test data, and feedback teams can act on quickly.",
       },
     ],
   },
 
   skills: [
-    { category: "Automation", items: ["Playwright", "Selenium", "Cypress", "Appium"] },
-    { category: "Languages", items: ["TypeScript", "JavaScript", "Python", "Java", "Ruby", "SQL"] },
-    { category: "Quality Systems", items: ["UI + API coverage", "Test strategy", "Flake triage", "Risk-based testing"] },
-    { category: "Delivery", items: ["GitHub Actions", "CI/CD", "Parallelization", "Failure artifacts"] },
-    { category: "Full-Stack Context", items: ["React", "Node.js", "Ruby on Rails", "PostgreSQL"] },
+    {
+      category: "Browser + Mobile",
+      summary: "Exercise critical journeys with stable locators, reusable fixtures, and cross-browser evidence.",
+      items: ["Playwright", "Selenium", "Cypress", "Appium"],
+    },
+    {
+      category: "API + Data",
+      summary: "Validate contracts, negative paths, and test data explicitly so failures have one understandable cause.",
+      items: ["API testing", "SQL", "PostgreSQL", "Test data"],
+    },
+    {
+      category: "Quality Systems",
+      summary: "Turn coverage into a release decision through risk mapping, flake ownership, and clear evidence.",
+      items: ["Test strategy", "Flake triage", "Risk-based testing", "Accessibility"],
+    },
+    {
+      category: "Delivery",
+      summary: "Keep feedback fast with focused gates, parallel execution, and artifacts attached when a build turns red.",
+      items: ["GitHub Actions", "CI/CD", "Parallelization", "Failure artifacts"],
+    },
+    {
+      category: "Engineering Context",
+      summary: "Use the product’s own stack to diagnose defects and make the system easier to test.",
+      items: ["TypeScript", "JavaScript", "Python", "Java", "Ruby", "React", "Node.js", "Rails"],
+    },
   ],
 
   principles: [
@@ -89,7 +113,7 @@ export const content = {
       category: "Automation",
       description:
         "A Chrome and Firefox extension that connects Seerr with seven movie and TV platforms, adds rating overlays, watchlists, and bulk request flows.",
-      highlights: ["Chrome + Firefox builds", "36/36 passing at the public repository’s current HEAD"],
+      highlights: ["Chrome + Firefox builds", "36/36 passing at commit 49fca11"],
       tags: ["JavaScript", "Browser Extension", "API", "Testing"],
       imageUrl: "assets/projects/super-seerr-card.webp",
       imageAlt: "Legacy Jellyseerr-branded Super Seerr availability panel and watch action on an IMDb title page.",
@@ -100,6 +124,7 @@ export const content = {
       ],
       links: { code: "https://github.com/jonbiro/super-seerr-extension", demo: "" },
       updatedAt: "2026-06-07",
+      verifiedAt: "2026-08-30",
       featured: true,
       caseStudy: {
         label: "Test report 01",
@@ -116,12 +141,57 @@ export const content = {
           "Exercise migration, cache coalescing, idempotence, summary logic, overlay injection, and SPA navigation in the public test suite.",
         ],
         evidence: [
-          { value: "7", label: "Connected media sites" },
-          { value: "36/36", label: "Passing at public repo HEAD" },
+          { value: "7", label: "External site adapters" },
+          {
+            value: "36/36",
+            label: "Passing at commit 49fca11",
+            href: "https://github.com/jonbiro/super-seerr-extension/commit/49fca11",
+          },
           { value: "2", label: "Browser builds" },
         ],
+        owned:
+          "The shared integration surface, explicit site adapters, browser packaging, and regression strategy behind the public build.",
         decision:
           "The key boundary is a shared quality surface plus explicit per-site adapters: reuse where behavior is stable, isolate where the web is not.",
+        tradeoff:
+          "Small adapter-level differences remain visible on purpose. A universal abstraction would look cleaner, but it would hide the exact DOM and navigation risks that change from site to site.",
+        next:
+          "Add captured DOM fixtures and scheduled browser smoke runs so upstream markup drift is detected before a user encounters it.",
+        verification: {
+          label: "Verified repository snapshot",
+          status: "36 / 36 passed",
+          command: "npm test",
+          commit: "49fca11",
+          commitUrl: "https://github.com/jonbiro/super-seerr-extension/commit/49fca11",
+          checkedOn: "August 30, 2026",
+          details: ["13 focused spec files", "0 failures", "Public repository"],
+        },
+        architecture: [
+          {
+            step: "01",
+            title: "Site adapters",
+            text: "Seven external site adapters isolate DOM extraction, theme, and single-page navigation, while the Seerr overlay owns the native product surface.",
+            path: "src/content/*-integration.js",
+          },
+          {
+            step: "02",
+            title: "Shared model",
+            text: "Reusable extraction, ratings, UI, and integration modules keep stable behavior in one tested boundary.",
+            path: "src/shared/",
+          },
+          {
+            step: "03",
+            title: "API boundary",
+            text: "A dedicated Seerr client and background worker own request, status, watchlist, settings, and migration behavior.",
+            path: "src/shared/SeerrClient.js · src/background/",
+          },
+          {
+            step: "04",
+            title: "Regression safety",
+            text: "Focused tests cover migration, cache coalescing, idempotence, ratings, overlays, watchlists, filtering, and SPA navigation.",
+            path: "tests/*.test.js",
+          },
+        ],
       },
     },
     {
@@ -137,7 +207,7 @@ export const content = {
       visualLabel: "Portfolio release card",
       links: { code: "", demo: "https://yoni-biro.jonnybrx.chatgpt.site/" },
       updatedAt: "2026-08-30",
-      featured: true,
+      featured: false,
       caseStudy: {
         label: "Quality dossier",
         context:
@@ -154,36 +224,43 @@ export const content = {
         ],
         evidence: [
           { value: "100", label: "Accessibility audit" },
-          { value: "99–100", label: "Three-run performance range" },
+          { value: "98–100", label: "Three-run performance range" },
           { value: "0", label: "Known package vulnerabilities" },
         ],
+        owned:
+          "The content model, progressive enhancement, accessible interaction states, responsive system, automated checks, and deployment evidence.",
         decision:
           "Delight stays optional. Content, navigation, contact, and project evidence remain available when motion is reduced or remote data is unavailable.",
+        tradeoff:
+          "Keeping the interface framework-free makes the core small and inspectable, while requiring extra care around custom dialog, menu, and focus behavior.",
+        next:
+          "Add scheduled visual-regression snapshots for the flagship card, evidence sheets, theme states, and the smallest supported viewport.",
       },
     },
     {
       name: "PWA Testing Lab",
-      eyebrow: "Quality experiment",
+      eyebrow: "Earlier QA experiment",
       category: "Automation",
       description: "A compact set of experiments around progressive web app behavior, resilience, and testability.",
       highlights: ["PWA behavior", "JavaScript test experiments"],
       tags: ["PWA", "Testing", "JavaScript"],
       links: { code: "https://github.com/jonbiro/PWA-testing", demo: "" },
       updatedAt: "2019-06-10",
-      featured: true,
+      featured: false,
     },
     {
       name: "Travlr",
       eyebrow: "Full-stack product",
       category: "Apps",
-      description: "A React and Ruby on Rails itinerary planner using location APIs and PostgreSQL.",
-      highlights: ["React front end", "Rails API + PostgreSQL"],
-      tags: ["React", "Rails", "TypeScript", "PostgreSQL"],
+      description:
+        "An actively developed Next.js trip-planning app with authenticated AI itineraries, maps, weather, and PostgreSQL-backed features.",
+      highlights: ["Next.js 16 + TypeScript", "Prisma + PostgreSQL"],
+      tags: ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
       imageUrl: "assets/projects/travlr.webp",
       imageAlt: "Travlr itinerary planner login screen.",
       visualLabel: "Travlr product interface",
       links: { code: "https://github.com/jonbiro/Travlr---Itinerary-Planning", demo: "" },
-      updatedAt: "2026-02-09",
+      updatedAt: "2026-08-30",
       featured: false,
     },
     {
@@ -210,7 +287,7 @@ export const content = {
       { value: "100", label: "Accessibility" },
       { value: "100", label: "Best practices" },
       { value: "100", label: "SEO" },
-      { value: "99–100", label: "Three-run performance" },
+      { value: "98–100", label: "Three-run performance" },
     ],
     checks: [
       "Keyboard-accessible navigation, dialogs, project controls, and Quality Cube",

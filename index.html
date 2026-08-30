@@ -7,7 +7,7 @@
     <title>Yoni Biro — QA Automation Engineer / SDET in Los Angeles</title>
     <meta
       name="description"
-      content="Yoni Biro is a QA Automation Engineer / SDET in Los Angeles building readable UI, API, and CI automation with useful failure evidence and fast feedback."
+      content="Yoni Biro is a QA Automation Engineer / SDET in Los Angeles building reliable UI, API, and CI automation that turns test results into clear release decisions."
     />
     <meta name="robots" content="index,follow" />
     <meta name="application-name" content="Yoni Biro — QA Automation Engineer" />
@@ -19,7 +19,7 @@
     <meta property="og:title" content="Yoni Biro — QA Automation Engineer / SDET" />
     <meta
       property="og:description"
-      content="I turn flaky test suites into fast, trustworthy release signals."
+      content="Reliable automation, useful failure evidence, and clear release decisions—from a full-stack engineer turned SDET."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yoni-biro.jonnybrx.chatgpt.site/" />
@@ -33,7 +33,7 @@
     <meta name="twitter:title" content="Yoni Biro — QA Automation Engineer / SDET" />
     <meta
       name="twitter:description"
-      content="I turn flaky test suites into fast, trustworthy release signals."
+      content="Reliable automation, useful failure evidence, and clear release decisions—from a full-stack engineer turned SDET."
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@JonathanBiro" />
@@ -41,6 +41,7 @@
     <meta name="twitter:image:alt" content="Yoni Biro portfolio preview" />
 
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/favicon-192.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="assets/styles.css" />
 
@@ -55,7 +56,8 @@
             }
           }, 2000);
           const stored = localStorage.getItem("theme");
-          if (stored) document.documentElement.dataset.theme = stored;
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.dataset.theme = stored === "dark" || stored === "light" ? stored : systemTheme;
         } catch {}
       })();
     </script>
@@ -68,7 +70,7 @@
         "jobTitle": "QA Automation Engineer / SDET",
         "email": "mailto:jonathan@biro.dev",
         "url": "https://yoni-biro.jonnybrx.chatgpt.site/",
-        "image": "https://avatars.githubusercontent.com/u/35150204?v=4&size=192",
+        "image": "https://yoni-biro.jonnybrx.chatgpt.site/assets/headshot.jpg",
         "homeLocation": {
           "@type": "Place",
           "name": "Los Angeles, California"
@@ -112,7 +114,7 @@
         <div class="nav__links">
           <a class="nav__link" href="#projects">Work</a>
           <a class="nav__link" href="#about">About</a>
-          <a class="nav__link" href="#skills">Skills</a>
+          <a class="nav__link" href="#skills">Capabilities</a>
           <a class="nav__link" href="#approach">Approach</a>
           <a class="nav__link" href="#playground">QA Lab</a>
           <a class="nav__link" href="#contact">Contact</a>
@@ -160,7 +162,7 @@
                 <span class="chip__dot" aria-hidden="true"></span>
                 <span data-bind="person.location">Los Angeles, CA</span>
               </span>
-              <span class="chip">UI · API · CI quality systems</span>
+              <span class="chip" data-bind="person.focusLine">Full-stack roots → quality engineering</span>
             </div>
 
             <h1 class="hero__title">
@@ -171,15 +173,15 @@
             <p class="hero__roleline" data-bind="person.role">QA Automation Engineer / SDET</p>
 
             <p class="hero__lead" data-bind="person.headline">
-              I turn flaky test suites into fast, trustworthy release signals.
+              I build reliable automation that turns test results into clear release decisions.
             </p>
 
             <p class="hero__sublead" data-bind="person.subheadline">
-              I build UI, API, and CI automation with readable tests, useful failure evidence, and fast feedback—from Los Angeles.
+              QA Automation Engineer / SDET in Los Angeles, combining full-stack debugging with risk-based UI, API, and CI coverage.
             </p>
 
             <div class="hero__cta">
-              <a class="btn btn--primary" href="#projects">See the proof</a>
+              <a class="btn btn--primary" href="#projects">Explore the flagship</a>
               <button class="btn btn--signal js-only" type="button" id="briefBtn">60-sec brief</button>
               <a
                 class="btn btn--ghost"
@@ -196,24 +198,24 @@
               <time class="hero__meta-item" id="laTime">Los Angeles time</time>
             </div>
 
-            <div class="hero__ticker" role="region" aria-label="What I care about">
-              <div class="hero__ticker-track" aria-hidden="true">
-                <span>Risk-first coverage</span>
-                <span>Fast feedback</span>
-                <span>Stable selectors</span>
-                <span>Debuggable failures</span>
-                <span>Quality by design</span>
-              </div>
+            <div class="hero__ticker">
+              <ul class="hero__ticker-track" aria-label="Quality engineering priorities">
+                <li>Risk-first coverage</li>
+                <li>Fast feedback</li>
+                <li>Stable selectors</li>
+                <li>Debuggable failures</li>
+                <li>Quality by design</li>
+              </ul>
             </div>
           </div>
 
-          <div class="hero__card reveal" data-tilt>
+          <div class="hero__card reveal">
             <div class="profile">
               <div class="profile__top">
                 <img
                   class="profile__avatar"
                   id="avatarImg"
-                  src="https://avatars.githubusercontent.com/u/35150204?v=4&amp;size=192"
+                  src="assets/headshot.jpg"
                   alt="Portrait of Yoni Biro"
                   width="96"
                   height="96"
@@ -228,27 +230,27 @@
                 </div>
               </div>
 
-              <div class="profile__stats" id="impactStats" role="list" aria-label="Public project evidence">
-                <div class="stat" role="listitem">
-                  <div class="stat__label">Current public suite</div>
+              <div class="profile__stats" id="impactStats" role="group" aria-label="Public project evidence">
+                <a class="stat stat--link" href="https://github.com/jonbiro/super-seerr-extension/commit/49fca11" target="_blank" rel="noopener noreferrer">
+                  <div class="stat__label">Super Seerr suite</div>
                   <div class="stat__value">36/36 passing</div>
-                </div>
-                <div class="stat" role="listitem">
-                  <div class="stat__label">Cross-browser</div>
-                  <div class="stat__value">Chrome + Firefox</div>
-                </div>
-                <div class="stat" role="listitem">
-                  <div class="stat__label">Connected sites</div>
-                  <div class="stat__value">7 platforms</div>
-                </div>
+                </a>
+                <a class="stat stat--link" href="#project-super-seerr">
+                  <div class="stat__label">External adapters</div>
+                  <div class="stat__value">7 + Seerr overlay</div>
+                </a>
+                <a class="stat stat--link" href="#qualityDossier">
+                  <div class="stat__label">Lighthouse</div>
+                  <div class="stat__value">98–100 perf</div>
+                </a>
               </div>
-              <a class="profile__proof-note" href="#project-super-seerr">Evidence from Super Seerr →</a>
+              <a class="profile__proof-note" id="heroProofLink" href="#project-super-seerr">Open verified Super Seerr evidence →</a>
 
-              <nav class="profile__links" id="socialLinks" aria-label="Profile links">
-                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer">Résumé</a>
-                <a class="pill" href="mailto:jonathan@biro.dev">Email</a>
+              <nav class="profile__links" id="socialLinks" aria-label="Social profiles">
+                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.9 1.4 3.6 1.1.1-.8.4-1.4.7-1.7-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z" /></svg></span><span class="pill__label">GitHub</span></a>
+                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.4 20.4h-3.6v-5.6c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.3-1.8 3.6 0 4.2 2.3 4.2 5.4v6.2zM5.3 7.4c-1.2 0-2.2-1-2.2-2.2S4.1 3 5.3 3s2.2 1 2.2 2.2-1 2.2-2.2 2.2zM7.1 20.4H3.5V9h3.6v11.4z" /></svg></span><span class="pill__label">LinkedIn</span></a>
+                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M10.6 13.4a1 1 0 0 1 0-1.4l3.6-3.6a3 3 0 0 1 4.2 4.2l-2.2 2.2a3 3 0 0 1-4.2 0 1 1 0 1 1 1.4-1.4 1 1 0 0 0 1.4 0l2.2-2.2a1 1 0 0 0-1.4-1.4l-3.6 3.6a1 1 0 0 1-1.4 0ZM13.4 10.6a1 1 0 0 1 0 1.4l-3.6 3.6a3 3 0 0 1-4.2-4.2l2.2-2.2a3 3 0 0 1 4.2 0 1 1 0 0 1-1.4 1.4 1 1 0 0 0-1.4 0l-2.2 2.2a1 1 0 0 0 1.4 1.4l3.6-3.6a1 1 0 0 1 1.4 0Z" /></svg></span><span class="pill__label">Résumé</span></a>
+                <a class="pill" href="mailto:jonathan@biro.dev"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z" /></svg></span><span class="pill__label">Email</span></a>
               </nav>
 
                 <div class="toy js-only">
@@ -277,28 +279,19 @@
               </div>
 
               <div class="profile__mini js-only">
-                <div class="profile__mini-row">
-                  <span class="mini-label">Quick actions</span>
-                  <div class="mini-actions">
-                    <button class="mini-run" id="miniRunSuite" type="button">
-                      <span class="mini-run__icon" aria-hidden="true">▶</span>
-                      Run smoke suite
-                    </button>
-                    <button class="mini-run mini-run--alt" id="miniQaTip" type="button">
-                      <span class="mini-run__icon" aria-hidden="true">💡</span>
-                      QA tip
-                    </button>
-                  </div>
+                <div class="profile__snapshot">
+                  <span class="mini-label">Verified public snapshot</span>
+                  <strong>36 / 36 passed</strong>
+                  <a href="https://github.com/jonbiro/super-seerr-extension/commit/49fca11" target="_blank" rel="noopener noreferrer">Super Seerr @ 49fca11 ↗</a>
                 </div>
                 <div class="profile__pulse" id="githubPulse" aria-live="polite">
                   <span class="mini-label">GitHub pulse</span>
-                  <span class="profile__pulse-value" id="githubPulseValue">Loading stats…</span>
+                  <span class="profile__pulse-result">
+                    <span class="profile__pulse-value" id="githubPulseValue">Live public stats on request.</span>
+                    <button class="profile__pulse-refresh" id="githubPulseRefresh" type="button">Refresh</button>
+                  </span>
                 </div>
               </div>
-            </div>
-            <div class="hero__stickers" aria-hidden="true">
-              <span class="sticker sticker--peach">Flake Slayer</span>
-              <span class="sticker sticker--aqua">Signal Builder</span>
             </div>
           </div>
         </div>
@@ -307,10 +300,10 @@
       <section class="section" id="projects">
         <div class="container">
           <div class="section__header reveal">
-            <div class="section__eyebrow">Proof, not buzzwords</div>
-            <h2 class="section__title">Selected Work</h2>
+            <div class="section__eyebrow">Evidence before adjectives</div>
+            <h2 class="section__title">Flagship Work</h2>
             <p class="section__subtitle">
-              Public builds, quality experiments, and selected side projects. Start with the work closest to browser, API, and release quality.
+              Start with a verified cross-browser system, then explore the quality experiments and products behind my engineering range.
             </p>
           </div>
 
@@ -326,7 +319,7 @@
               />
             </label>
             <div class="project-sorts" id="projectSorts" role="group" aria-label="Sort projects">
-              <button class="filter" type="button" data-sort="featured" aria-pressed="true">Featured</button>
+              <button class="filter" type="button" data-sort="featured" aria-pressed="true">Curated</button>
               <button class="filter" type="button" data-sort="recent" aria-pressed="false">Recently Updated</button>
               <button class="filter" type="button" data-sort="name" aria-pressed="false">A–Z</button>
             </div>
@@ -336,45 +329,53 @@
           <p class="projects__status" id="projectResultsStatus" role="status" aria-live="polite">Showing 5 projects</p>
 
           <div class="projects reveal" id="projectsGrid" role="region" aria-label="Selected project cards">
-            <article class="project" id="project-super-seerr" data-featured="true" style="--h1: 12deg; --h2: 82deg">
-              <div class="project__artifact" aria-hidden="true">
-                <span class="project__artifact-kind">Browser extension</span>
-                <span class="project__artifact-mark">SS</span>
-                <span class="project__artifact-proof">Chrome + Firefox builds</span>
-              </div>
+            <article class="project" id="project-super-seerr" data-category="Automation" data-featured="true">
+              <figure class="project__visual">
+                <img class="project__image" src="assets/projects/super-seerr-card.webp" alt="Legacy Jellyseerr-branded Super Seerr availability panel and watch action on an IMDb title page." loading="lazy" decoding="async" />
+                <div class="project__artifact" aria-hidden="true" hidden>
+                  <span class="project__artifact-kind">Cross-browser extension</span>
+                  <span class="project__artifact-mark">SS</span>
+                  <span class="project__artifact-proof">Chrome + Firefox builds</span>
+                </div>
+                <figcaption class="project__visual-label">Legacy-branded extension screenshot on IMDb</figcaption>
+              </figure>
               <div class="project__top">
                 <div>
                   <div class="project__eyebrow">Cross-browser extension</div>
                   <h3 class="project__title">Super Seerr Extension</h3>
                 </div>
-                <div class="project__badge">Featured</div>
+                <div class="project__badge">Flagship</div>
               </div>
               <p class="project__desc">A Chrome and Firefox extension that connects Seerr with seven movie and TV platforms, adds rating overlays, watchlists, and bulk request flows.</p>
               <ul class="project__highlights" aria-label="Project highlights">
                 <li>Chrome + Firefox builds</li>
-                <li>36/36 passing at the public repository’s current HEAD</li>
+                <li>36/36 passing at commit 49fca11</li>
               </ul>
-              <time class="project__meta" datetime="2026-06-07">Updated Jun 2026</time>
+              <div class="project__meta"><time datetime="2026-06-07">Repository updated Jun 2026</time> · <time datetime="2026-08-30">Tests verified Aug 30, 2026</time></div>
               <div class="project__tags" aria-label="Project tags">
                 <span class="tag">JavaScript</span><span class="tag">Browser Extension</span><span class="tag">API</span><span class="tag">Testing</span>
               </div>
               <div class="project__links" aria-label="Project links">
+                <button class="project__report js-only" type="button">View test report</button>
                 <a href="https://github.com/jonbiro/super-seerr-extension" target="_blank" rel="noopener noreferrer">Source code</a>
               </div>
             </article>
 
-            <article class="project" id="project-interactive-qa-portfolio" data-featured="true" style="--h1: 226deg; --h2: 296deg">
-              <div class="project__artifact" aria-hidden="true">
-                <span class="project__artifact-kind">Quality portfolio</span>
-                <span class="project__artifact-mark">QA</span>
-                <span class="project__artifact-proof">Accessibility + performance checks</span>
-              </div>
+            <article class="project" id="project-interactive-qa-portfolio" data-category="Automation">
+              <figure class="project__visual">
+                <img class="project__image" src="assets/projects/portfolio-preview.webp" alt="Yoni Biro QA automation portfolio share card." loading="lazy" decoding="async" />
+                <div class="project__artifact" aria-hidden="true" hidden>
+                  <span class="project__artifact-kind">You are here</span>
+                  <span class="project__artifact-mark">QA</span>
+                  <span class="project__artifact-proof">Framework-free interface</span>
+                </div>
+                <figcaption class="project__visual-label">Portfolio release card</figcaption>
+              </figure>
               <div class="project__top">
                 <div>
                   <div class="project__eyebrow">You are here</div>
                   <h3 class="project__title">Interactive QA Portfolio</h3>
                 </div>
-                <div class="project__badge">Featured</div>
               </div>
               <p class="project__desc">A progressively enhanced portfolio with a command palette, live GitHub pulse, accessible 3D toy, QA simulator, and flake-cost calculator.</p>
               <ul class="project__highlights" aria-label="Project highlights">
@@ -386,22 +387,25 @@
                 <span class="tag">JavaScript</span><span class="tag">CSS</span><span class="tag">Accessibility</span><span class="tag">Portfolio</span>
               </div>
               <div class="project__links" aria-label="Project links">
+                <button class="project__report js-only" type="button">View quality dossier</button>
                 <a href="https://yoni-biro.jonnybrx.chatgpt.site/" target="_blank" rel="noopener noreferrer">Live site</a>
               </div>
             </article>
 
-            <article class="project" id="project-pwa-testing-lab" data-featured="true" style="--h1: 174deg; --h2: 244deg">
-              <div class="project__artifact" aria-hidden="true">
-                <span class="project__artifact-kind">Quality experiment</span>
-                <span class="project__artifact-mark">PWA</span>
-                <span class="project__artifact-proof">Resilience + testability experiments</span>
-              </div>
+            <article class="project" id="project-pwa-testing-lab" data-category="Automation">
+              <figure class="project__visual" aria-hidden="true">
+                <div class="project__artifact">
+                  <span class="project__artifact-kind">Earlier QA experiment</span>
+                  <span class="project__artifact-mark">PWA</span>
+                  <span class="project__artifact-proof">PWA behavior</span>
+                </div>
+                <figcaption class="project__visual-label">Earlier QA experiment</figcaption>
+              </figure>
               <div class="project__top">
                 <div>
-                  <div class="project__eyebrow">Quality experiment</div>
+                  <div class="project__eyebrow">Earlier QA experiment</div>
                   <h3 class="project__title">PWA Testing Lab</h3>
                 </div>
-                <div class="project__badge">Featured</div>
               </div>
               <p class="project__desc">A compact set of experiments around progressive web app behavior, resilience, and testability.</p>
               <ul class="project__highlights" aria-label="Project highlights">
@@ -417,38 +421,45 @@
               </div>
             </article>
 
-            <article class="project" id="project-travlr" style="--h1: 44deg; --h2: 114deg">
-              <div class="project__artifact" aria-hidden="true">
-                <span class="project__artifact-kind">Full-stack product</span>
-                <span class="project__artifact-mark">TR</span>
-                <span class="project__artifact-proof">Rails API + PostgreSQL</span>
-              </div>
+            <article class="project" id="project-travlr" data-category="Apps">
+              <figure class="project__visual">
+                <img class="project__image" src="assets/projects/travlr.webp" alt="Travlr itinerary planner login screen." loading="lazy" decoding="async" />
+                <div class="project__artifact" aria-hidden="true" hidden>
+                  <span class="project__artifact-kind">Full-stack product</span>
+                  <span class="project__artifact-mark">TR</span>
+                  <span class="project__artifact-proof">Next.js 16 + TypeScript</span>
+                </div>
+                <figcaption class="project__visual-label">Travlr product interface</figcaption>
+              </figure>
               <div class="project__top">
                 <div>
                   <div class="project__eyebrow">Full-stack product</div>
                   <h3 class="project__title">Travlr</h3>
                 </div>
               </div>
-              <p class="project__desc">A React and Ruby on Rails itinerary planner using location APIs and PostgreSQL.</p>
+              <p class="project__desc">An actively developed Next.js trip-planning app with authenticated AI itineraries, maps, weather, and PostgreSQL-backed features.</p>
               <ul class="project__highlights" aria-label="Project highlights">
-                <li>React front end</li>
-                <li>Rails API + PostgreSQL</li>
+                <li>Next.js 16 + TypeScript</li>
+                <li>Prisma + PostgreSQL</li>
               </ul>
-              <time class="project__meta" datetime="2026-02-09">Updated Feb 2026</time>
+              <time class="project__meta" datetime="2026-08-30">Updated Aug 2026</time>
               <div class="project__tags" aria-label="Project tags">
-                <span class="tag">React</span><span class="tag">Rails</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span>
+                <span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Prisma</span><span class="tag">PostgreSQL</span>
               </div>
               <div class="project__links" aria-label="Project links">
                 <a href="https://github.com/jonbiro/Travlr---Itinerary-Planning" target="_blank" rel="noopener noreferrer">Source code</a>
               </div>
             </article>
 
-            <article class="project" id="project-dogequest-1989" style="--h1: 330deg; --h2: 40deg">
-              <div class="project__artifact" aria-hidden="true">
-                <span class="project__artifact-kind">Canvas game</span>
-                <span class="project__artifact-mark">DQ</span>
-                <span class="project__artifact-proof">Vanilla JavaScript + Canvas</span>
-              </div>
+            <article class="project" id="project-dogequest-1989" data-category="Play">
+              <figure class="project__visual" aria-hidden="true">
+                <div class="project__artifact">
+                  <span class="project__artifact-kind">Canvas game</span>
+                  <span class="project__artifact-mark">DQ</span>
+                  <span class="project__artifact-proof">Playable in the browser</span>
+                </div>
+                <figcaption class="project__visual-label">Canvas game</figcaption>
+              </figure>
               <div class="project__top">
                 <div>
                   <div class="project__eyebrow">Canvas game</div>
@@ -476,38 +487,38 @@
       <section class="section" id="about">
         <div class="container">
           <div class="section__header reveal">
-            <div class="section__eyebrow">A little context</div>
-            <h2 class="section__title">About</h2>
+            <div class="section__eyebrow">About me</div>
+            <h2 class="section__title">From building products to building confidence.</h2>
             <p class="section__subtitle" data-bind="about.subtitle">
-              QA Automation Engineer / SDET in Los Angeles with a full-stack background and a systems mindset.
+              I came to quality engineering through full-stack development—and that changes how I test.
             </p>
           </div>
 
           <div class="about-grid">
             <div class="about-copy reveal">
               <p class="about-copy__lead" data-bind="about.lead">
-                I design automation around release risk: critical user journeys, explicit test data, fast feedback, and failures that tell the next person what to do.
+                I can follow a failure across the browser, service, data, and CI layers, then improve testability at the source instead of adding another brittle check around the edge.
               </p>
               <ul class="about-copy__bullets" id="aboutBullets">
-                <li>Start with risk: map critical journeys and failure modes before choosing what to automate.</li>
-                <li>Make red builds useful: attach the logs, traces, screenshots, and data needed to act.</li>
-                <li>Use full-stack context to improve testability across browser, services, data, and CI.</li>
-                <li>Keep smoke suites small and deterministic; grow coverage where it improves release decisions.</li>
+                <li>Based in Los Angeles and focused on QA automation, SDET work, and release confidence.</li>
+                <li>Built products with React, Node.js, Ruby on Rails, TypeScript, and PostgreSQL before specializing in quality.</li>
+                <li>A Flatiron School graduate with earlier experience across medical technology, retail, and IT support.</li>
+                <li>Most interested in the seam between a useful test, a debuggable failure, and a confident release decision.</li>
               </ul>
             </div>
 
-            <div class="about-cards reveal" id="aboutCards" role="region" aria-label="Focus areas">
+            <div class="about-cards reveal" id="aboutCards" role="region" aria-label="Career arc">
               <article class="card">
-                <h3 class="card__title">UI + Mobile Automation</h3>
-                <div class="card__text">Stable selectors, reusable fixtures, cross-browser coverage, and maintainable flows with Playwright, Selenium, Cypress, and Appium.</div>
+                <h3 class="card__title">01 · Full-stack foundation</h3>
+                <div class="card__text">Building front ends, services, and data-backed products taught me to debug across boundaries—not stop at the browser symptom.</div>
               </article>
               <article class="card">
-                <h3 class="card__title">API + Integration</h3>
-                <div class="card__text">Contract-aware API coverage, explicit test data, useful logs, and checks that fail for one understandable reason.</div>
+                <h3 class="card__title">02 · Quality engineering focus</h3>
+                <div class="card__text">UI, API, mobile, and CI automation organized around release risk, observable outcomes, and useful failure evidence.</div>
               </article>
               <article class="card">
-                <h3 class="card__title">CI Quality Systems</h3>
-                <div class="card__text">Parallel suites, sensible retries, failure artifacts, and quality gates that turn a red build into a quick decision.</div>
+                <h3 class="card__title">03 · Current chapter</h3>
+                <div class="card__text">Designing calmer quality systems in Los Angeles: small smoke gates, explicit test data, and feedback teams can act on quickly.</div>
               </article>
             </div>
           </div>
@@ -517,17 +528,17 @@
       <section class="section" id="skills">
         <div class="container">
           <div class="section__header reveal">
-            <div class="section__eyebrow">The toolkit</div>
-            <h2 class="section__title">Skills</h2>
-            <p class="section__subtitle">The tools I reach for when quality, speed, and clarity matter.</p>
+            <div class="section__eyebrow">Capabilities, with context</div>
+            <h2 class="section__title">Capabilities</h2>
+            <p class="section__subtitle">What I use each part of the toolkit to accomplish—not a wall of keywords.</p>
           </div>
 
-          <div class="skills" id="skillsGrid" role="region" aria-label="Skills categories">
-            <section class="skill-cat"><h3 class="skill-cat__title">Automation</h3><div class="skill-cat__chips"><span class="tag">Playwright</span><span class="tag">Selenium</span><span class="tag">Cypress</span><span class="tag">Appium</span></div></section>
-            <section class="skill-cat"><h3 class="skill-cat__title">Languages</h3><div class="skill-cat__chips"><span class="tag">TypeScript</span><span class="tag">JavaScript</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Ruby</span><span class="tag">SQL</span></div></section>
-            <section class="skill-cat"><h3 class="skill-cat__title">Quality Systems</h3><div class="skill-cat__chips"><span class="tag">UI + API coverage</span><span class="tag">Test strategy</span><span class="tag">Flake triage</span><span class="tag">Risk-based testing</span></div></section>
-            <section class="skill-cat"><h3 class="skill-cat__title">Delivery</h3><div class="skill-cat__chips"><span class="tag">GitHub Actions</span><span class="tag">CI/CD</span><span class="tag">Parallelization</span><span class="tag">Failure artifacts</span></div></section>
-            <section class="skill-cat"><h3 class="skill-cat__title">Full-Stack Context</h3><div class="skill-cat__chips"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Ruby on Rails</span><span class="tag">PostgreSQL</span></div></section>
+          <div class="skills" id="skillsGrid" role="region" aria-label="Capability categories">
+            <section class="skill-cat"><h3 class="skill-cat__title">Browser + Mobile</h3><p class="skill-cat__summary">Exercise critical journeys with stable locators, reusable fixtures, and cross-browser evidence.</p><div class="skill-cat__chips"><span class="tag">Playwright</span><span class="tag">Selenium</span><span class="tag">Cypress</span><span class="tag">Appium</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">API + Data</h3><p class="skill-cat__summary">Validate contracts, negative paths, and test data explicitly so failures have one understandable cause.</p><div class="skill-cat__chips"><span class="tag">API testing</span><span class="tag">SQL</span><span class="tag">PostgreSQL</span><span class="tag">Test data</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Quality Systems</h3><p class="skill-cat__summary">Turn coverage into a release decision through risk mapping, flake ownership, and clear evidence.</p><div class="skill-cat__chips"><span class="tag">Test strategy</span><span class="tag">Flake triage</span><span class="tag">Risk-based testing</span><span class="tag">Accessibility</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Delivery</h3><p class="skill-cat__summary">Keep feedback fast with focused gates, parallel execution, and artifacts attached when a build turns red.</p><div class="skill-cat__chips"><span class="tag">GitHub Actions</span><span class="tag">CI/CD</span><span class="tag">Parallelization</span><span class="tag">Failure artifacts</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Engineering Context</h3><p class="skill-cat__summary">Use the product’s own stack to diagnose defects and make the system easier to test.</p><div class="skill-cat__chips"><span class="tag">TypeScript</span><span class="tag">JavaScript</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Ruby</span><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Rails</span></div></section>
           </div>
         </div>
       </section>
@@ -575,7 +586,7 @@
                 <div class="dossier-metric" role="listitem"><strong>100</strong><span>Accessibility</span></div>
                 <div class="dossier-metric" role="listitem"><strong>100</strong><span>Best practices</span></div>
                 <div class="dossier-metric" role="listitem"><strong>100</strong><span>SEO</span></div>
-                <div class="dossier-metric" role="listitem"><strong>99–100</strong><span>Three-run performance</span></div>
+                <div class="dossier-metric" role="listitem"><strong>98–100</strong><span>Three-run performance</span></div>
               </div>
               <ul class="dossier-checks" id="dossierChecks">
                 <li>Keyboard-accessible navigation, dialogs, project controls, and Quality Cube</li>
@@ -606,7 +617,7 @@
             <div class="playground__panel reveal">
               <div class="panel__header">
                 <div>
-                  <div class="panel__title">Release Signal Simulator</div>
+                  <h3 class="panel__title">Release Signal Simulator</h3>
                   <div class="panel__hint">Choose a preset, tune the suite, then ship it.</div>
                 </div>
                 <button class="btn btn--primary" id="runSuiteBtn" type="button">Run suite</button>
@@ -715,7 +726,7 @@
 
             <div class="playground__aside reveal">
               <div class="aside-card">
-                <div class="aside-card__title">What the signal reveals</div>
+                <h3 class="aside-card__title">What the signal reveals</h3>
                 <ul class="aside-card__list">
                   <li>Coverage, speed, and reliability pull against each other</li>
                   <li>Retries can recover a run while hiding an expensive flake</li>
@@ -724,7 +735,7 @@
                 </ul>
               </div>
               <div class="aside-card">
-                <div class="aside-card__title">The real-world version</div>
+                <h3 class="aside-card__title">The real-world version</h3>
                 <p class="aside-card__text">
                   This mirrors the decisions I make in real suites: what belongs in the release gate, what evidence a failure needs, and where speed is actually worth buying.
                 </p>
@@ -732,16 +743,16 @@
               </div>
               <div class="aside-card qa-challenge" id="qaChallenge">
                 <div class="qa-challenge__top">
-                  <div class="aside-card__title">60-second triage</div>
-                  <span id="challengeIndex">1 / 3</span>
+                  <h3 class="aside-card__title">60-second triage</h3>
+                  <span id="challengeIndex" aria-live="polite">1 / 3</span>
                 </div>
                 <p class="qa-challenge__question" id="challengeQuestion">A UI test passes locally but fails in CI after navigation. The trace shows the target appears late. What is the best first fix?</p>
-                <div class="qa-challenge__choices" id="challengeChoices" role="group" aria-label="Choose an answer"></div>
-                <div class="qa-challenge__feedback" id="challengeFeedback" role="status" aria-live="polite"></div>
+                <div class="qa-challenge__choices" id="challengeChoices" role="group" aria-labelledby="challengeIndex challengeQuestion"></div>
+                <div class="qa-challenge__feedback" id="challengeFeedback" role="status" aria-live="polite" aria-atomic="true"></div>
                 <button class="link-btn" type="button" id="challengeNext" hidden>Next challenge</button>
               </div>
               <div class="aside-card aside-card--calc">
-                <div class="aside-card__title">Flake Cost Estimator</div>
+                <h3 class="aside-card__title">Flake Cost Estimator</h3>
                 <p class="aside-card__text">Estimate how much flaky reruns eat from team throughput.</p>
                 <div class="calc-grid" aria-label="Flake cost inputs">
                   <label class="calc-field" for="costRunsPerDay">
@@ -787,11 +798,11 @@
             </div>
             <div class="contact__card">
               <div class="contact__label">Links</div>
-              <nav class="contact__links" id="contactLinks" aria-label="Profile links">
-                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer">Résumé</a>
-                <a class="pill" href="https://medium.com/@jonbiro" target="_blank" rel="noopener noreferrer">Medium</a>
+              <nav class="contact__links" id="contactLinks" aria-label="Contact profile links">
+                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.9 1.4 3.6 1.1.1-.8.4-1.4.7-1.7-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z" /></svg></span><span class="pill__label">GitHub</span></a>
+                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.4 20.4h-3.6v-5.6c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.3-1.8 3.6 0 4.2 2.3 4.2 5.4v6.2zM5.3 7.4c-1.2 0-2.2-1-2.2-2.2S4.1 3 5.3 3s2.2 1 2.2 2.2-1 2.2-2.2 2.2zM7.1 20.4H3.5V9h3.6v11.4z" /></svg></span><span class="pill__label">LinkedIn</span></a>
+                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M10.6 13.4a1 1 0 0 1 0-1.4l3.6-3.6a3 3 0 0 1 4.2 4.2l-2.2 2.2a3 3 0 0 1-4.2 0 1 1 0 1 1 1.4-1.4 1 1 0 0 0 1.4 0l2.2-2.2a1 1 0 0 0-1.4-1.4l-3.6 3.6a1 1 0 0 1-1.4 0ZM13.4 10.6a1 1 0 0 1 0 1.4l-3.6 3.6a3 3 0 0 1-4.2-4.2l2.2-2.2a3 3 0 0 1 4.2 0 1 1 0 0 1-1.4 1.4 1 1 0 0 0-1.4 0l-2.2 2.2a1 1 0 0 0 1.4 1.4l3.6-3.6a1 1 0 0 1 1.4 0Z" /></svg></span><span class="pill__label">Résumé</span></a>
+                <a class="pill" href="https://medium.com/@jonbiro" target="_blank" rel="noopener noreferrer"><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 7h2.4l2.7 6.2L14.9 7H17v10h-1.7V10l-2.4 5.5h-1.6L8.7 10v7H7V7Z" /></svg></span><span class="pill__label">Medium</span></a>
               </nav>
             </div>
           </div>
@@ -827,7 +838,7 @@
         <div class="mobile-menu__links" aria-label="Menu links">
           <a class="mobile-menu__link" href="#projects" data-close>Work</a>
           <a class="mobile-menu__link" href="#about" data-close>About</a>
-          <a class="mobile-menu__link" href="#skills" data-close>Skills</a>
+          <a class="mobile-menu__link" href="#skills" data-close>Capabilities</a>
           <a class="mobile-menu__link" href="#approach" data-close>Approach</a>
           <a class="mobile-menu__link" href="#playground" data-close>QA Lab</a>
           <a class="mobile-menu__link" href="#contact" data-close>Contact</a>
@@ -875,7 +886,7 @@
           <button class="sheet__close" type="button" data-close-report aria-label="Close project report">✕</button>
         </div>
         <p class="sheet__lede" id="reportSummary"></p>
-        <div class="report-gallery" id="reportGallery" aria-label="Project screenshots"></div>
+        <div class="report-gallery" id="reportGallery" role="group" aria-label="Project screenshots"></div>
         <div class="report-context">
           <span class="report-kicker">Context</span>
           <p id="reportContext"></p>
@@ -884,8 +895,30 @@
           <section><h3>Risk map</h3><ul id="reportRisks"></ul></section>
           <section><h3>Test strategy</h3><ul id="reportStrategy"></ul></section>
         </div>
-        <div class="report-evidence" id="reportEvidence" role="list" aria-label="Project evidence"></div>
+        <div class="report-evidence" id="reportEvidence" role="group" aria-label="Project evidence"></div>
+        <section class="report-verification" id="reportVerification" hidden>
+          <div class="report-verification__top">
+            <div>
+              <span class="report-kicker" id="reportVerificationLabel">Verified repository snapshot</span>
+              <strong id="reportVerificationStatus"></strong>
+            </div>
+            <a id="reportVerificationCommit" target="_blank" rel="noopener noreferrer"></a>
+          </div>
+          <dl class="report-verification__meta">
+            <div><dt>Command</dt><dd id="reportVerificationCommand"></dd></div>
+            <div><dt>Checked</dt><dd id="reportVerificationDate"></dd></div>
+          </dl>
+          <ul class="report-verification__details" id="reportVerificationDetails"></ul>
+        </section>
+        <section class="report-architecture" id="reportArchitecture" hidden>
+          <div class="report-kicker">System map</div>
+          <h3>How the quality surface fits together</h3>
+          <div class="report-architecture__steps" id="reportArchitectureSteps"></div>
+        </section>
+        <div class="report-ownership" id="reportOwnership" hidden><span class="report-kicker">What I owned</span><p id="reportOwned"></p></div>
         <div class="report-decision"><span class="report-kicker">Engineering decision</span><p id="reportDecision"></p></div>
+        <div class="report-tradeoff" id="reportTradeoffBlock" hidden><span class="report-kicker">Tradeoff</span><p id="reportTradeoff"></p></div>
+        <div class="report-next" id="reportNextBlock" hidden><span class="report-kicker">Next experiment</span><p id="reportNext"></p></div>
         <div class="sheet__actions" id="reportActions"></div>
         <button class="btn btn--ghost sheet__bottom-close" type="button" data-close-report>Close report</button>
       </section>
@@ -901,11 +934,11 @@
           </div>
           <button class="sheet__close" type="button" data-close-brief aria-label="Close 60-second brief">✕</button>
         </div>
-        <p class="brief__headline">Yoni turns flaky suites into fast, trustworthy release signals.</p>
+        <p class="brief__headline" data-bind="person.headline">I build reliable automation that turns test results into clear release decisions.</p>
         <p class="brief__role">QA Automation Engineer / SDET · Los Angeles, California</p>
         <div class="brief__proof" role="list" aria-label="Public evidence">
-          <div role="listitem"><strong>36/36</strong><span>passing at the public extension repo’s current HEAD</span></div>
-          <div role="listitem"><strong>7</strong><span>media sites behind explicit adapters</span></div>
+          <div role="listitem"><strong>36/36</strong><span>passing at commit 49fca11, verified August 30, 2026</span></div>
+          <div role="listitem"><strong>7 + 1</strong><span>external site adapters plus the native Seerr overlay</span></div>
           <div role="listitem"><strong>2</strong><span>browser builds: Chrome + Firefox</span></div>
         </div>
         <div class="brief__strengths">

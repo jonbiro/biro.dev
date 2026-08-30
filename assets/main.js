@@ -17,16 +17,6 @@ function clamp(min, value, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-function hueForString(input) {
-  const str = String(input ?? "");
-  let hash = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return Math.abs(hash) % 360;
-}
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -69,13 +59,6 @@ function slugify(value) {
     .replace(/^-+|-+$/g, "") || "project";
 }
 
-function initials(value) {
-  const words = String(value ?? "").match(/[A-Za-z0-9]+/g) ?? [];
-  if (!words.length) return "QA";
-  if (words.length === 1) return words[0].slice(0, 3).toUpperCase();
-  return words.slice(0, 2).map((word) => word[0]).join("").toUpperCase();
-}
-
 function isHttpUrl(url) {
   return typeof url === "string" && (url.startsWith("https://") || url.startsWith("http://"));
 }
@@ -107,16 +90,6 @@ function relativeTimeFromNow(isoDate) {
   return `${years}y ago`;
 }
 
-function formatProjectDate(isoDate) {
-  const timestamp = Date.parse(isoDate ?? "");
-  if (!Number.isFinite(timestamp)) return "";
-  try {
-    return new Intl.DateTimeFormat(undefined, { month: "short", year: "numeric", timeZone: "UTC" }).format(timestamp);
-  } catch {
-    return isoDate;
-  }
-}
-
 function pickRandom(items) {
   if (!Array.isArray(items) || !items.length) return "";
   return items[Math.floor(Math.random() * items.length)] ?? "";
@@ -132,15 +105,6 @@ function getGithubUsername() {
     return (url.pathname.split("/").filter(Boolean)[0] ?? "").replace(/^@/, "");
   } catch {
     return "";
-  }
-}
-
-function setBindText() {
-  for (const el of $all("[data-bind]")) {
-    const path = el.getAttribute("data-bind");
-    if (!path) continue;
-    const value = path.split(".").reduce((acc, key) => (acc && acc[key] != null ? acc[key] : null), content);
-    if (typeof value === "string" && value.trim()) el.textContent = value;
   }
 }
 
@@ -214,6 +178,7 @@ function setFooterYear() {
 function initLaClock() {
   const clock = $("#laTime");
   if (!clock) return;
+  let intervalId = 0;
   const formatter = new Intl.DateTimeFormat(undefined, {
     timeZone: "America/Los_Angeles",
     hour: "numeric",
@@ -225,186 +190,22 @@ function initLaClock() {
     clock.dateTime = now.toISOString();
     clock.textContent = `Los Angeles • ${formatter.format(now)}`;
   };
-  update();
-  window.setInterval(update, 30_000);
-}
-
-function renderImpactStats() {
-  const wrap = $("#impactStats");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  for (const stat of content.person.impact ?? []) {
-    const el = document.createElement("div");
-    el.className = "stat";
-    el.role = "listitem";
-    el.innerHTML = `
-      <div class="stat__label"></div>
-      <div class="stat__value"></div>
-    `;
-    $(".stat__label", el).textContent = stat.label ?? "";
-    $(".stat__value", el).textContent = stat.value ?? "";
-    wrap.appendChild(el);
-  }
-}
-
-function iconSvg(name) {
-  const icons = {
-    github: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.9 1.4 3.6 1.1.1-.8.4-1.4.7-1.7-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/>
-      </svg>
-    `,
-    medium: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M7 7h2.4l2.7 6.2L14.9 7H17v10h-1.7V10l-2.4 5.5h-1.6L8.7 10v7H7V7Z"/>
-      </svg>
-    `,
-    linkedin: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M20.4 20.4h-3.6v-5.6c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.3-1.8 3.6 0 4.2 2.3 4.2 5.4v6.2zM5.3 7.4c-1.2 0-2.2-1-2.2-2.2S4.1 3 5.3 3s2.2 1 2.2 2.2-1 2.2-2.2 2.2zM7.1 20.4H3.5V9h3.6v11.4z"/>
-      </svg>
-    `,
-    x: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M18.8 2H22l-7 8 8.2 12h-6.4l-5-6.6L6 22H2.8l7.5-8.6L2.4 2H9l4.5 6 5.3-6Zm-1.1 17.9h1.8L8 4H6.1l11.6 15.9Z"/>
-      </svg>
-    `,
-    mail: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/>
-      </svg>
-    `,
-    link: `
-      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor">
-        <path d="M10.6 13.4a1 1 0 0 1 0-1.4l3.6-3.6a3 3 0 0 1 4.2 4.2l-2.2 2.2a3 3 0 0 1-4.2 0 1 1 0 1 1 1.4-1.4 1 1 0 0 0 1.4 0l2.2-2.2a1 1 0 0 0-1.4-1.4l-3.6 3.6a1 1 0 0 1-1.4 0ZM13.4 10.6a1 1 0 0 1 0 1.4l-3.6 3.6a3 3 0 0 1-4.2-4.2l2.2-2.2a3 3 0 0 1 4.2 0 1 1 0 0 1-1.4 1.4 1 1 0 0 0-1.4 0l-2.2 2.2a1 1 0 0 0 1.4 1.4l3.6-3.6a1 1 0 0 1 1.4 0Z"/>
-      </svg>
-    `,
+  const start = () => {
+    if (intervalId || document.hidden) return;
+    update();
+    intervalId = window.setInterval(update, 30_000);
   };
-  return icons[name] ?? icons.link;
-}
-
-function renderSocialLinks() {
-  const wrap = $("#socialLinks");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  for (const link of content.person.links ?? []) {
-    const href = safeUrl(link.url);
-    if (!href) continue;
-    const a = document.createElement("a");
-    a.className = "pill";
-    a.href = href;
-    if (isHttpUrl(href)) {
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-    }
-    a.innerHTML = `
-      <span class="pill__icon">${iconSvg(link.icon ?? "link")}</span>
-      <span class="pill__label"></span>
-    `;
-    $(".pill__label", a).textContent = link.label ?? href;
-    wrap.appendChild(a);
-  }
-}
-
-function renderContactLinks() {
-  const wrap = $("#contactLinks");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  for (const link of content.person.links ?? []) {
-    const href = safeUrl(link.url);
-    if (!href || href.startsWith("mailto:")) continue;
-    const a = document.createElement("a");
-    a.className = "pill";
-    a.href = href;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.innerHTML = `
-      <span class="pill__icon">${iconSvg(link.icon ?? "link")}</span>
-      <span class="pill__label"></span>
-    `;
-    $(".pill__label", a).textContent = link.label ?? href;
-    wrap.appendChild(a);
-  }
-}
-
-function renderAbout() {
-  const bullets = $("#aboutBullets");
-  if (bullets) {
-    bullets.innerHTML = "";
-    for (const item of content.about.bullets ?? []) {
-      const li = document.createElement("li");
-      li.textContent = item;
-      bullets.appendChild(li);
-    }
-  }
-
-  const cards = $("#aboutCards");
-  if (cards) {
-    cards.innerHTML = "";
-    for (const card of content.about.cards ?? []) {
-      const el = document.createElement("article");
-      el.className = "card";
-      el.innerHTML = `
-        <h3 class="card__title"></h3>
-        <div class="card__text"></div>
-      `;
-      $(".card__title", el).textContent = card.title ?? "";
-      $(".card__text", el).textContent = card.text ?? "";
-      cards.appendChild(el);
-    }
-  }
-}
-
-function renderSkills() {
-  const wrap = $("#skillsGrid");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  for (const cat of content.skills ?? []) {
-    const el = document.createElement("section");
-    el.className = "skill-cat";
-    el.setAttribute("data-tilt", "");
-    el.innerHTML = `
-      <h3 class="skill-cat__title"></h3>
-      <div class="skill-cat__chips"></div>
-    `;
-    $(".skill-cat__title", el).textContent = cat.category ?? "";
-    const chips = $(".skill-cat__chips", el);
-    for (const item of cat.items ?? []) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = item;
-      chips.appendChild(tag);
-    }
-    wrap.appendChild(el);
-  }
-}
-
-function renderPrinciples() {
-  const wrap = $("#principlesGrid");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  for (const principle of content.principles ?? []) {
-    const el = document.createElement("article");
-    el.className = "principle";
-    el.setAttribute("data-tilt", "");
-    el.innerHTML = `
-      <div class="principle__number" aria-hidden="true"></div>
-      <h3 class="principle__title"></h3>
-      <p class="principle__text"></p>
-      <div class="principle__tags" aria-label="Related practices"></div>
-    `;
-    $(".principle__number", el).textContent = principle.number ?? "";
-    $(".principle__title", el).textContent = principle.title ?? "";
-    $(".principle__text", el).textContent = principle.text ?? "";
-    const tags = $(".principle__tags", el);
-    for (const item of principle.tags ?? []) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = item;
-      tags.appendChild(tag);
-    }
-    wrap.appendChild(el);
-  }
+  const stop = () => {
+    if (!intervalId) return;
+    window.clearInterval(intervalId);
+    intervalId = 0;
+  };
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop();
+    else start();
+  });
+  update();
+  start();
 }
 
 function buildFilters(projects) {
@@ -434,8 +235,13 @@ function renderProjects() {
   let query = "";
   const filters = buildFilters(projects);
   const orderBySource = new Map(projects.map((project, index) => [project, index]));
+  const cardByProject = new Map(
+    projects
+      .map((project) => [project, $(`#project-${slugify(project.slug ?? project.name)}`, wrap)])
+      .filter((entry) => entry[1] instanceof HTMLElement),
+  );
 
-  function renderFilterButtons() {
+  function renderFilterButtons({ focusValue = "" } = {}) {
     filtersWrap.innerHTML = "";
     for (const filter of filters) {
       const btn = document.createElement("button");
@@ -445,10 +251,11 @@ function renderProjects() {
       btn.textContent = filter.label;
       btn.addEventListener("click", () => {
         activeTag = filter.value;
-        renderFilterButtons();
+        renderFilterButtons({ focusValue: filter.value });
         renderCards();
       });
       filtersWrap.appendChild(btn);
+      if (focusValue === filter.value) window.queueMicrotask(() => btn.focus());
     }
   }
 
@@ -470,17 +277,6 @@ function renderProjects() {
       });
     }
     renderSortButtons();
-  }
-
-  function linkButton(label, href) {
-    const a = document.createElement("a");
-    a.textContent = label;
-    a.href = href;
-    if (isHttpUrl(href)) {
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-    }
-    return a;
   }
 
   function projectMatchesQuery(project) {
@@ -520,9 +316,8 @@ function renderProjects() {
   }
 
   function renderCards() {
-    wrap.innerHTML = "";
     const filtered = projects.filter((p) => (activeTag === "All" || p.category === activeTag) && projectMatchesQuery(p));
-    const visible = sortProjects(filtered);
+    const visible = sortProjects(filtered).filter((project) => cardByProject.has(project));
     if (status) {
       status.textContent = visible.length
         ? `Showing ${visible.length} of ${projects.length} ${projects.length === 1 ? "project" : "projects"}`
@@ -533,129 +328,31 @@ function renderProjects() {
       const empty = document.createElement("div");
       empty.className = "projects__empty";
       empty.textContent = "No projects matched that filter. Try another tag or clear search.";
-      wrap.appendChild(empty);
+      wrap.replaceChildren(empty);
       return;
     }
 
-    for (const [visibleIndex, p] of visible.entries()) {
-      const el = document.createElement("article");
-      el.className = "project";
-      el.id = `project-${slugify(p.slug ?? p.name)}`;
-      el.setAttribute("data-tilt", "");
-      if (p.featured) el.dataset.featured = "true";
-      if (visibleIndex === 0 && visible.length > 1) el.dataset.spotlightProject = "true";
-
-      const hue = hueForString(p.name ?? "");
-      el.style.setProperty("--h1", `${hue}deg`);
-      el.style.setProperty("--h2", `${(hue + 70) % 360}deg`);
-
-      const badgeAttr = p.featured ? "" : "hidden";
-      el.innerHTML = `
-        <figure class="project__visual">
-          <img class="project__image" alt="" loading="lazy" decoding="async" hidden />
-          <div class="project__artifact" aria-hidden="true">
-          <span class="project__artifact-kind"></span>
-          <span class="project__artifact-mark"></span>
-          <span class="project__artifact-proof"></span>
-          </div>
-          <figcaption class="project__visual-label"></figcaption>
-        </figure>
-        <div class="project__top">
-          <div>
-            <div class="project__eyebrow"></div>
-            <h3 class="project__title"></h3>
-          </div>
-          <div class="project__badge" ${badgeAttr}>Featured</div>
-        </div>
-        <p class="project__desc"></p>
-        <ul class="project__highlights" aria-label="Project highlights"></ul>
-        <time class="project__meta"></time>
-        <div class="project__tags" aria-label="Project tags"></div>
-        <div class="project__links" aria-label="Project links"></div>
-      `;
-
-      $(".project__eyebrow", el).textContent = p.eyebrow ?? "Project";
-      $(".project__title", el).textContent = p.name ?? "";
-      $(".project__desc", el).textContent = p.description ?? "";
-      $(".project__artifact-kind", el).textContent = p.eyebrow ?? "Public project";
-      $(".project__artifact-mark", el).textContent = initials(p.name);
-      $(".project__artifact-proof", el).textContent = p.highlights?.[0] ?? "Public build";
-      $(".project__visual-label", el).textContent = p.visualLabel ?? p.eyebrow ?? "Project preview";
-
-      const imageUrl = safeUrl(p.imageUrl ?? "", { allowMailto: false });
-      const projectImage = $(".project__image", el);
-      const artifact = $(".project__artifact", el);
-      const visual = $(".project__visual", el);
-      if (imageUrl && projectImage) {
-        projectImage.src = imageUrl;
-        projectImage.alt = p.imageAlt ?? p.gallery?.[0]?.alt ?? `${p.name ?? "Project"} preview`;
-        projectImage.classList.toggle("project__image--contain", p.imageFit === "contain");
-        projectImage.hidden = false;
-        if (artifact) artifact.hidden = true;
-        projectImage.addEventListener("error", () => {
-          projectImage.hidden = true;
-          if (artifact) artifact.hidden = false;
-          visual?.setAttribute("aria-hidden", "true");
-        }, { once: true });
-      } else {
-        visual?.setAttribute("aria-hidden", "true");
-      }
-
-      const highlights = $(".project__highlights", el);
-      for (const highlight of p.highlights ?? []) {
-        const li = document.createElement("li");
-        li.textContent = highlight;
-        highlights.appendChild(li);
-      }
-
-      const projectDate = formatProjectDate(p.updatedAt);
-      const meta = $(".project__meta", el);
-      if (projectDate) {
-        meta.dateTime = p.updatedAt ?? "";
-        meta.textContent = `Updated ${projectDate}`;
-      }
-      else meta.hidden = true;
-
-      const tags = $(".project__tags", el);
-      tags.innerHTML = "";
-      for (const t of p.tags ?? []) {
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = t;
-        tags.appendChild(tag);
-      }
-
-      const links = $(".project__links", el);
-      links.innerHTML = "";
-      const code = safeUrl(p.links?.code ?? "", { allowMailto: false });
-      const demo = safeUrl(p.links?.demo ?? "", { allowMailto: false });
-      if (p.caseStudy) {
-        const reportBtn = document.createElement("button");
-        reportBtn.className = "project__report";
-        reportBtn.type = "button";
-        reportBtn.textContent = p.caseStudy.label === "Quality dossier" ? "View quality dossier" : "View test report";
-        reportBtn.addEventListener("click", () => openProjectReport(p, reportBtn));
-        links.appendChild(reportBtn);
-      }
-      if (demo) links.appendChild(linkButton("Live site", demo));
-      if (code) links.appendChild(linkButton("Source code", code));
-      const firstLink = demo || code;
-      if (firstLink) {
-        const copyBtn = document.createElement("button");
-        copyBtn.type = "button";
-        copyBtn.textContent = "Copy link";
-        copyBtn.addEventListener("click", async () => {
-          const ok = await copyToClipboard(firstLink);
-          showToast(ok ? `Copied link: ${p.name ?? "project"}` : "Couldn’t copy project link");
-        });
-        links.appendChild(copyBtn);
-      }
-      wrap.appendChild(el);
+    const cards = [];
+    for (const project of visible) {
+      const card = cardByProject.get(project);
+      card.removeAttribute("data-spotlight-project");
+      cards.push(card);
     }
+    const flagship = visible.find((project) => project.featured);
+    if (flagship && activeSort === "featured" && activeTag === "All" && !query && visible.length > 1) {
+      cardByProject.get(flagship)?.setAttribute("data-spotlight-project", "true");
+    }
+    wrap.replaceChildren(...cards);
 
     ensureSpotlight();
-    initTilt();
-    initMagneticUI();
+  }
+
+  for (const [project, card] of cardByProject) {
+    if (!project.caseStudy) continue;
+    const reportBtn = $(".project__report", card);
+    if (!reportBtn || reportBtn.dataset.reportReady === "true") continue;
+    reportBtn.dataset.reportReady = "true";
+    reportBtn.addEventListener("click", () => openProjectReport(project, reportBtn));
   }
 
   if (searchInput) {
@@ -668,43 +365,19 @@ function renderProjects() {
 
   bindSortButtons();
   renderFilterButtons();
-  renderCards();
-}
+  const flagship = projects.find((project) => project.featured);
+  cardByProject.get(flagship)?.setAttribute("data-spotlight-project", "true");
 
-function renderQualityDossier() {
-  const dossier = content.qualityDossier;
-  if (!dossier) return;
-  const summary = $("#dossierSummary");
-  const date = $("#dossierDate");
-  const metrics = $("#dossierMetrics");
-  const checks = $("#dossierChecks");
-
-  if (summary) summary.textContent = dossier.summary ?? "";
-  if (date) {
-    date.textContent = dossier.checkedOn ?? "";
-    if (dossier.checkedAt) date.dateTime = dossier.checkedAt;
-  }
-
-  if (metrics) {
-    metrics.innerHTML = "";
-    for (const metric of dossier.metrics ?? []) {
-      const item = document.createElement("div");
-      item.className = "dossier-metric";
-      item.role = "listitem";
-      item.innerHTML = `<strong></strong><span></span>`;
-      $("strong", item).textContent = metric.value ?? "";
-      $("span", item).textContent = metric.label ?? "";
-      metrics.appendChild(item);
-    }
-  }
-
-  if (checks) {
-    checks.innerHTML = "";
-    for (const check of dossier.checks ?? []) {
-      const item = document.createElement("li");
-      item.textContent = check;
-      checks.appendChild(item);
-    }
+  for (const proofLink of $all('a[href="#project-super-seerr"]')) {
+    proofLink.addEventListener("click", () => {
+      activeTag = "All";
+      activeSort = "featured";
+      query = "";
+      if (searchInput) searchInput.value = "";
+      renderFilterButtons();
+      renderSortButtons();
+      renderCards();
+    });
   }
 }
 
@@ -794,6 +467,10 @@ function populateProjectReport(project) {
       img.alt = image.alt ?? "";
       img.loading = "lazy";
       img.decoding = "async";
+      img.addEventListener("error", () => {
+        figure.remove();
+        if (!gallery.children.length) gallery.hidden = true;
+      }, { once: true });
       figure.appendChild(img);
       gallery.appendChild(figure);
     }
@@ -803,13 +480,85 @@ function populateProjectReport(project) {
   if (evidence) {
     evidence.innerHTML = "";
     for (const proof of report.evidence ?? []) {
-      const item = document.createElement("div");
-      item.className = "report-proof";
-      item.role = "listitem";
+      const href = safeUrl(proof.href ?? "", { allowMailto: false });
+      const item = document.createElement(href ? "a" : "div");
+      item.className = `report-proof${href ? " report-proof--link" : ""}`;
+      if (href) {
+        item.href = href;
+        if (isHttpUrl(href)) {
+          item.target = "_blank";
+          item.rel = "noopener noreferrer";
+        }
+      }
       item.innerHTML = `<strong></strong><span></span>`;
       $("strong", item).textContent = proof.value ?? "";
       $("span", item).textContent = proof.label ?? "";
       evidence.appendChild(item);
+    }
+  }
+
+  const setOptionalCopy = (blockSelector, copySelector, value) => {
+    const block = $(blockSelector);
+    const copy = $(copySelector);
+    if (!block || !copy) return;
+    const text = typeof value === "string" ? value.trim() : "";
+    block.hidden = !text;
+    copy.textContent = text;
+  };
+
+  setOptionalCopy("#reportOwnership", "#reportOwned", report.owned);
+  setOptionalCopy("#reportTradeoffBlock", "#reportTradeoff", report.tradeoff);
+  setOptionalCopy("#reportNextBlock", "#reportNext", report.next);
+
+  const verification = report.verification;
+  const verificationBlock = $("#reportVerification");
+  if (verificationBlock) {
+    verificationBlock.hidden = !verification;
+    if (verification) {
+      $("#reportVerificationLabel").textContent = verification.label ?? "Verified snapshot";
+      $("#reportVerificationStatus").textContent = verification.status ?? "";
+      $("#reportVerificationCommand").textContent = verification.command ?? "";
+      $("#reportVerificationDate").textContent = verification.checkedOn ?? "";
+
+      const commit = $("#reportVerificationCommit");
+      const commitUrl = safeUrl(verification.commitUrl ?? "", { allowMailto: false });
+      if (commit) {
+        commit.textContent = verification.commit ? `Commit ${verification.commit} ↗` : "";
+        if (commitUrl) {
+          commit.href = commitUrl;
+          commit.hidden = false;
+        } else {
+          commit.removeAttribute("href");
+          commit.hidden = true;
+        }
+      }
+      fillTextList($("#reportVerificationDetails"), verification.details);
+    }
+  }
+
+  const architectureBlock = $("#reportArchitecture");
+  const architectureSteps = $("#reportArchitectureSteps");
+  const architecture = Array.isArray(report.architecture) ? report.architecture : [];
+  if (architectureBlock && architectureSteps) {
+    architectureBlock.hidden = !architecture.length;
+    architectureSteps.innerHTML = "";
+    for (const [index, step] of architecture.entries()) {
+      const details = document.createElement("details");
+      details.className = "architecture-step";
+      details.open = index === 0;
+      const summary = document.createElement("summary");
+      const number = document.createElement("span");
+      number.className = "architecture-step__number";
+      number.textContent = step.step ?? String(index + 1).padStart(2, "0");
+      const title = document.createElement("strong");
+      title.textContent = step.title ?? "System layer";
+      const path = document.createElement("code");
+      path.textContent = step.path ?? "";
+      summary.append(number, title, path);
+      const copy = document.createElement("p");
+      copy.textContent = step.text ?? "";
+      details.append(summary, copy);
+      architectureSteps.appendChild(details);
     }
   }
 
@@ -932,21 +681,6 @@ function initQaChallenge() {
   render();
 }
 
-function setHeadshot() {
-  const img = $("#avatarImg");
-  if (!img) return;
-  const url = safeUrl(content.person.headshotUrl ?? "", { allowMailto: false });
-  const name = content.person.name ?? content.person.fullName ?? "";
-  if (name) img.alt = `Portrait of ${name}`;
-  const fallback = () => {
-    if (!img.src.endsWith("headshot-placeholder.svg")) img.src = "assets/headshot-placeholder.svg";
-  };
-  img.addEventListener("error", fallback, { once: true });
-  if (url) img.src = url;
-  else fallback();
-  if (img.complete && img.naturalWidth === 0) window.queueMicrotask(fallback);
-}
-
 function initQualityCube() {
   const cube = $("#qualityCube");
   const control = $("#cubeControl");
@@ -961,7 +695,7 @@ function initQualityCube() {
   let lastX = 0;
   let lastY = 0;
   let auto = !reduceMotion;
-  let visible = true;
+  let visible = !("IntersectionObserver" in window);
   let frameId = 0;
 
   const render = () => {
@@ -1082,33 +816,50 @@ function initQualityCube() {
     }
   });
 
-  start();
+  if (!("IntersectionObserver" in window)) start();
 }
 
+let spotlightInitialized = false;
+
 function ensureSpotlight() {
-  if (!finePointer || reduceMotion) return;
-  const targets = $all(
-    ".toy, .about-copy, .card, .skill-cat, .principle, .project, .playground__panel, .aside-card, .contact__card, .runner, .pill, .filter, .preset, .mini-run",
+  if (!finePointer || reduceMotion || spotlightInitialized) return;
+  spotlightInitialized = true;
+  const selector =
+    ".toy, .about-copy, .card, .skill-cat, .principle, .project, .playground__panel, .aside-card, .contact__card, .runner, .pill, .filter, .preset, .stat--link";
+  let active = null;
+
+  const clearActive = () => {
+    active?.removeAttribute("data-spotlight-on");
+    active = null;
+  };
+
+  document.addEventListener(
+    "pointermove",
+    (event) => {
+      const target = event.target instanceof Element ? event.target.closest(selector) : null;
+      if (!target) {
+        clearActive();
+        return;
+      }
+      if (active && active !== target) clearActive();
+      active = target;
+      const rect = target.getBoundingClientRect();
+      target.dataset.spotlight = "true";
+      target.dataset.spotlightOn = "true";
+      target.style.setProperty("--sx", `${event.clientX - rect.left}px`);
+      target.style.setProperty("--sy", `${event.clientY - rect.top}px`);
+    },
+    { passive: true },
   );
-
-  for (const el of targets) {
-    if (el.dataset.spotlightReady === "true") continue;
-    el.dataset.spotlight = "true";
-    el.dataset.spotlightReady = "true";
-
-    el.addEventListener("pointermove", (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      el.style.setProperty("--sx", `${x}px`);
-      el.style.setProperty("--sy", `${y}px`);
-      el.dataset.spotlightOn = "true";
-    });
-
-    el.addEventListener("pointerleave", () => {
-      el.removeAttribute("data-spotlight-on");
-    });
-  }
+  document.addEventListener(
+    "pointerout",
+    (event) => {
+      if (!active) return;
+      const related = event.relatedTarget;
+      if (!(related instanceof Node) || !active.contains(related)) clearActive();
+    },
+    { passive: true },
+  );
 }
 
 function initActiveNav() {
@@ -1329,7 +1080,7 @@ function initSuitePresets() {
     }
   };
 
-  const applyPreset = (name) => {
+  const applyPreset = (name, { invalidate = false } = {}) => {
     const preset = SUITE_PRESETS[name];
     if (!preset) return;
     applyingPreset = true;
@@ -1354,10 +1105,11 @@ function initSuitePresets() {
     setActive(name);
     insight.textContent = preset.insight;
     applyingPreset = false;
+    if (invalidate) invalidateSuiteResult();
   };
 
   for (const button of buttons) {
-    button.addEventListener("click", () => applyPreset(button.dataset.suitePreset ?? "balanced"));
+    button.addEventListener("click", () => applyPreset(button.dataset.suitePreset ?? "balanced", { invalidate: true }));
   }
 
   for (const input of $all(".controls input")) {
@@ -1365,6 +1117,7 @@ function initSuitePresets() {
       if (applyingPreset) return;
       setActive("");
       insight.textContent = "Custom: your suite, your tradeoffs. Run it to see the release signal.";
+      invalidateSuiteResult();
     });
   }
 
@@ -1424,6 +1177,22 @@ function setRunnerSummary({ duration, total, passed, failed, flaky }) {
 }
 
 let lastSuiteReport = "";
+
+function invalidateSuiteResult() {
+  if (suiteRunInFlight || !lastSuiteReport) return;
+  const wrap = $("#runnerVerdict");
+  const title = $("#runnerVerdictTitle");
+  const text = $("#runnerVerdictText");
+  const copy = $("#copyRunBtn");
+  if (wrap) wrap.dataset.tone = "warn";
+  if (title) title.textContent = "CONFIGURATION CHANGED";
+  if (text) text.textContent = "The previous verdict no longer matches these controls. Run the suite again for a current release signal.";
+  setRunnerStatus("Configuration changed");
+  setRunnerSummary({ duration: "—", total: "—", passed: "—", failed: "—", flaky: "—" });
+  appendLog("[config] Suite controls changed — rerun required for a current verdict.", "warn");
+  lastSuiteReport = "";
+  if (copy) copy.disabled = true;
+}
 
 function setRunnerVerdict({ failed = 0, flaky = 0, cfg = null, duration = "—", total = 0 } = {}) {
   const wrap = $("#runnerVerdict");
@@ -1610,6 +1379,8 @@ async function runSimulatedSuite() {
 
     if (failed) {
       appendLog(`[suite] ${passed} passed • ${failed} failed • ${flaky} flaky`, "bad");
+    } else if (flaky) {
+      appendLog(`[suite] ${passed} passed • ${failed} failed • ${flaky} flaky`, "warn");
     } else {
       appendLog(`[suite] ${passed} passed • ${failed} failed • ${flaky} flaky`, "good");
     }
@@ -1620,12 +1391,16 @@ async function runSimulatedSuite() {
 
     const duration = performance.now() - startedAt;
     const formattedDuration = formatDuration(duration);
-    setRunnerStatus(failed ? "Failed" : "Passed");
+    setRunnerStatus(failed ? "Failed" : flaky ? "Passed with flakes" : "Passed");
     setRunnerProgress(100);
     setRunnerSummary({ duration: formattedDuration, total: totalTests, passed, failed, flaky });
     setRunnerVerdict({ failed, flaky, cfg, duration: formattedDuration, total: totalTests });
 
-    if (!failed) {
+    if (failed) {
+      showToast("Release blocked by failures");
+    } else if (flaky) {
+      showToast("Passed with flaky retries—follow-up required");
+    } else {
       showToast("Green build");
       burstConfetti({ count: 46 });
     }
@@ -1727,63 +1502,25 @@ function initBackToTop() {
   });
 }
 
-function initTilt() {
-  if (reduceMotion || !finePointer) return;
-  const els = $all("[data-tilt]");
-  for (const el of els) {
-    if (el.dataset.tiltReady === "true") continue;
-    el.dataset.tiltReady = "true";
-    el.addEventListener("pointermove", (e) => {
-      const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      const rx = (0.5 - py) * 8;
-      const ry = (px - 0.5) * 10;
-      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
-    });
-    el.addEventListener("pointerleave", () => {
-      el.style.transform = "";
-    });
-  }
-}
-
-function initMagneticUI() {
-  if (reduceMotion || !finePointer) return;
-  const els = $all(".btn, .mini-run, .pill, .filter, .icon-btn");
-  for (const el of els) {
-    if (el.dataset.magnetReady === "true") continue;
-    el.dataset.magnetReady = "true";
-    el.addEventListener("pointermove", (e) => {
-      const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      const tx = px * 8;
-      const ty = py * 8;
-      el.style.transform = `translate(${tx}px, ${ty}px)`;
-    });
-    el.addEventListener("pointerleave", () => {
-      el.style.transform = "";
-    });
-  }
-}
-
 function initHeroCanvas() {
   const canvas = $("#heroCanvas");
   if (!canvas) return;
   if (reduceMotion) return;
 
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  let ctx = null;
 
   let w = 0;
   let h = 0;
   let visible = true;
+  let engaged = false;
+  let initialized = false;
   let frameId = 0;
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const dpr = 1;
   const particles = [];
-  const count = 42;
+  const count = 28;
 
   function resize() {
+    if (!ctx) return;
     w = canvas.clientWidth;
     h = canvas.clientHeight;
     canvas.width = Math.floor(w * dpr);
@@ -1799,35 +1536,40 @@ function initHeroCanvas() {
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.18,
         vy: (Math.random() - 0.5) * 0.18,
-        r: 1.6 + Math.random() * 1.8,
+        r: 1.4 + Math.random() * 2.2,
+        warm: i % 3 === 0,
       });
     }
   }
 
-  function draw() {
-    frameId = 0;
-    if (document.hidden || !visible) return;
+  function paint({ advance = true } = {}) {
+    if (!ctx) return;
     ctx.clearRect(0, 0, w, h);
 
     ctx.globalCompositeOperation = "lighter";
     for (const p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
+      if (advance) {
+        p.x += p.vx;
+        p.y += p.vy;
+      }
       if (p.x < -20) p.x = w + 20;
       if (p.x > w + 20) p.x = -20;
       if (p.y < -20) p.y = h + 20;
       if (p.y > h + 20) p.y = -20;
 
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 18);
-      g.addColorStop(0, "rgba(255,95,69,0.22)");
-      g.addColorStop(1, "rgba(0,180,216,0)");
-      ctx.fillStyle = g;
+      ctx.fillStyle = p.warm ? "rgba(255,95,69,0.24)" : "rgba(0,180,216,0.2)";
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fill();
     }
 
     ctx.globalCompositeOperation = "source-over";
+  }
+
+  function draw() {
+    frameId = 0;
+    if (document.hidden || !visible) return;
+    paint();
     frameId = requestAnimationFrame(draw);
   }
 
@@ -1838,12 +1580,15 @@ function initHeroCanvas() {
   const onResize = () => {
     resize();
     seed();
+    paint({ advance: false });
   };
-  window.addEventListener("resize", onResize, { passive: true });
+  window.addEventListener("resize", () => {
+    if (initialized) onResize();
+  }, { passive: true });
   if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver(([entry]) => {
       visible = Boolean(entry?.isIntersecting);
-      if (visible) start();
+      if (visible && engaged) start();
       else if (frameId) {
         cancelAnimationFrame(frameId);
         frameId = 0;
@@ -1855,12 +1600,26 @@ function initHeroCanvas() {
     if (document.hidden && frameId) {
       cancelAnimationFrame(frameId);
       frameId = 0;
-    } else {
+    } else if (engaged) {
       start();
     }
   });
-  onResize();
-  start();
+  const hero = canvas.closest(".hero");
+  hero?.addEventListener("pointermove", () => {
+    engaged = true;
+    if (!initialized) {
+      ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      initialized = true;
+      onResize();
+    }
+    start();
+  }, { passive: true });
+  hero?.addEventListener("pointerleave", () => {
+    engaged = false;
+    if (frameId) cancelAnimationFrame(frameId);
+    frameId = 0;
+  }, { passive: true });
 }
 
 function showRandomQaTip() {
@@ -1868,12 +1627,6 @@ function showRandomQaTip() {
   if (!tip) return;
   const trimmed = tip.length > 120 ? `${tip.slice(0, 117)}...` : tip;
   showToast(`QA tip: ${trimmed}`);
-}
-
-function initQaTipAction() {
-  $("#miniQaTip")?.addEventListener("click", () => {
-    showRandomQaTip();
-  });
 }
 
 const GITHUB_PULSE_TTL_MS = 6 * 60 * 60 * 1000;
@@ -1963,26 +1716,17 @@ async function initGitHubPulse({ force = false, notify = false } = {}) {
   }
 }
 
-function initDeferredGitHubPulse() {
-  let started = false;
-  const start = () => {
-    if (started) return;
-    started = true;
-    initGitHubPulse();
-  };
-
-  if (document.hidden) {
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) start();
-    }, { once: true });
-    return;
-  }
-
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(start, { timeout: 1800 });
-  } else {
-    window.setTimeout(start, 400);
-  }
+function initGitHubPulseControl() {
+  const refresh = $("#githubPulseRefresh");
+  if (!refresh) return;
+  refresh.addEventListener("click", async () => {
+    refresh.disabled = true;
+    try {
+      await initGitHubPulse({ force: true, notify: true });
+    } finally {
+      refresh.disabled = false;
+    }
+  });
 }
 
 function initFlakeCostEstimator() {
@@ -2030,9 +1774,9 @@ function initCmdPalette() {
 
   const commands = [
     { label: "Open: 60-second brief", hint: "Recruiter mode", kbd: "OPEN", run: () => window.dispatchEvent(new Event("portfolio:open-brief")) },
-    { label: "Go to: Selected Work", hint: "Scroll", kbd: "GO", run: () => location.hash = "#projects" },
+    { label: "Go to: Flagship Work", hint: "Scroll", kbd: "GO", run: () => location.hash = "#projects" },
     { label: "Go to: About", hint: "Scroll", kbd: "GO", run: () => location.hash = "#about" },
-    { label: "Go to: Skills", hint: "Scroll", kbd: "GO", run: () => location.hash = "#skills" },
+    { label: "Go to: Capabilities", hint: "Scroll", kbd: "GO", run: () => location.hash = "#skills" },
     { label: "Go to: Approach", hint: "Scroll", kbd: "GO", run: () => location.hash = "#approach" },
     { label: "Go to: QA Lab", hint: "Scroll", kbd: "GO", run: () => location.hash = "#playground" },
     { label: "Go to: Contact", hint: "Scroll", kbd: "GO", run: () => location.hash = "#contact" },
@@ -2086,10 +1830,7 @@ function initCmdPalette() {
     if (open) window.dispatchEvent(new CustomEvent("portfolio:modal-open", { detail: "palette" }));
     syncBodyScrollLock();
     if (open) {
-      const active = document.activeElement;
-      returnFocusTo = active instanceof HTMLElement && active !== document.body && active !== document.documentElement
-        ? active
-        : btn;
+      returnFocusTo = btn;
       input.value = "";
       filtered = commands.slice();
       activeIndex = 0;
@@ -2192,14 +1933,6 @@ function initCmdPalette() {
   });
 }
 
-function initMiniRun() {
-  $("#miniRunSuite")?.addEventListener("click", async () => {
-    location.hash = "#playground";
-    await sleep(reduceMotion ? 0 : 220);
-    runSimulatedSuite();
-  });
-}
-
 function initThemeToggle() {
   $("#themeToggle")?.addEventListener("click", () => toggleTheme());
 }
@@ -2296,54 +2029,55 @@ function runInitStep(name, fn) {
   }
 }
 
+function scheduleInitSteps(steps) {
+  let index = 0;
+  const runNext = () => {
+    const step = steps[index];
+    index += 1;
+    if (step) runInitStep(step[0], step[1]);
+    if (index < steps.length) window.setTimeout(runNext, 0);
+  };
+  if (steps.length) window.setTimeout(runNext, 0);
+}
+
 function init() {
-  const steps = [
+  const immediateSteps = [
     ["theme", initTheme],
-    ["content bindings", setBindText],
-    ["footer year", setFooterYear],
-    ["Los Angeles clock", initLaClock],
-    ["headshot", setHeadshot],
-    ["impact stats", renderImpactStats],
-    ["social links", renderSocialLinks],
-    ["contact links", renderContactLinks],
-    ["about section", renderAbout],
-    ["skills", renderSkills],
-    ["principles", renderPrinciples],
-    ["projects", renderProjects],
-    ["quality dossier", renderQualityDossier],
-    ["spotlight", ensureSpotlight],
-    ["contact details", setContactAndResume],
-    ["range labels", setRanges],
-    ["suite presets", initSuitePresets],
     ["skip link", initSkipLink],
-    ["active navigation", initActiveNav],
-    ["scroll progress", initScrollProgress],
     ["reveal motion", initReveal],
-    ["back to top", initBackToTop],
-    ["tilt interactions", initTilt],
-    ["magnetic interactions", initMagneticUI],
-    ["hero canvas", initHeroCanvas],
-    ["quality cube", initQualityCube],
-    ["project reports", initProjectReport],
-    ["60-second brief", initBrief],
-    ["QA challenge", initQaChallenge],
+    ["GitHub pulse control", initGitHubPulseControl],
+  ];
+  const enhancementSteps = [
     ["theme control", initThemeToggle],
     ["mobile menu", initMobileMenu],
+    ["project reports", initProjectReport],
+    ["projects", renderProjects],
+    ["60-second brief", initBrief],
     ["command palette", initCmdPalette],
-    ["quick suite action", initMiniRun],
-    ["QA tip action", initQaTipAction],
-    ["GitHub pulse", initDeferredGitHubPulse],
-    ["flake estimator", initFlakeCostEstimator],
-    ["keyboard easter egg", initKonami],
-    ["suite runner", initRunSuite],
+    ["contact details", setContactAndResume],
     ["email link", initEmailLink],
+    ["footer year", setFooterYear],
+    ["Los Angeles clock", initLaClock],
+    ["range labels", setRanges],
+    ["suite presets", initSuitePresets],
+    ["QA challenge", initQaChallenge],
+    ["flake estimator", initFlakeCostEstimator],
+    ["suite runner", initRunSuite],
+    ["active navigation", initActiveNav],
+    ["scroll progress", initScrollProgress],
+    ["back to top", initBackToTop],
+    ["keyboard easter egg", initKonami],
+    ["spotlight", ensureSpotlight],
+    ["quality cube", initQualityCube],
+    ["hero canvas", initHeroCanvas],
   ];
 
   try {
-    for (const [name, fn] of steps) runInitStep(name, fn);
+    for (const [name, fn] of immediateSteps) runInitStep(name, fn);
   } finally {
     document.documentElement.classList.add("app-ready");
   }
+  scheduleInitSteps(enhancementSteps);
 }
 
 init();

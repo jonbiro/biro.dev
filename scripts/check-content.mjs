@@ -30,6 +30,10 @@ function isLinkUrl(value) {
   return isHttpUrl(value) || (isNonEmptyString(value) && value.startsWith("mailto:"));
 }
 
+function isNavigableUrl(value) {
+  return isLinkUrl(value) || (isNonEmptyString(value) && /^#[A-Za-z][\w:.-]*$/.test(value));
+}
+
 function requireString(value, label) {
   if (!isNonEmptyString(value)) fail(`${label} is required`);
 }
@@ -74,10 +78,15 @@ requireString(person.name, "person.name");
 requireString(person.fullName, "person.fullName");
 requireString(person.role, "person.role");
 requireString(person.location, "person.location");
+requireString(person.focusLine, "person.focusLine");
 requireString(person.headline, "person.headline");
 requireString(person.subheadline, "person.subheadline");
 if (!isNonEmptyString(person.email) || !person.email.includes("@")) fail("person.email must be a valid email");
-if (!isHttpUrl(person.headshotUrl)) fail("person.headshotUrl must be a valid http(s) URL");
+if (!isHttpUrl(person.headshotUrl) && !isNonEmptyString(person.headshotUrl)) {
+  fail("person.headshotUrl must be a valid http(s) URL or local asset");
+} else {
+  await validateLocalAsset(person.headshotUrl, "person.headshotUrl");
+}
 if (!isHttpUrl(person.resumeUrl)) fail("person.resumeUrl must be a valid http(s) URL");
 
 for (const [index, link] of (person.links ?? []).entries()) {
@@ -89,6 +98,9 @@ for (const [index, link] of (person.links ?? []).entries()) {
 for (const [index, impact] of (person.impact ?? []).entries()) {
   requireString(impact.label, `person.impact[${index}].label`);
   requireString(impact.value, `person.impact[${index}].value`);
+  if (isNonEmptyString(impact.href) && !isNavigableUrl(impact.href)) {
+    fail(`person.impact[${index}].href must be an http(s), mailto, or fragment URL`);
+  }
 }
 
 const about = content.about ?? {};
@@ -102,6 +114,7 @@ for (const [index, card] of (about.cards ?? []).entries()) {
 
 for (const [index, skill] of (content.skills ?? []).entries()) {
   requireString(skill.category, `skills[${index}].category`);
+  requireString(skill.summary, `skills[${index}].summary`);
   requireStringList(skill.items, `skills[${index}].items`);
 }
 
@@ -138,6 +151,9 @@ for (const [index, project] of (content.projects ?? []).entries()) {
   if (!isNonEmptyString(project.updatedAt) || !Number.isFinite(Date.parse(project.updatedAt))) {
     fail(`${label}.updatedAt must be a valid date`);
   }
+  if (isNonEmptyString(project.verifiedAt) && !Number.isFinite(Date.parse(project.verifiedAt))) {
+    fail(`${label}.verifiedAt must be a valid date`);
+  }
 
   if (isNonEmptyString(project.imageUrl)) {
     requireString(project.imageAlt, `${label}.imageAlt`);
@@ -157,13 +173,45 @@ for (const [index, project] of (content.projects ?? []).entries()) {
     requireString(project.caseStudy.context, `${caseLabel}.context`);
     requireStringList(project.caseStudy.risks, `${caseLabel}.risks`, 2);
     requireStringList(project.caseStudy.strategy, `${caseLabel}.strategy`, 2);
+    requireString(project.caseStudy.owned, `${caseLabel}.owned`);
     requireString(project.caseStudy.decision, `${caseLabel}.decision`);
+    requireString(project.caseStudy.tradeoff, `${caseLabel}.tradeoff`);
+    requireString(project.caseStudy.next, `${caseLabel}.next`);
     if (!Array.isArray(project.caseStudy.evidence) || project.caseStudy.evidence.length < 2) {
       fail(`${caseLabel}.evidence must contain at least 2 items`);
     } else {
       for (const [evidenceIndex, evidence] of project.caseStudy.evidence.entries()) {
         requireString(evidence.value, `${caseLabel}.evidence[${evidenceIndex}].value`);
         requireString(evidence.label, `${caseLabel}.evidence[${evidenceIndex}].label`);
+        if (isNonEmptyString(evidence.href) && !isNavigableUrl(evidence.href)) {
+          fail(`${caseLabel}.evidence[${evidenceIndex}].href must be an http(s), mailto, or fragment URL`);
+        }
+      }
+    }
+
+    const verification = project.caseStudy.verification;
+    if (verification) {
+      requireString(verification.label, `${caseLabel}.verification.label`);
+      requireString(verification.status, `${caseLabel}.verification.status`);
+      requireString(verification.command, `${caseLabel}.verification.command`);
+      requireString(verification.commit, `${caseLabel}.verification.commit`);
+      if (!isHttpUrl(verification.commitUrl)) fail(`${caseLabel}.verification.commitUrl must be a valid http(s) URL`);
+      requireString(verification.checkedOn, `${caseLabel}.verification.checkedOn`);
+      requireStringList(verification.details, `${caseLabel}.verification.details`, 2);
+    }
+
+    const architecture = project.caseStudy.architecture;
+    if (architecture) {
+      if (!Array.isArray(architecture) || architecture.length < 3) {
+        fail(`${caseLabel}.architecture must contain at least 3 layers`);
+      } else {
+        for (const [architectureIndex, layer] of architecture.entries()) {
+          const layerLabel = `${caseLabel}.architecture[${architectureIndex}]`;
+          requireString(layer.step, `${layerLabel}.step`);
+          requireString(layer.title, `${layerLabel}.title`);
+          requireString(layer.text, `${layerLabel}.text`);
+          requireString(layer.path, `${layerLabel}.path`);
+        }
       }
     }
   }
@@ -199,6 +247,7 @@ const coreStaticCopy = [
   person.name,
   person.role,
   person.location,
+  person.focusLine,
   person.email,
   person.headshotUrl,
   person.headline,
@@ -208,7 +257,7 @@ const coreStaticCopy = [
   about.lead,
   ...(about.bullets ?? []),
   ...((about.cards ?? []).flatMap(({ title, text }) => [title, text])),
-  ...((content.skills ?? []).flatMap(({ category, items }) => [category, ...(items ?? [])])),
+  ...((content.skills ?? []).flatMap(({ category, summary, items }) => [category, summary, ...(items ?? [])])),
   ...((content.principles ?? []).flatMap(({ title, text, tags }) => [title, text, ...(tags ?? [])])),
   ...((content.projects ?? []).flatMap(({ name, description, highlights }) => [name, description, ...(highlights ?? [])])),
   dossier.summary,
@@ -228,6 +277,7 @@ for (const assetPath of [
   "assets/og.jpg",
   "assets/favicon.svg",
   "assets/headshot-placeholder.svg",
+  "assets/headshot.jpg",
   "assets/fonts/sora-latin.woff2",
   "assets/fonts/space-grotesk-latin.woff2",
   "assets/fonts/LICENSE-Sora.txt",

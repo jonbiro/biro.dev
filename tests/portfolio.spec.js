@@ -39,6 +39,7 @@ async function openPortfolio(page) {
   const errors = observeRuntimeErrors(page);
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveClass(/app-ready/);
+  await page.locator("#githubPulseRefresh").click();
   await expect(page.locator("#githubPulseValue")).toContainText("14 repos");
   return errors;
 }
@@ -48,6 +49,7 @@ test("boots with honest, recruiter-ready proof", async ({ page }) => {
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
   await expect(page.locator("#projectsGrid .project")).toHaveCount(5);
+  await expect(page.locator('#projectsGrid .project[data-featured="true"]')).toHaveCount(1);
   await expect(page.locator("#projectsGrid .project__title")).toHaveText([
     "Super Seerr Extension",
     "Interactive QA Portfolio",
@@ -56,7 +58,9 @@ test("boots with honest, recruiter-ready proof", async ({ page }) => {
     "DogeQuest 1989",
   ]);
   await expect(page.locator("#impactStats")).toContainText("36/36 passing");
+  await expect(page.locator("#impactStats .stat--link")).toHaveCount(3);
   await expect(page.locator("#skillsGrid .skill-cat")).toHaveCount(5);
+  await expect(page.locator("#skillsGrid .skill-cat__summary")).toHaveCount(5);
   await expect(page.locator("#dossierMetrics .dossier-metric")).toHaveCount(4);
   await expect(page.locator("#runnerVerdictTitle")).toHaveText("AWAITING RUN");
   await expect(page.locator("#copyRunBtn")).toBeDisabled();
@@ -80,6 +84,7 @@ test("core portfolio remains useful without JavaScript", async ({ browser }) => 
   await expect(page.locator("#projectsGrid")).toContainText("36/36 passing");
   await expect(page.locator("#skillsGrid .skill-cat")).toHaveCount(5);
   await expect(page.locator("#emailLink")).toHaveAttribute("href", "mailto:jonathan@biro.dev");
+  await expect(page.locator("#avatarImg")).toHaveAttribute("src", /headshot[^/]*\.jpg$/);
   await expect(page.locator(".projects-toolbar")).toBeHidden();
   await expect(page.locator(".noscript-note")).toBeVisible();
 
@@ -113,6 +118,14 @@ test("skip link, theme, and command palette work from the keyboard", async ({ pa
   expect(errors).toEqual([]);
 });
 
+test("system dark preference is applied before app initialization", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.addInitScript(() => localStorage.clear());
+  const errors = await openPortfolio(page);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(errors).toEqual([]);
+});
+
 test("mobile menu traps focus and restores it", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const errors = await openPortfolio(page);
@@ -139,12 +152,20 @@ test("project discovery and evidence sheets are complete", async ({ page }) => {
   const errors = await openPortfolio(page);
 
   await page.getByRole("button", { name: /^Automation/ }).click();
+  await expect(page.getByRole("button", { name: /^Automation/ })).toBeFocused();
   await expect(page.locator("#projectsGrid .project")).toHaveCount(3);
   await expect(page.locator("#projectResultsStatus")).toHaveText("Showing 3 of 5 projects");
 
   await page.getByRole("button", { name: /^All/ }).click();
-  await page.locator("#projectSearch").fill("Rails");
+  await expect(page.getByRole("button", { name: /^All/ })).toBeFocused();
+  await page.locator("#projectSearch").fill("Prisma");
   await expect(page.locator("#projectsGrid .project__title")).toHaveText(["Travlr"]);
+
+  await page.locator("#heroProofLink").click();
+  await expect(page.locator("#project-super-seerr")).toHaveCount(1);
+  await expect(page.locator("#projectSearch")).toHaveValue("");
+  await expect(page.getByRole("button", { name: /^All/ })).toHaveAttribute("aria-pressed", "true");
+
   await page.locator("#projectSearch").fill("");
   await page.getByRole("button", { name: "A–Z" }).click();
   await expect(page.locator("#projectsGrid .project__title")).toHaveText([
@@ -155,12 +176,19 @@ test("project discovery and evidence sheets are complete", async ({ page }) => {
     "Travlr",
   ]);
 
-  await page.getByRole("button", { name: "Featured" }).click();
+  await page.getByRole("button", { name: "Curated" }).click();
   const reportButton = page.locator("#project-super-seerr .project__report");
   await reportButton.click();
   await expect(page.locator("#projectReport")).toHaveAttribute("data-open", "true");
   await expect(page.locator("#reportTitle")).toHaveText("Super Seerr Extension");
   await expect(page.locator("#reportEvidence")).toContainText("36");
+  await expect(page.locator("#reportVerificationStatus")).toHaveText("36 / 36 passed");
+  await expect(page.locator("#reportVerificationCommit")).toContainText("49fca11");
+  await expect(page.locator("#reportArchitectureSteps details")).toHaveCount(4);
+  await expect(page.locator("#reportArchitectureSteps details").first()).toHaveAttribute("open", "");
+  await expect(page.locator("#reportOwned")).toContainText("explicit site adapters");
+  await expect(page.locator("#reportTradeoff")).toContainText("universal abstraction");
+  await expect(page.locator("#reportNext")).toContainText("scheduled browser smoke runs");
   await expect(page.locator("#reportGallery img")).toHaveCount(2);
   await expect(page.locator("body")).toHaveClass(/no-scroll/);
   await page.keyboard.press("Escape");
@@ -183,6 +211,8 @@ test("QA challenge, suite presets, and copyable verdicts behave deterministicall
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   const errors = await openPortfolio(page);
 
+  await expect(page.locator("#challengeChoices")).toHaveAttribute("aria-labelledby", "challengeIndex challengeQuestion");
+
   await page.locator("#challengeChoices .qa-choice").nth(2).click();
   await expect(page.locator("#challengeFeedback")).toContainText("Strong call");
   await expect(page.locator("#challengeNext")).toBeFocused();
@@ -200,13 +230,20 @@ test("QA challenge, suite presets, and copyable verdicts behave deterministicall
   await expect(page.locator("#retries")).toHaveValue("1");
   await expect(page.locator("#flake")).toHaveValue("3");
   await page.locator("#runSuiteBtn").click();
-  await expect(page.locator("#runnerStatus")).toHaveText("Passed", { timeout: 5_000 });
+  await expect(page.locator("#runnerStatus")).toHaveText("Passed with flakes", { timeout: 5_000 });
   await expect(page.locator("#runnerProgress")).toHaveAttribute("aria-valuenow", "100");
   await expect(page.locator("#runnerVerdictTitle")).toHaveText("SHIP WITH FOLLOW-UP");
   await expect(page.locator(".confetti-layer")).toHaveCount(0);
+  await expect(page.locator("#toast")).toContainText("Passed with flaky retries");
   await expect(page.locator("#copyRunBtn")).toBeEnabled();
   await page.locator("#copyRunBtn").click();
   await expect(page.locator("#toast")).toContainText("Run report copied");
+
+  await page.locator("#parallelism").fill("7");
+  await expect(page.locator("#runnerVerdictTitle")).toHaveText("CONFIGURATION CHANGED");
+  await expect(page.locator("#runnerStatus")).toHaveText("Configuration changed");
+  await expect(page.locator("#runnerSummary .metric__value")).toHaveText(["—", "—", "—"]);
+  await expect(page.locator("#copyRunBtn")).toBeDisabled();
 
   await page.getByRole("button", { name: /Fast/ }).click();
   await page.locator("#runSuiteBtn").click();
@@ -293,6 +330,7 @@ test("remote GitHub data fails softly without breaking the portfolio", async ({ 
   await page.route("https://api.github.com/**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveClass(/app-ready/);
+  await page.locator("#githubPulseRefresh").click();
   await expect(page.locator("#githubPulseValue")).toHaveText("GitHub stats unavailable right now.");
   await expect(page.locator("#projectsGrid .project")).toHaveCount(5);
   expect(pageErrors).toEqual([]);

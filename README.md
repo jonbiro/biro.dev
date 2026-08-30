@@ -5,7 +5,8 @@ An evidence-led, progressively enhanced portfolio for a QA Automation Engineer /
 ## Highlights
 
 - Recruiter-friendly 60-second brief and project evidence sheets
-- Verified Super Seerr case study: 36/36 passing at current public-repository HEAD, seven integrations, and Chrome/Firefox builds
+- Verified Super Seerr case study: 36/36 passing at commit `49fca11`, seven external adapters plus the Seerr overlay, and Chrome/Firefox builds
+- Expandable architecture map with real source paths, engineering tradeoffs, and next-step thinking
 - Searchable and sortable project library with useful no-JavaScript fallbacks
 - Site quality dossier covering accessibility, performance, SEO, runtime, links, and dependencies
 - Interactive QA challenge, release-signal simulator, and flake-cost calculator
