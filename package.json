@@ -1,0 +1,22 @@
+{
+  "name": "yoni-biro-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/copy-static-assets.mjs",
+    "preview": "vite preview",
+    "check": "node scripts/check-content.mjs && node --check assets/main.js && htmlhint index.html"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.54.2",
+    "@openai/sites-vite-plugin": "0.2.0",
+    "htmlhint": "1.9.2",
+    "vite": "8.2.2",
+    "wrangler": "4.127.1"
+  }
+}

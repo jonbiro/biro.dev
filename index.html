@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Yoni Biro — QA Automation Engineer / SDET in Los Angeles</title>
+    <meta
+      name="description"
+      content="Yoni Biro is a QA Automation Engineer / SDET in Los Angeles building fast, trustworthy UI, API, mobile, and CI automation."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#f6eee2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#110d15" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://yonibiro.com/" />
+
+    <meta property="og:title" content="Yoni Biro — QA Automation Engineer / SDET" />
+    <meta
+      property="og:description"
+      content="I turn flaky test suites into fast, trustworthy release signals."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yonibiro.com/" />
+    <meta property="og:image" content="https://yonibiro.com/assets/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Yoni Biro portfolio preview" />
+    <meta name="twitter:title" content="Yoni Biro — QA Automation Engineer / SDET" />
+    <meta
+      name="twitter:description"
+      content="I turn flaky test suites into fast, trustworthy release signals."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://yonibiro.com/assets/og.png" />
+    <meta name="twitter:image:alt" content="Yoni Biro portfolio preview" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/styles.css" />
+
+    <script>
+      // Prevent theme-flash before CSS loads.
+      (function () {
+        try {
+          document.documentElement.classList.add("js");
+          window.setTimeout(function () {
+            if (!document.documentElement.classList.contains("app-ready")) {
+              document.documentElement.classList.remove("js");
+            }
+          }, 2000);
+          const stored = localStorage.getItem("theme");
+          if (stored) document.documentElement.dataset.theme = stored;
+        } catch {}
+      })();
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Yoni Biro",
+        "alternateName": "Jonathan Biro",
+        "jobTitle": "QA Automation Engineer / SDET",
+        "email": "mailto:jonathan@biro.dev",
+        "url": "https://yonibiro.com/",
+        "image": "https://avatars.githubusercontent.com/u/35150204?v=4&size=192",
+        "sameAs": [
+          "https://github.com/jonbiro",
+          "https://www.linkedin.com/in/jonathanbiro/",
+          "https://medium.com/@jonbiro",
+          "https://x.com/JonathanBiro",
+          "https://www.kickresume.com/cv/biro-cv/"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#home">Skip to content</a>
+
+    <div class="scroll-progress" aria-hidden="true">
+      <div class="scroll-progress__bar" id="scrollProgressBar"></div>
+    </div>
+
+    <header class="header">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="#home">
+          <span class="brand__mark" aria-hidden="true">✓</span>
+          <span class="brand__name" data-bind="person.name">Yoni Biro</span>
+        </a>
+
+        <div class="nav__links">
+          <a class="nav__link" href="#projects">Work</a>
+          <a class="nav__link" href="#about">About</a>
+          <a class="nav__link" href="#skills">Skills</a>
+          <a class="nav__link" href="#approach">Approach</a>
+          <a class="nav__link" href="#playground">QA Lab</a>
+          <a class="nav__link" href="#contact">Contact</a>
+        </div>
+
+        <div class="nav__actions">
+          <button
+            class="icon-btn nav__menu"
+            type="button"
+            id="menuBtn"
+            title="Menu"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+          >
+            <span class="icon-btn__icon" aria-hidden="true">☰</span>
+            <span class="sr-only">Open menu</span>
+          </button>
+          <button
+            class="icon-btn"
+            type="button"
+            id="cmdkBtn"
+            title="Command palette (Ctrl/⌘ K)"
+            aria-expanded="false"
+            aria-controls="palette"
+          >
+            <span class="icon-btn__icon" aria-hidden="true">⌘K</span>
+            <span class="sr-only">Open command palette</span>
+          </button>
+          <button class="icon-btn" type="button" id="themeToggle" title="Toggle theme" aria-pressed="false">
+            <span class="icon-btn__icon" aria-hidden="true" id="themeToggleIcon">◐</span>
+            <span class="sr-only">Toggle theme</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section hero" id="home">
+        <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+
+        <div class="hero__inner">
+          <div class="hero__copy reveal">
+            <div class="chips">
+              <span class="chip chip--live">
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span data-bind="person.location">Los Angeles, CA</span>
+              </span>
+              <span class="chip">
+                <span data-bind="person.role">QA Automation Engineer / SDET</span>
+              </span>
+            </div>
+
+            <h1 class="hero__title">
+              <span class="hero__kicker">Hi, I’m</span>
+              <span class="hero__name" data-bind="person.name">Yoni Biro</span>
+            </h1>
+
+            <p class="hero__lead" data-bind="person.headline">
+              I build reliable test automation and CI pipelines that help teams ship with confidence.
+            </p>
+
+            <p class="hero__sublead" data-bind="person.subheadline">
+              UI + API automation, quality tooling, and fast feedback loops — with an obsession for flake-free runs.
+            </p>
+
+            <div class="hero__cta">
+              <a class="btn btn--primary" href="#projects">Selected work</a>
+              <a
+                class="btn btn--ghost"
+                id="resumeLink"
+                href="https://www.kickresume.com/cv/biro-cv/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >Resume</a>
+              <a class="btn btn--ghost" href="#contact">Let’s talk</a>
+            </div>
+
+            <div class="hero__meta">
+              <span class="kbd-hint" aria-hidden="true">Tip: Press <span class="kbd">Ctrl/⌘</span> <span class="kbd">K</span></span>
+              <span class="hero__meta-sep" aria-hidden="true">•</span>
+              <time class="hero__meta-item" id="laTime">Los Angeles time</time>
+            </div>
+
+            <div class="hero__ticker" aria-label="What I care about">
+              <div class="hero__ticker-track">
+                <span>Risk-first coverage</span>
+                <span>Fast feedback</span>
+                <span>Stable selectors</span>
+                <span>Debuggable failures</span>
+                <span>Quality by design</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero__card reveal" data-tilt>
+            <div class="profile">
+              <div class="profile__top">
+                <img
+                  class="profile__avatar"
+                  id="avatarImg"
+                  src="https://avatars.githubusercontent.com/u/35150204?v=4&amp;size=192"
+                  alt="Portrait of Yoni Biro"
+                  width="96"
+                  height="96"
+                />
+                <div class="profile__who">
+                  <div class="profile__name" data-bind="person.name">Yoni Biro</div>
+                  <div class="profile__role" data-bind="person.role">QA Automation Engineer / SDET</div>
+                  <div class="profile__loc">
+                    <span class="profile__loc-dot" aria-hidden="true"></span>
+                    <span data-bind="person.location">Los Angeles, CA</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="profile__stats" id="impactStats" aria-label="Impact highlights"></div>
+
+              <div class="profile__links" id="socialLinks" aria-label="Social links"></div>
+
+                <div class="toy">
+                  <div class="toy__top">
+                    <div class="toy__title">Quality Cube</div>
+                    <div class="toy__hint">Drag or press Enter</div>
+                  </div>
+                  <button
+                    class="toy__stage"
+                    id="cubeControl"
+                    type="button"
+                    aria-label="QA CI E2E API DX 🧪 — spin the quality cube"
+                  >
+                    <div class="cube3d-wrap">
+                      <div class="cube3d" id="qualityCube" aria-hidden="true">
+                      <div class="cube3d__face cube3d__face--front">QA</div>
+                      <div class="cube3d__face cube3d__face--back">CI</div>
+                      <div class="cube3d__face cube3d__face--right">E2E</div>
+                      <div class="cube3d__face cube3d__face--left">API</div>
+                      <div class="cube3d__face cube3d__face--top">DX</div>
+                      <div class="cube3d__face cube3d__face--bottom">🧪</div>
+                    </div>
+                    </div>
+                    <div class="toy__shadow" aria-hidden="true"></div>
+                  </button>
+              </div>
+
+              <div class="profile__mini">
+                <div class="profile__mini-row">
+                  <span class="mini-label">Quick actions</span>
+                  <div class="mini-actions">
+                    <button class="mini-run" id="miniRunSuite" type="button">
+                      <span class="mini-run__icon" aria-hidden="true">▶</span>
+                      Run smoke suite
+                    </button>
+                    <button class="mini-run mini-run--alt" id="miniQaTip" type="button">
+                      <span class="mini-run__icon" aria-hidden="true">💡</span>
+                      QA tip
+                    </button>
+                  </div>
+                </div>
+                <div class="profile__pulse" id="githubPulse" aria-live="polite">
+                  <span class="mini-label">GitHub pulse</span>
+                  <span class="profile__pulse-value" id="githubPulseValue">Loading stats…</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero__stickers" aria-hidden="true">
+              <span class="sticker sticker--peach">Flake Slayer</span>
+              <span class="sticker sticker--aqua">Signal Builder</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">Proof, not buzzwords</div>
+            <h2 class="section__title">Selected Work</h2>
+            <p class="section__subtitle">
+              Recent public builds, quality experiments, and a few projects that still make me smile.
+            </p>
+          </div>
+
+          <div class="projects-toolbar reveal">
+            <label class="project-search" for="projectSearch">
+              <span class="sr-only">Search projects</span>
+              <input
+                id="projectSearch"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Search by project, stack, or keyword"
+              />
+            </label>
+            <div class="project-sorts" id="projectSorts" aria-label="Project sort">
+              <button class="filter" type="button" data-sort="featured" aria-pressed="true">Featured</button>
+              <button class="filter" type="button" data-sort="recent" aria-pressed="false">Recently Updated</button>
+              <button class="filter" type="button" data-sort="name" aria-pressed="false">A–Z</button>
+            </div>
+          </div>
+
+          <div class="filters reveal" id="projectFilters" aria-label="Project filters"></div>
+
+          <div class="projects reveal" id="projectsGrid" aria-label="Project cards"></div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">A little context</div>
+            <h2 class="section__title">About</h2>
+            <p class="section__subtitle" data-bind="about.subtitle">
+              I’m a QA Automation Engineer / SDET focused on high-signal tests and boringly reliable pipelines.
+            </p>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-copy reveal">
+              <p class="about-copy__lead" data-bind="about.lead">
+                I build and maintain automation that teams trust — from UI and API test suites to CI/CD quality gates.
+              </p>
+              <ul class="about-copy__bullets" id="aboutBullets"></ul>
+            </div>
+
+            <div class="about-cards reveal" id="aboutCards" aria-label="Focus areas"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="skills">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">The toolkit</div>
+            <h2 class="section__title">Skills</h2>
+            <p class="section__subtitle">The tools I reach for when quality, speed, and clarity matter.</p>
+          </div>
+
+          <div class="skills" id="skillsGrid" aria-label="Skills categories"></div>
+        </div>
+      </section>
+
+      <section class="section" id="approach">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">The operating system</div>
+            <h2 class="section__title">How I Work</h2>
+            <p class="section__subtitle">Three principles behind the automation I want teams to rely on.</p>
+          </div>
+
+          <div class="principles reveal" id="principlesGrid" aria-label="Quality engineering principles"></div>
+        </div>
+      </section>
+
+      <section class="section" id="playground">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">Touch the controls</div>
+            <h2 class="section__title">QA Lab</h2>
+            <p class="section__subtitle">
+              A tiny interactive test-runner simulator. The pipeline is simulated; the tradeoffs are very real.
+            </p>
+          </div>
+
+          <div class="playground">
+            <div class="playground__panel reveal">
+              <div class="panel__header">
+                <div>
+                  <div class="panel__title">Release Signal Simulator</div>
+                  <div class="panel__hint">Choose a preset, tune the suite, then ship it.</div>
+                </div>
+                <button class="btn btn--primary" id="runSuiteBtn" type="button">Run suite</button>
+              </div>
+
+              <div class="presets" aria-label="Suite presets">
+                <button class="preset" type="button" data-suite-preset="fast" aria-pressed="false">
+                  <span>Fast</span>
+                  <small>Smoke path</small>
+                </button>
+                <button class="preset" type="button" data-suite-preset="balanced" aria-pressed="true">
+                  <span>Balanced</span>
+                  <small>Release gate</small>
+                </button>
+                <button class="preset" type="button" data-suite-preset="chaos" aria-pressed="false">
+                  <span>Chaos</span>
+                  <small>Flake storm</small>
+                </button>
+              </div>
+              <p class="preset-insight" id="presetInsight" aria-live="polite">
+                Balanced: broad browser signal with one retry and useful failure evidence.
+              </p>
+
+              <div class="controls" aria-label="Suite controls">
+                <div class="control">
+                  <label class="control__label" for="parallelism">Parallelism</label>
+                  <input id="parallelism" type="range" min="1" max="12" value="6" />
+                  <div class="control__value"><span id="parallelismVal">6</span> workers</div>
+                </div>
+                <div class="control">
+                  <label class="control__label" for="retries">Retries</label>
+                  <input id="retries" type="range" min="0" max="3" value="1" />
+                  <div class="control__value"><span id="retriesVal">1</span> retry</div>
+                </div>
+                <div class="control">
+                  <label class="control__label" for="flake">Flake rate</label>
+                  <input id="flake" type="range" min="0" max="30" value="6" />
+                  <div class="control__value"><span id="flakeVal">6</span>%</div>
+                </div>
+                <div class="control control--wide">
+                  <div class="control__label">Browsers</div>
+                  <div class="checkboxes" role="group" aria-label="Browsers">
+                    <label class="check">
+                      <input type="checkbox" id="bChrome" checked />
+                      <span>Chromium</span>
+                    </label>
+                    <label class="check">
+                      <input type="checkbox" id="bFirefox" checked />
+                      <span>Firefox</span>
+                    </label>
+                    <label class="check">
+                      <input type="checkbox" id="bWebKit" />
+                      <span>WebKit</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="control control--wide">
+                  <div class="checkboxes" role="group" aria-label="Suite toggles">
+                    <label class="check">
+                      <input type="checkbox" id="toggleScreenshots" checked />
+                      <span>Capture screenshots on failure</span>
+                    </label>
+                    <label class="check">
+                      <input type="checkbox" id="toggleTrace" />
+                      <span>Record trace</span>
+                    </label>
+                    <label class="check">
+                      <input type="checkbox" id="toggleVideo" />
+                      <span>Record video</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="runner">
+                <div class="runner__top">
+                  <div class="runner__title">
+                    <span class="runner__pill" aria-hidden="true">CI</span>
+                    <span id="runnerTitle">Pipeline</span>
+                  </div>
+                  <div class="runner__status" id="runnerStatus" aria-live="polite">Idle</div>
+                </div>
+                <div class="runner__bar">
+                  <div class="runner__barFill" id="runnerBarFill" style="width: 0%"></div>
+                </div>
+
+                <div class="runner__summary" id="runnerSummary" aria-label="Run summary"></div>
+
+                <div class="runner__log" id="runnerLog" aria-label="Run log" role="log"></div>
+              </div>
+            </div>
+
+            <div class="playground__aside reveal">
+              <div class="aside-card">
+                <div class="aside-card__title">What the signal reveals</div>
+                <ul class="aside-card__list">
+                  <li>Coverage, speed, and reliability pull against each other</li>
+                  <li>Retries can recover a run while hiding an expensive flake</li>
+                  <li>Logs, traces, and screenshots shrink the time to diagnosis</li>
+                  <li>Parallelism helps only when tests and data are truly isolated</li>
+                </ul>
+              </div>
+              <div class="aside-card">
+                <div class="aside-card__title">The real-world version</div>
+                <p class="aside-card__text">
+                  This mirrors the decisions I make in real suites: what belongs in the release gate, what evidence a failure needs, and where speed is actually worth buying.
+                </p>
+                <a class="btn btn--ghost" href="#contact">Talk quality</a>
+              </div>
+              <div class="aside-card aside-card--calc">
+                <div class="aside-card__title">Flake Cost Estimator</div>
+                <p class="aside-card__text">Estimate how much flaky reruns eat from team throughput.</p>
+                <div class="calc-grid" aria-label="Flake cost inputs">
+                  <label class="calc-field" for="costRunsPerDay">
+                    Runs per day
+                    <input id="costRunsPerDay" type="number" min="1" max="300" step="1" value="24" />
+                  </label>
+                  <label class="calc-field" for="costFlakeRate">
+                    Flake rate (%)
+                    <input id="costFlakeRate" type="number" min="0" max="100" step="0.5" value="6" />
+                  </label>
+                  <label class="calc-field" for="costRerunMinutes">
+                    Rerun minutes
+                    <input id="costRerunMinutes" type="number" min="1" max="120" step="1" value="7" />
+                  </label>
+                  <label class="calc-field" for="costSuiteMinutes">
+                    Suite duration (min)
+                    <input id="costSuiteMinutes" type="number" min="1" max="180" step="1" value="18" />
+                  </label>
+                </div>
+                <div class="calc-result" id="flakeCostResult" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="container">
+          <div class="section__header reveal">
+            <div class="section__eyebrow">Open channel</div>
+            <h2 class="section__title">Contact</h2>
+            <p class="section__subtitle">Let’s talk quality systems, automation, and calmer releases.</p>
+          </div>
+
+          <div class="contact reveal">
+            <div class="contact__card">
+              <div class="contact__label">Email</div>
+              <a class="contact__value" href="mailto:jonathan@biro.dev" id="emailLink">jonathan@biro.dev</a>
+              <div class="contact__actions">
+                <button class="btn btn--primary" type="button" id="contactCopyEmail">Copy</button>
+                <a class="btn btn--ghost" href="mailto:jonathan@biro.dev" id="contactEmailBtn">Email me</a>
+              </div>
+            </div>
+            <div class="contact__card">
+              <div class="contact__label">Links</div>
+              <div class="contact__links" id="contactLinks" aria-label="Contact links"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="footer__left">
+          <span class="footer__mark" aria-hidden="true">✓</span>
+          <span>
+            <span data-bind="person.name">Yoni Biro</span>
+            <span class="footer__sep" aria-hidden="true">•</span>
+            <span id="footerYear"></span>
+          </span>
+        </div>
+        <div class="footer__right">
+          <button class="link-btn" type="button" id="backToTop">Back to top</button>
+        </div>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true" inert>
+      <div class="mobile-menu__overlay" data-close></div>
+      <div class="mobile-menu__panel" id="mobileMenuDialog" role="dialog" aria-modal="true" aria-label="Menu" tabindex="-1">
+        <div class="mobile-menu__header">
+          <div class="mobile-menu__title">Menu</div>
+          <button class="mobile-menu__close" type="button" data-close aria-label="Close">✕</button>
+        </div>
+        <div class="mobile-menu__links" aria-label="Menu links">
+          <a class="mobile-menu__link" href="#projects" data-close>Work</a>
+          <a class="mobile-menu__link" href="#about" data-close>About</a>
+          <a class="mobile-menu__link" href="#skills" data-close>Skills</a>
+          <a class="mobile-menu__link" href="#approach" data-close>Approach</a>
+          <a class="mobile-menu__link" href="#playground" data-close>QA Lab</a>
+          <a class="mobile-menu__link" href="#contact" data-close>Contact</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="palette" id="palette" aria-hidden="true" inert>
+      <div class="palette__overlay" data-close></div>
+      <div class="palette__dialog" id="paletteDialog" role="dialog" aria-modal="true" aria-label="Command palette" tabindex="-1">
+        <div class="palette__top">
+          <input
+            class="palette__input"
+            id="paletteInput"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            role="combobox"
+            aria-controls="paletteList"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            placeholder="Search… (Try: theme, projects, email, run)"
+          />
+          <button class="palette__close" type="button" data-close aria-label="Close">Esc</button>
+        </div>
+        <div class="palette__list" id="paletteList" role="listbox" aria-label="Commands"></div>
+        <div class="palette__bottom" aria-hidden="true">
+          <span class="palette__hint"><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+          <span class="palette__hint"><span class="kbd">Enter</span> run</span>
+          <span class="palette__hint"><span class="kbd">Esc</span> close</span>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="assets/main.js"></script>
+  </body>
+</html>

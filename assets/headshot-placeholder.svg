@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="192" height="192" rx="40" fill="url(#bg)"/>
+  <g fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round">
+    <path d="M60 160c10-22 28-32 36-32s26 10 36 32"/>
+    <circle cx="96" cy="74" r="28"/>
+  </g>
+  <text x="96" y="110" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="12" fill="rgba(255,255,255,0.72)">
+    Add your photo
+  </text>
+</svg>
+
