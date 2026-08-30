@@ -34,10 +34,19 @@ function sleep(ms) {
 function safeUrl(url, { allowMailto = true } = {}) {
   if (!url || typeof url !== "string") return "";
   const raw = url.trim();
-  if (!raw) return "";
+  if (!raw || /[\u0000-\u001f\u007f]/.test(raw)) return "";
+  if (raw.startsWith("//") || raw.startsWith("\\\\")) return "";
 
-  if (raw.startsWith("/") || raw.startsWith("./") || raw.startsWith("../") || raw.startsWith("#")) {
-    return raw;
+  if (raw.startsWith("#")) return raw;
+
+  if (raw.startsWith("/") || raw.startsWith("./") || raw.startsWith("../")) {
+    try {
+      const parsed = new URL(raw, window.location.href);
+      if (parsed.origin !== window.location.origin) return "";
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    } catch {
+      return "";
+    }
   }
 
   try {
@@ -49,6 +58,22 @@ function safeUrl(url, { allowMailto = true } = {}) {
   } catch {
     return "";
   }
+}
+
+function slugify(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "project";
+}
+
+function initials(value) {
+  const words = String(value ?? "").match(/[A-Za-z0-9]+/g) ?? [];
+  if (!words.length) return "QA";
+  if (words.length === 1) return words[0].slice(0, 3).toUpperCase();
+  return words.slice(0, 2).map((word) => word[0]).join("").toUpperCase();
 }
 
 function isHttpUrl(url) {
@@ -86,7 +111,7 @@ function formatProjectDate(isoDate) {
   const timestamp = Date.parse(isoDate ?? "");
   if (!Number.isFinite(timestamp)) return "";
   try {
-    return new Intl.DateTimeFormat(undefined, { month: "short", year: "numeric" }).format(timestamp);
+    return new Intl.DateTimeFormat(undefined, { month: "short", year: "numeric", timeZone: "UTC" }).format(timestamp);
   } catch {
     return isoDate;
   }
@@ -211,6 +236,7 @@ function renderImpactStats() {
   for (const stat of content.person.impact ?? []) {
     const el = document.createElement("div");
     el.className = "stat";
+    el.role = "listitem";
     el.innerHTML = `
       <div class="stat__label"></div>
       <div class="stat__value"></div>
@@ -316,10 +342,10 @@ function renderAbout() {
   if (cards) {
     cards.innerHTML = "";
     for (const card of content.about.cards ?? []) {
-      const el = document.createElement("div");
+      const el = document.createElement("article");
       el.className = "card";
       el.innerHTML = `
-        <div class="card__title"></div>
+        <h3 class="card__title"></h3>
         <div class="card__text"></div>
       `;
       $(".card__title", el).textContent = card.title ?? "";
@@ -334,12 +360,12 @@ function renderSkills() {
   if (!wrap) return;
   wrap.innerHTML = "";
   for (const cat of content.skills ?? []) {
-    const el = document.createElement("div");
+    const el = document.createElement("section");
     el.className = "skill-cat";
     el.setAttribute("data-tilt", "");
     el.innerHTML = `
-      <div class="skill-cat__title"></div>
-      <div class="skill-cat__chips" aria-label="Skill tags"></div>
+      <h3 class="skill-cat__title"></h3>
+      <div class="skill-cat__chips"></div>
     `;
     $(".skill-cat__title", el).textContent = cat.category ?? "";
     const chips = $(".skill-cat__chips", el);
@@ -382,15 +408,16 @@ function renderPrinciples() {
 }
 
 function buildFilters(projects) {
-  const counts = new Map();
-  for (const project of projects) {
-    for (const tag of project.tags ?? []) counts.set(tag, (counts.get(tag) ?? 0) + 1);
-  }
-  const sharedTags = Array.from(counts.entries())
-    .filter(([, count]) => count > 1)
-    .map(([tag]) => tag)
-    .sort((a, b) => a.localeCompare(b));
-  return ["All", ...sharedTags];
+  const categories = ["Automation", "Apps", "Play"];
+  return [
+    { value: "All", label: `All · ${projects.length}` },
+    ...categories
+      .map((category) => ({
+        value: category,
+        label: `${category} · ${projects.filter((project) => project.category === category).length}`,
+      }))
+      .filter((filter) => !filter.label.endsWith("· 0")),
+  ];
 }
 
 function renderProjects() {
@@ -399,6 +426,7 @@ function renderProjects() {
   const filtersWrap = $("#projectFilters");
   const searchInput = $("#projectSearch");
   const sortWrap = $("#projectSorts");
+  const status = $("#projectResultsStatus");
   if (!wrap || !filtersWrap) return;
 
   let activeTag = "All";
@@ -409,14 +437,14 @@ function renderProjects() {
 
   function renderFilterButtons() {
     filtersWrap.innerHTML = "";
-    for (const f of filters) {
+    for (const filter of filters) {
       const btn = document.createElement("button");
       btn.className = "filter";
       btn.type = "button";
-      btn.setAttribute("aria-pressed", String(f === activeTag));
-      btn.textContent = f;
+      btn.setAttribute("aria-pressed", String(filter.value === activeTag));
+      btn.textContent = filter.label;
       btn.addEventListener("click", () => {
-        activeTag = f;
+        activeTag = filter.value;
         renderFilterButtons();
         renderCards();
       });
@@ -448,8 +476,10 @@ function renderProjects() {
     const a = document.createElement("a");
     a.textContent = label;
     a.href = href;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
+    if (isHttpUrl(href)) {
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+    }
     return a;
   }
 
@@ -484,18 +514,20 @@ function renderProjects() {
     }
     copy.sort((a, b) => {
       if (Boolean(b.featured) !== Boolean(a.featured)) return Number(Boolean(b.featured)) - Number(Boolean(a.featured));
-      const aTime = Date.parse(a.updatedAt ?? "");
-      const bTime = Date.parse(b.updatedAt ?? "");
-      if (Number.isFinite(aTime) && Number.isFinite(bTime) && aTime !== bTime) return bTime - aTime;
-      return (a.name ?? "").localeCompare(b.name ?? "");
+      return (orderBySource.get(a) ?? 0) - (orderBySource.get(b) ?? 0);
     });
     return copy;
   }
 
   function renderCards() {
     wrap.innerHTML = "";
-    const filtered = projects.filter((p) => (activeTag === "All" || (p.tags ?? []).includes(activeTag)) && projectMatchesQuery(p));
+    const filtered = projects.filter((p) => (activeTag === "All" || p.category === activeTag) && projectMatchesQuery(p));
     const visible = sortProjects(filtered);
+    if (status) {
+      status.textContent = visible.length
+        ? `Showing ${visible.length} of ${projects.length} ${projects.length === 1 ? "project" : "projects"}`
+        : "No projects found";
+    }
 
     if (!visible.length) {
       const empty = document.createElement("div");
@@ -505,11 +537,13 @@ function renderProjects() {
       return;
     }
 
-    for (const p of visible) {
+    for (const [visibleIndex, p] of visible.entries()) {
       const el = document.createElement("article");
       el.className = "project";
+      el.id = `project-${slugify(p.slug ?? p.name)}`;
       el.setAttribute("data-tilt", "");
       if (p.featured) el.dataset.featured = "true";
+      if (visibleIndex === 0 && visible.length > 1) el.dataset.spotlightProject = "true";
 
       const hue = hueForString(p.name ?? "");
       el.style.setProperty("--h1", `${hue}deg`);
@@ -517,7 +551,15 @@ function renderProjects() {
 
       const badgeAttr = p.featured ? "" : "hidden";
       el.innerHTML = `
-        <div class="project__thumb" aria-hidden="true"></div>
+        <figure class="project__visual">
+          <img class="project__image" alt="" loading="lazy" decoding="async" hidden />
+          <div class="project__artifact" aria-hidden="true">
+          <span class="project__artifact-kind"></span>
+          <span class="project__artifact-mark"></span>
+          <span class="project__artifact-proof"></span>
+          </div>
+          <figcaption class="project__visual-label"></figcaption>
+        </figure>
         <div class="project__top">
           <div>
             <div class="project__eyebrow"></div>
@@ -527,21 +569,37 @@ function renderProjects() {
         </div>
         <p class="project__desc"></p>
         <ul class="project__highlights" aria-label="Project highlights"></ul>
-        <div class="project__meta"></div>
+        <time class="project__meta"></time>
         <div class="project__tags" aria-label="Project tags"></div>
         <div class="project__links" aria-label="Project links"></div>
       `;
 
-      const thumb = $(".project__thumb", el);
-      const img = safeUrl(p.imageUrl ?? "", { allowMailto: false });
-      if (thumb && img) {
-        thumb.style.setProperty("--img", `url("${img}")`);
-        thumb.dataset.img = "true";
-      }
-
       $(".project__eyebrow", el).textContent = p.eyebrow ?? "Project";
       $(".project__title", el).textContent = p.name ?? "";
       $(".project__desc", el).textContent = p.description ?? "";
+      $(".project__artifact-kind", el).textContent = p.eyebrow ?? "Public project";
+      $(".project__artifact-mark", el).textContent = initials(p.name);
+      $(".project__artifact-proof", el).textContent = p.highlights?.[0] ?? "Public build";
+      $(".project__visual-label", el).textContent = p.visualLabel ?? p.eyebrow ?? "Project preview";
+
+      const imageUrl = safeUrl(p.imageUrl ?? "", { allowMailto: false });
+      const projectImage = $(".project__image", el);
+      const artifact = $(".project__artifact", el);
+      const visual = $(".project__visual", el);
+      if (imageUrl && projectImage) {
+        projectImage.src = imageUrl;
+        projectImage.alt = p.imageAlt ?? p.gallery?.[0]?.alt ?? `${p.name ?? "Project"} preview`;
+        projectImage.classList.toggle("project__image--contain", p.imageFit === "contain");
+        projectImage.hidden = false;
+        if (artifact) artifact.hidden = true;
+        projectImage.addEventListener("error", () => {
+          projectImage.hidden = true;
+          if (artifact) artifact.hidden = false;
+          visual?.setAttribute("aria-hidden", "true");
+        }, { once: true });
+      } else {
+        visual?.setAttribute("aria-hidden", "true");
+      }
 
       const highlights = $(".project__highlights", el);
       for (const highlight of p.highlights ?? []) {
@@ -552,7 +610,10 @@ function renderProjects() {
 
       const projectDate = formatProjectDate(p.updatedAt);
       const meta = $(".project__meta", el);
-      if (projectDate) meta.textContent = `Updated ${projectDate}`;
+      if (projectDate) {
+        meta.dateTime = p.updatedAt ?? "";
+        meta.textContent = `Updated ${projectDate}`;
+      }
       else meta.hidden = true;
 
       const tags = $(".project__tags", el);
@@ -568,9 +629,16 @@ function renderProjects() {
       links.innerHTML = "";
       const code = safeUrl(p.links?.code ?? "", { allowMailto: false });
       const demo = safeUrl(p.links?.demo ?? "", { allowMailto: false });
-      if (demo) links.appendChild(linkButton("Live", demo));
-      if (code) links.appendChild(linkButton("Code", code));
-
+      if (p.caseStudy) {
+        const reportBtn = document.createElement("button");
+        reportBtn.className = "project__report";
+        reportBtn.type = "button";
+        reportBtn.textContent = p.caseStudy.label === "Quality dossier" ? "View quality dossier" : "View test report";
+        reportBtn.addEventListener("click", () => openProjectReport(p, reportBtn));
+        links.appendChild(reportBtn);
+      }
+      if (demo) links.appendChild(linkButton("Live site", demo));
+      if (code) links.appendChild(linkButton("Source code", code));
       const firstLink = demo || code;
       if (firstLink) {
         const copyBtn = document.createElement("button");
@@ -603,16 +671,280 @@ function renderProjects() {
   renderCards();
 }
 
+function renderQualityDossier() {
+  const dossier = content.qualityDossier;
+  if (!dossier) return;
+  const summary = $("#dossierSummary");
+  const date = $("#dossierDate");
+  const metrics = $("#dossierMetrics");
+  const checks = $("#dossierChecks");
+
+  if (summary) summary.textContent = dossier.summary ?? "";
+  if (date) {
+    date.textContent = dossier.checkedOn ?? "";
+    if (dossier.checkedAt) date.dateTime = dossier.checkedAt;
+  }
+
+  if (metrics) {
+    metrics.innerHTML = "";
+    for (const metric of dossier.metrics ?? []) {
+      const item = document.createElement("div");
+      item.className = "dossier-metric";
+      item.role = "listitem";
+      item.innerHTML = `<strong></strong><span></span>`;
+      $("strong", item).textContent = metric.value ?? "";
+      $("span", item).textContent = metric.label ?? "";
+      metrics.appendChild(item);
+    }
+  }
+
+  if (checks) {
+    checks.innerHTML = "";
+    for (const check of dossier.checks ?? []) {
+      const item = document.createElement("li");
+      item.textContent = check;
+      checks.appendChild(item);
+    }
+  }
+}
+
+function openProjectReport(project, returnFocusTo = null) {
+  if (!project?.caseStudy) return;
+  window.dispatchEvent(new CustomEvent("portfolio:open-report", { detail: { project, returnFocusTo } }));
+}
+
+function fillTextList(root, items) {
+  if (!root) return;
+  root.innerHTML = "";
+  for (const text of items ?? []) {
+    const item = document.createElement("li");
+    item.textContent = text;
+    root.appendChild(item);
+  }
+}
+
+function createSheetController({ root, dialog, closeSelector, name, opener, onOpen }) {
+  if (!root || !dialog) return null;
+  let open = false;
+  let returnFocusTo = null;
+
+  const setOpen = (next, detail = null) => {
+    const payload = detail?.project ?? detail;
+    if (next && typeof onOpen === "function") onOpen(payload);
+    if (open === next) return;
+    open = next;
+    root.dataset.open = String(open);
+    root.setAttribute("aria-hidden", String(!open));
+    root.toggleAttribute("inert", !open);
+    if (open) {
+      returnFocusTo = detail?.returnFocusTo instanceof HTMLElement
+        ? detail.returnFocusTo
+        : document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : opener;
+      window.dispatchEvent(new CustomEvent("portfolio:modal-open", { detail: name }));
+      window.setTimeout(() => (getFocusableElements(dialog)[0] ?? dialog).focus(), 0);
+    } else {
+      const target = returnFocusTo instanceof HTMLElement ? returnFocusTo : opener;
+      target?.focus?.();
+    }
+    syncBodyScrollLock();
+  };
+
+  for (const close of $all(closeSelector, root)) close.addEventListener("click", () => setOpen(false));
+
+  window.addEventListener("portfolio:modal-open", (event) => {
+    if (event.detail !== name && open) setOpen(false);
+  });
+  window.addEventListener("keydown", (event) => {
+    if (!open) return;
+    if (event.key === "Escape") setOpen(false);
+    if (event.key === "Tab") trapFocusWithin(event, dialog);
+  });
+
+  return { setOpen, get isOpen() { return open; } };
+}
+
+function populateProjectReport(project) {
+  const report = project?.caseStudy;
+  if (!report) return;
+  $("#reportLabel").textContent = report.label ?? "Test report";
+  $("#reportTitle").textContent = project.name ?? "Project report";
+  $("#reportSummary").textContent = project.description ?? "";
+  $("#reportContext").textContent = report.context ?? "";
+  $("#reportDecision").textContent = report.decision ?? "";
+  fillTextList($("#reportRisks"), report.risks);
+  fillTextList($("#reportStrategy"), report.strategy);
+
+  const gallery = $("#reportGallery");
+  if (gallery) {
+    gallery.innerHTML = "";
+    const images = project.gallery?.length
+      ? project.gallery
+      : project.imageUrl
+        ? [{ src: project.imageUrl, alt: `${project.name ?? "Project"} preview` }]
+        : [];
+    gallery.hidden = !images.length;
+    for (const image of images) {
+      const src = safeUrl(image.src ?? "", { allowMailto: false });
+      if (!src) continue;
+      const figure = document.createElement("figure");
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = image.alt ?? "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      figure.appendChild(img);
+      gallery.appendChild(figure);
+    }
+  }
+
+  const evidence = $("#reportEvidence");
+  if (evidence) {
+    evidence.innerHTML = "";
+    for (const proof of report.evidence ?? []) {
+      const item = document.createElement("div");
+      item.className = "report-proof";
+      item.role = "listitem";
+      item.innerHTML = `<strong></strong><span></span>`;
+      $("strong", item).textContent = proof.value ?? "";
+      $("span", item).textContent = proof.label ?? "";
+      evidence.appendChild(item);
+    }
+  }
+
+  const actions = $("#reportActions");
+  if (actions) {
+    actions.innerHTML = "";
+    const demo = safeUrl(project.links?.demo ?? "", { allowMailto: false });
+    const code = safeUrl(project.links?.code ?? "", { allowMailto: false });
+    if (code) {
+      const link = document.createElement("a");
+      link.className = "btn btn--primary";
+      link.href = code;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Inspect source";
+      actions.appendChild(link);
+    }
+    if (demo) {
+      const link = document.createElement("a");
+      link.className = "btn btn--ghost";
+      link.href = demo;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Open live build";
+      actions.appendChild(link);
+    }
+  }
+}
+
+function initProjectReport() {
+  const root = $("#projectReport");
+  const dialog = $("#projectReportDialog");
+  const controller = createSheetController({
+    root,
+    dialog,
+    closeSelector: "[data-close-report]",
+    name: "project-report",
+    onOpen: populateProjectReport,
+  });
+  if (!controller) return;
+  window.addEventListener("portfolio:open-report", (event) => controller.setOpen(true, event.detail));
+}
+
+function initBrief() {
+  const root = $("#brief");
+  const dialog = $("#briefDialog");
+  const opener = $("#briefBtn");
+  const controller = createSheetController({
+    root,
+    dialog,
+    closeSelector: "[data-close-brief]",
+    name: "brief",
+    opener,
+  });
+  if (!controller || !opener) return;
+  opener.addEventListener("click", () => controller.setOpen(true));
+  window.addEventListener("portfolio:open-brief", () => controller.setOpen(true));
+  $("#briefWorkBtn")?.addEventListener("click", () => {
+    const strongest = content.projects?.[0];
+    if (strongest?.caseStudy) {
+      controller.setOpen(false);
+      openProjectReport(strongest, opener);
+    }
+    else {
+      controller.setOpen(false);
+      location.hash = "#projects";
+    }
+  });
+}
+
+function initQaChallenge() {
+  const challenges = content.qaChallenges ?? [];
+  const question = $("#challengeQuestion");
+  const choices = $("#challengeChoices");
+  const feedback = $("#challengeFeedback");
+  const index = $("#challengeIndex");
+  const next = $("#challengeNext");
+  if (!challenges.length || !question || !choices || !feedback || !index || !next) return;
+  let active = 0;
+
+  const render = () => {
+    const challenge = challenges[active];
+    question.textContent = challenge.question ?? "";
+    index.textContent = `${active + 1} / ${challenges.length}`;
+    choices.innerHTML = "";
+    feedback.textContent = "";
+    feedback.removeAttribute("data-tone");
+    next.hidden = true;
+    for (const [choiceIndex, label] of (challenge.choices ?? []).entries()) {
+      const button = document.createElement("button");
+      button.className = "qa-choice";
+      button.type = "button";
+      button.textContent = label;
+      button.setAttribute("aria-pressed", "false");
+      button.setAttribute("aria-describedby", "challengeFeedback");
+      button.addEventListener("click", () => {
+        const correct = choiceIndex === challenge.answer;
+        for (const choiceButton of $all(".qa-choice", choices)) {
+          choiceButton.disabled = true;
+          choiceButton.setAttribute("aria-pressed", String(choiceButton === button));
+        }
+        button.dataset.result = correct ? "correct" : "incorrect";
+        const correctButton = choices.children[challenge.answer];
+        if (correctButton instanceof HTMLElement) correctButton.dataset.result = "correct";
+        feedback.dataset.tone = correct ? "good" : "bad";
+        feedback.textContent = `${correct ? "Strong call." : "Not quite."} ${challenge.rationale ?? ""}`;
+        next.hidden = false;
+        next.textContent = active === challenges.length - 1 ? "Start over" : "Next challenge";
+        next.focus();
+      });
+      choices.appendChild(button);
+    }
+  };
+
+  next.addEventListener("click", () => {
+    active = (active + 1) % challenges.length;
+    render();
+    $(".qa-choice", choices)?.focus();
+  });
+  render();
+}
+
 function setHeadshot() {
   const img = $("#avatarImg");
   if (!img) return;
   const url = safeUrl(content.person.headshotUrl ?? "", { allowMailto: false });
-  if (url) img.src = url;
   const name = content.person.name ?? content.person.fullName ?? "";
   if (name) img.alt = `Portrait of ${name}`;
-  img.addEventListener("error", () => {
-    img.src = "assets/headshot-placeholder.svg";
-  }, { once: true });
+  const fallback = () => {
+    if (!img.src.endsWith("headshot-placeholder.svg")) img.src = "assets/headshot-placeholder.svg";
+  };
+  img.addEventListener("error", fallback, { once: true });
+  if (url) img.src = url;
+  else fallback();
+  if (img.complete && img.naturalWidth === 0) window.queueMicrotask(fallback);
 }
 
 function initQualityCube() {
@@ -804,7 +1136,7 @@ function initActiveNav() {
   function setActive(id) {
     for (const [sid, list] of linkMap.entries()) {
       for (const a of list) {
-        if (sid === id) a.setAttribute("aria-current", "page");
+        if (sid === id) a.setAttribute("aria-current", "location");
         else a.removeAttribute("aria-current");
       }
     }
@@ -847,13 +1179,36 @@ function trapFocusWithin(event, root) {
   const first = nodes[0];
   const last = nodes[nodes.length - 1];
   const current = document.activeElement;
-  if (event.shiftKey && current === first) {
+  if (!(current instanceof Node) || !root.contains(current) || current === root) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+  } else if (event.shiftKey && current === first) {
     event.preventDefault();
     last.focus();
   } else if (!event.shiftKey && current === last) {
     event.preventDefault();
     first.focus();
   }
+}
+
+function syncBodyScrollLock() {
+  const modalOpen = Boolean($(".mobile-menu[data-open='true'], .palette[data-open='true'], .sheet[data-open='true']"));
+  document.body.classList.toggle("no-scroll", modalOpen);
+}
+
+function setButtonLabel(button, label) {
+  if (!button) return;
+  const text = $(".sr-only", button);
+  if (text) text.textContent = label;
+}
+
+function initSkipLink() {
+  const link = $(".skip-link");
+  const main = $("#main-content");
+  if (!link || !main) return;
+  link.addEventListener("click", () => {
+    window.setTimeout(() => main.focus({ preventScroll: true }), 0);
+  });
 }
 
 function setContactAndResume() {
@@ -899,17 +1254,18 @@ function setContactAndResume() {
 
 function setRanges() {
   const pairs = [
-    ["parallelism", "parallelismVal", (v) => `${v}`],
-    ["retries", "retriesVal", (v) => `${v}`],
-    ["flake", "flakeVal", (v) => `${v}`],
+    ["parallelism", "parallelismVal", (v) => `${v}`, (v) => `${v} workers`],
+    ["retries", "retriesVal", (v) => `${v}`, (v) => `${v} ${Number(v) === 1 ? "retry" : "retries"}`],
+    ["flake", "flakeVal", (v) => `${v}`, (v) => `${v} percent flake rate`],
   ];
 
-  for (const [inputId, outId, fmt] of pairs) {
+  for (const [inputId, outId, fmt, ariaFmt] of pairs) {
     const input = $("#" + inputId);
     const out = $("#" + outId);
     if (!input || !out) continue;
     const update = () => {
       out.textContent = fmt(input.value);
+      input.setAttribute("aria-valuetext", ariaFmt(input.value));
     };
     update();
     input.addEventListener("input", update);
@@ -934,7 +1290,7 @@ const SUITE_PRESETS = {
   fast: {
     parallelism: 12,
     retries: 0,
-    flake: 2,
+    flake: 0,
     browsers: ["bChrome"],
     artifacts: ["toggleScreenshots"],
     insight: "Fast: a tiny Chromium smoke path optimized for immediate deploy feedback.",
@@ -942,7 +1298,7 @@ const SUITE_PRESETS = {
   balanced: {
     parallelism: 6,
     retries: 1,
-    flake: 6,
+    flake: 3,
     browsers: ["bChrome", "bFirefox"],
     artifacts: ["toggleScreenshots", "toggleTrace"],
     insight: "Balanced: broad browser signal with one retry and useful failure evidence.",
@@ -1030,7 +1386,10 @@ function setRunnerStatus(text) {
 
 function setRunnerProgress(pct) {
   const bar = $("#runnerBarFill");
-  if (bar) bar.style.width = `${clamp(0, pct, 100)}%`;
+  const progress = $("#runnerProgress");
+  const value = clamp(0, pct, 100);
+  if (bar) bar.style.width = `${value}%`;
+  progress?.setAttribute("aria-valuenow", String(Math.round(value)));
 }
 
 function setRunnerSummary({ duration, total, passed, failed, flaky }) {
@@ -1062,6 +1421,60 @@ function setRunnerSummary({ duration, total, passed, failed, flaky }) {
     $(".metric__value", el).textContent = it.value;
     wrap.appendChild(el);
   }
+}
+
+let lastSuiteReport = "";
+
+function setRunnerVerdict({ failed = 0, flaky = 0, cfg = null, duration = "—", total = 0 } = {}) {
+  const wrap = $("#runnerVerdict");
+  const title = $("#runnerVerdictTitle");
+  const text = $("#runnerVerdictText");
+  const copy = $("#copyRunBtn");
+  if (!wrap || !title || !text) return;
+
+  let tone = "good";
+  let verdict = "SHIP";
+  let explanation = "The release gate is green with no simulated flakes in this run.";
+  if (failed > 0) {
+    tone = "bad";
+    verdict = "BLOCK";
+    explanation = `${failed} test${failed === 1 ? "" : "s"} failed. Use the captured evidence to diagnose before release.`;
+  } else if (flaky > 0) {
+    tone = "warn";
+    verdict = "SHIP WITH FOLLOW-UP";
+    explanation = `Retries recovered the run, but ${flaky} flaky test${flaky === 1 ? "" : "s"} remain visible and need ownership.`;
+  }
+
+  wrap.dataset.tone = tone;
+  title.textContent = verdict;
+  text.textContent = explanation;
+  lastSuiteReport = [
+    `Release verdict: ${verdict}`,
+    `Outcome: ${total} tests · ${failed} failed · ${flaky} flaky`,
+    `Duration: ${duration}`,
+    cfg ? `Configuration: ${cfg.parallelism} workers · ${cfg.retries} retries · ${cfg.browsers.join(", ")}` : "",
+    explanation,
+  ].filter(Boolean).join("\n");
+  if (copy) copy.disabled = !lastSuiteReport;
+}
+
+function seedRunner() {
+  const runnerTitle = $("#runnerTitle");
+  const verdict = $("#runnerVerdict");
+  const verdictTitle = $("#runnerVerdictTitle");
+  const verdictText = $("#runnerVerdictText");
+  const copy = $("#copyRunBtn");
+  if (runnerTitle) runnerTitle.textContent = "Pipeline • ready";
+  setRunnerStatus("Ready");
+  setRunnerProgress(0);
+  setRunnerSummary({ duration: "—", total: "—", passed: "—", failed: "—", flaky: "—" });
+  clearLog();
+  appendLog("[ready] Choose a preset, adjust the controls, then run the simulated suite.");
+  if (verdict) verdict.dataset.tone = "ready";
+  if (verdictTitle) verdictTitle.textContent = "AWAITING RUN";
+  if (verdictText) verdictText.textContent = "No release verdict exists until the simulated suite completes.";
+  lastSuiteReport = "";
+  if (copy) copy.disabled = true;
 }
 
 function appendLog(text, tone = "") {
@@ -1106,10 +1519,9 @@ function estimateTotals(cfg) {
 let suiteRunInFlight = false;
 
 function setSuiteControlState(running) {
-  const runBtn = $("#runSuiteBtn");
-  if (runBtn) {
-    runBtn.toggleAttribute("disabled", running);
-    runBtn.classList.toggle("btn--disabled", running);
+  for (const control of $all("#runSuiteBtn, [data-suite-preset], .controls input")) {
+    control.toggleAttribute("disabled", running);
+    if (control.id === "runSuiteBtn") control.classList.toggle("btn--disabled", running);
   }
 }
 
@@ -1134,6 +1546,15 @@ async function runSimulatedSuite() {
     setRunnerProgress(0);
     clearLog();
     setRunnerSummary({ duration: "—", total: "—", passed: "—", failed: "—" });
+    lastSuiteReport = "";
+    const copy = $("#copyRunBtn");
+    if (copy) copy.disabled = true;
+    const verdict = $("#runnerVerdict");
+    if (verdict) verdict.dataset.tone = "running";
+    const verdictTitle = $("#runnerVerdictTitle");
+    const verdictText = $("#runnerVerdictText");
+    if (verdictTitle) verdictTitle.textContent = "RUNNING";
+    if (verdictText) verdictText.textContent = "Collecting enough signal to make a release decision.";
 
     const startedAt = performance.now();
     const totalTests = estimateTotals(cfg);
@@ -1183,7 +1604,7 @@ async function runSimulatedSuite() {
     // Simulated results.
     const rawFlakes = Math.round((totalTests * cfg.flake) / 100);
     flaky = rawFlakes;
-    const effectiveFailures = Math.max(0, Math.round(rawFlakes * (1 - clamp(0, cfg.retries, 3) * 0.28)));
+    const effectiveFailures = Math.max(0, rawFlakes - clamp(0, cfg.retries, 3) * 2);
     failed = effectiveFailures;
     passed = totalTests - failed;
 
@@ -1193,14 +1614,16 @@ async function runSimulatedSuite() {
       appendLog(`[suite] ${passed} passed • ${failed} failed • ${flaky} flaky`, "good");
     }
 
-    if (failed && cfg.screenshots) appendLog(`[artifact] screenshots: attached`, "good");
-    if (failed && cfg.trace) appendLog(`[artifact] trace.zip: attached`, "good");
-    if (failed && cfg.video) appendLog(`[artifact] run.mp4: attached`, "good");
+    if (flaky && cfg.screenshots) appendLog(`[artifact] failure-attempt screenshots: attached`, "good");
+    if (flaky && cfg.trace) appendLog(`[artifact] trace.zip: attached`, "good");
+    if (flaky && cfg.video) appendLog(`[artifact] run.mp4: attached`, "good");
 
     const duration = performance.now() - startedAt;
+    const formattedDuration = formatDuration(duration);
     setRunnerStatus(failed ? "Failed" : "Passed");
     setRunnerProgress(100);
-    setRunnerSummary({ duration: formatDuration(duration), total: totalTests, passed, failed, flaky });
+    setRunnerSummary({ duration: formattedDuration, total: totalTests, passed, failed, flaky });
+    setRunnerVerdict({ failed, flaky, cfg, duration: formattedDuration, total: totalTests });
 
     if (!failed) {
       showToast("Green build");
@@ -1210,6 +1633,15 @@ async function runSimulatedSuite() {
     console.error(error);
     setRunnerStatus("Error");
     appendLog("[ci] unexpected error, please retry", "bad");
+    const verdict = $("#runnerVerdict");
+    const verdictTitle = $("#runnerVerdictTitle");
+    const verdictText = $("#runnerVerdictText");
+    const copy = $("#copyRunBtn");
+    if (verdict) verdict.dataset.tone = "bad";
+    if (verdictTitle) verdictTitle.textContent = "ERROR";
+    if (verdictText) verdictText.textContent = "The simulated run did not complete. Retry to generate a release verdict.";
+    lastSuiteReport = "";
+    if (copy) copy.disabled = true;
     showToast("Suite run failed");
   } finally {
     suiteRunInFlight = false;
@@ -1253,6 +1685,7 @@ function initReveal() {
   const els = $all(".reveal");
   if (!("IntersectionObserver" in window)) {
     for (const el of els) el.dataset.in = "true";
+    document.documentElement.classList.add("reveal-ready");
     return;
   }
   const io = new IntersectionObserver(
@@ -1267,19 +1700,25 @@ function initReveal() {
     { threshold: 0.12 },
   );
   for (const el of els) io.observe(el);
+  document.documentElement.classList.add("reveal-ready");
 }
 
 function initScrollProgress() {
   const bar = $("#scrollProgressBar");
   if (!bar) return;
-  const onScroll = () => {
+  let frameId = 0;
+  const update = () => {
+    frameId = 0;
     const doc = document.documentElement;
     const max = doc.scrollHeight - doc.clientHeight;
     const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
     bar.style.width = `${pct}%`;
   };
+  const onScroll = () => {
+    if (!frameId) frameId = requestAnimationFrame(update);
+  };
   window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  update();
 }
 
 function initBackToTop() {
@@ -1473,8 +1912,9 @@ async function fetchGitHubPulseData(username, { force = false } = {}) {
 
     const user = await userRes.json();
     const repos = await reposRes.json();
-    const latest = (repos ?? []).find((repo) => !repo.fork) ?? repos?.[0];
-    const top = [...(repos ?? [])].sort((a, b) => toNumber(b.stargazers_count, 0) - toNumber(a.stargazers_count, 0))[0] ?? latest;
+    const originalRepos = (repos ?? []).filter((repo) => !repo.fork);
+    const latest = originalRepos[0] ?? repos?.[0];
+    const top = [...originalRepos].sort((a, b) => toNumber(b.stargazers_count, 0) - toNumber(a.stargazers_count, 0))[0] ?? latest;
 
     const payload = {
       repos: toNumber(user?.public_repos, 0),
@@ -1499,7 +1939,7 @@ function renderGitHubPulseText(data) {
   if (!data) return "GitHub stats unavailable right now.";
   const latestAge = relativeTimeFromNow(data.latestPushedAt);
   const latestText = data.latestName ? `latest ${data.latestName}${latestAge ? ` (${latestAge})` : ""}` : "latest activity unavailable";
-  const topText = data.topName ? `top ${data.topName}${data.topStars ? ` (${formatCompactNumber(data.topStars)} stars)` : ""}` : "";
+  const topText = data.topName ? `top recent original ${data.topName}${data.topStars ? ` (${formatCompactNumber(data.topStars)} stars)` : ""}` : "";
   return `${formatCompactNumber(data.repos)} repos • ${formatCompactNumber(data.followers)} followers • ${latestText}${topText ? ` • ${topText}` : ""}`;
 }
 
@@ -1520,6 +1960,28 @@ async function initGitHubPulse({ force = false, notify = false } = {}) {
   } catch {
     output.textContent = "GitHub stats unavailable right now.";
     if (notify && force) showToast("Couldn’t refresh GitHub pulse");
+  }
+}
+
+function initDeferredGitHubPulse() {
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    initGitHubPulse();
+  };
+
+  if (document.hidden) {
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) start();
+    }, { once: true });
+    return;
+  }
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(start, { timeout: 1800 });
+  } else {
+    window.setTimeout(start, 400);
   }
 }
 
@@ -1567,6 +2029,7 @@ function initCmdPalette() {
   if (!dialog) return;
 
   const commands = [
+    { label: "Open: 60-second brief", hint: "Recruiter mode", kbd: "OPEN", run: () => window.dispatchEvent(new Event("portfolio:open-brief")) },
     { label: "Go to: Selected Work", hint: "Scroll", kbd: "GO", run: () => location.hash = "#projects" },
     { label: "Go to: About", hint: "Scroll", kbd: "GO", run: () => location.hash = "#about" },
     { label: "Go to: Skills", hint: "Scroll", kbd: "GO", run: () => location.hash = "#skills" },
@@ -1618,9 +2081,15 @@ function initCmdPalette() {
     palette.toggleAttribute("inert", !open);
     btn.setAttribute("aria-expanded", String(open));
     input.setAttribute("aria-expanded", String(open));
-    document.body.classList.toggle("no-scroll", open);
+    btn.title = open ? "Close command palette" : "Command palette (Ctrl/⌘ K)";
+    setButtonLabel(btn, open ? "Close command palette" : "Open command palette");
+    if (open) window.dispatchEvent(new CustomEvent("portfolio:modal-open", { detail: "palette" }));
+    syncBodyScrollLock();
     if (open) {
-      returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : btn;
+      const active = document.activeElement;
+      returnFocusTo = active instanceof HTMLElement && active !== document.body && active !== document.documentElement
+        ? active
+        : btn;
       input.value = "";
       filtered = commands.slice();
       activeIndex = 0;
@@ -1671,8 +2140,8 @@ function initCmdPalette() {
   function runActive(forceIndex) {
     const idx = typeof forceIndex === "number" ? forceIndex : activeIndex;
     const cmd = filtered[idx];
-    if (cmd?.run) cmd.run();
     setOpen(false);
+    if (cmd?.run) cmd.run();
   }
 
   function move(delta) {
@@ -1700,6 +2169,10 @@ function initCmdPalette() {
   });
 
   btn.addEventListener("click", () => setOpen(true));
+
+  window.addEventListener("portfolio:modal-open", (event) => {
+    if (event.detail !== "palette" && open) setOpen(false);
+  });
 
   for (const closeEl of $all("[data-close]", palette)) {
     closeEl.addEventListener("click", () => setOpen(false));
@@ -1752,6 +2225,11 @@ function initKonami() {
 
 function initRunSuite() {
   $("#runSuiteBtn")?.addEventListener("click", () => runSimulatedSuite());
+  $("#copyRunBtn")?.addEventListener("click", async () => {
+    const ok = await copyToClipboard(lastSuiteReport);
+    showToast(ok ? "Run report copied" : "Couldn’t copy run report");
+  });
+  seedRunner();
 }
 
 function initMobileMenu() {
@@ -1771,7 +2249,10 @@ function initMobileMenu() {
     menu.setAttribute("aria-hidden", String(!open));
     menu.toggleAttribute("inert", !open);
     btn.setAttribute("aria-expanded", String(open));
-    document.body.classList.toggle("no-scroll", open);
+    btn.title = open ? "Close menu" : "Menu";
+    setButtonLabel(btn, open ? "Close menu" : "Open menu");
+    if (open) window.dispatchEvent(new CustomEvent("portfolio:modal-open", { detail: "mobile-menu" }));
+    syncBodyScrollLock();
     if (open) {
       returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : btn;
       const first = $(".mobile-menu__link", menu) ?? $("[data-close]", menu);
@@ -1783,6 +2264,10 @@ function initMobileMenu() {
   }
 
   btn.addEventListener("click", () => setOpen(true));
+
+  window.addEventListener("portfolio:modal-open", (event) => {
+    if (event.detail !== "mobile-menu" && open) setOpen(false);
+  });
 
   for (const el of $all("[data-close]", menu)) {
     el.addEventListener("click", () => setOpen(false));
@@ -1800,47 +2285,65 @@ function initEmailLink() {
   $("#contactEmailBtn")?.setAttribute("href", mailto || "#");
 }
 
+function runInitStep(name, fn) {
+  try {
+    const result = fn();
+    if (result && typeof result.catch === "function") {
+      result.catch((error) => console.error(`[portfolio] ${name} failed`, error));
+    }
+  } catch (error) {
+    console.error(`[portfolio] ${name} failed`, error);
+  }
+}
+
 function init() {
-  initTheme();
-  setBindText();
-  setFooterYear();
-  initLaClock();
-  setHeadshot();
+  const steps = [
+    ["theme", initTheme],
+    ["content bindings", setBindText],
+    ["footer year", setFooterYear],
+    ["Los Angeles clock", initLaClock],
+    ["headshot", setHeadshot],
+    ["impact stats", renderImpactStats],
+    ["social links", renderSocialLinks],
+    ["contact links", renderContactLinks],
+    ["about section", renderAbout],
+    ["skills", renderSkills],
+    ["principles", renderPrinciples],
+    ["projects", renderProjects],
+    ["quality dossier", renderQualityDossier],
+    ["spotlight", ensureSpotlight],
+    ["contact details", setContactAndResume],
+    ["range labels", setRanges],
+    ["suite presets", initSuitePresets],
+    ["skip link", initSkipLink],
+    ["active navigation", initActiveNav],
+    ["scroll progress", initScrollProgress],
+    ["reveal motion", initReveal],
+    ["back to top", initBackToTop],
+    ["tilt interactions", initTilt],
+    ["magnetic interactions", initMagneticUI],
+    ["hero canvas", initHeroCanvas],
+    ["quality cube", initQualityCube],
+    ["project reports", initProjectReport],
+    ["60-second brief", initBrief],
+    ["QA challenge", initQaChallenge],
+    ["theme control", initThemeToggle],
+    ["mobile menu", initMobileMenu],
+    ["command palette", initCmdPalette],
+    ["quick suite action", initMiniRun],
+    ["QA tip action", initQaTipAction],
+    ["GitHub pulse", initDeferredGitHubPulse],
+    ["flake estimator", initFlakeCostEstimator],
+    ["keyboard easter egg", initKonami],
+    ["suite runner", initRunSuite],
+    ["email link", initEmailLink],
+  ];
 
-  renderImpactStats();
-  renderSocialLinks();
-  renderContactLinks();
-  renderAbout();
-  renderSkills();
-  renderPrinciples();
-  renderProjects();
-
-  ensureSpotlight();
-
-  setContactAndResume();
-  setRanges();
-  initSuitePresets();
-
-  initActiveNav();
-  initScrollProgress();
-  initReveal();
-  initBackToTop();
-  initTilt();
-  initMagneticUI();
-  initHeroCanvas();
-  initQualityCube();
-
-  initThemeToggle();
-  initMobileMenu();
-  initCmdPalette();
-  initMiniRun();
-  initQaTipAction();
-  initGitHubPulse();
-  initFlakeCostEstimator();
-  initKonami();
-  initRunSuite();
-  initEmailLink();
-  document.documentElement.classList.add("app-ready");
+  try {
+    for (const [name, fn] of steps) runInitStep(name, fn);
+  } finally {
+    document.documentElement.classList.add("app-ready");
+  }
 }
 
 init();

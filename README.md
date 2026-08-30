@@ -1,17 +1,25 @@
-# Personal Website — yonibiro.com
+# Yoni Biro — QA Automation Portfolio
 
-Modern, fast, single-page portfolio with:
+An evidence-led, progressively enhanced portfolio for a QA Automation Engineer / SDET.
+
+## Highlights
+
+- Recruiter-friendly 60-second brief and project evidence sheets
+- Verified Super Seerr case study: 36/36 passing at current public-repository HEAD, seven integrations, and Chrome/Firefox builds
+- Searchable and sortable project library with useful no-JavaScript fallbacks
+- Site quality dossier covering accessibility, performance, SEO, runtime, links, and dependencies
+- Interactive QA challenge, release-signal simulator, and flake-cost calculator
 - Command palette (`Ctrl/⌘ K`)
 - Theme toggle (light/dark)
-- Scroll reveal + subtle motion (respects reduced-motion)
+- Scroll reveal and subtle motion that respect reduced-motion preferences
 - Accessible, draggable 3D “Quality Cube”
-- QA-flavored release-signal simulator with suite presets
-- Project search/sort + one-click link copy
 - Live GitHub pulse snapshot
-- Flake cost estimator + random QA tips
 - Live Los Angeles time
 
+The QA Lab is an explicit simulation: it models test-suite tradeoffs without presenting generated outcomes as real CI results.
+
 ## Edit your info
+
 Update your content in `assets/content.js`.
 
 Common fields:
@@ -21,6 +29,7 @@ Common fields:
 - Resume URL (`person.resumeUrl`)
 
 ## Run locally
+
 Install the project once, then start the local preview:
 
 ```bash
@@ -31,15 +40,19 @@ npm run dev
 Vite prints the local address when it starts.
 
 ## Deploy
+
 Build the production bundle with:
 
 ```bash
 npm run build
 ```
 
-The output in `dist/` includes the static portfolio, its share card, the Cloudflare worker entrypoint, and OpenAI Sites metadata.
+The output in `dist/` includes the static portfolio, share card, discovery files, worker entrypoint, and Sites metadata.
 
 ## Quality checks
-- Content and HTML checks: `npm run check`
+
+- Content, static-fallback parity, local asset, manifest, and HTML checks: `npm run check`
 - Production build: `npm run build`
-- CI pipeline: `.github/workflows/quality.yml` (content checks, link checks, Lighthouse CI)
+- Chromium interaction, keyboard, responsive, no-JavaScript, and axe checks: `npm run test:e2e`
+- Full local gate: `npm test`
+- CI pipeline: `.github/workflows/quality.yml` (dependency audit, links, browser tests, failure evidence, and Lighthouse CI)

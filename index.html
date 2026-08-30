@@ -7,12 +7,14 @@
     <title>Yoni Biro — QA Automation Engineer / SDET in Los Angeles</title>
     <meta
       name="description"
-      content="Yoni Biro is a QA Automation Engineer / SDET in Los Angeles building fast, trustworthy UI, API, mobile, and CI automation."
+      content="Yoni Biro is a QA Automation Engineer / SDET in Los Angeles building readable UI, API, and CI automation with useful failure evidence and fast feedback."
     />
     <meta name="robots" content="index,follow" />
+    <meta name="application-name" content="Yoni Biro — QA Automation Engineer" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#f6eee2" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#110d15" media="(prefers-color-scheme: dark)" />
-    <link rel="canonical" href="https://yonibiro.com/" />
+    <link rel="canonical" href="https://yoni-biro.jonnybrx.chatgpt.site/" />
 
     <meta property="og:title" content="Yoni Biro — QA Automation Engineer / SDET" />
     <meta
@@ -20,9 +22,11 @@
       content="I turn flaky test suites into fast, trustworthy release signals."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yonibiro.com/" />
-    <meta property="og:image" content="https://yonibiro.com/assets/og.png" />
-    <meta property="og:image:type" content="image/png" />
+    <meta property="og:url" content="https://yoni-biro.jonnybrx.chatgpt.site/" />
+    <meta property="og:site_name" content="Yoni Biro" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://yoni-biro.jonnybrx.chatgpt.site/assets/og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Yoni Biro portfolio preview" />
@@ -32,16 +36,12 @@
       content="I turn flaky test suites into fast, trustworthy release signals."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://yonibiro.com/assets/og.png" />
+    <meta name="twitter:creator" content="@JonathanBiro" />
+    <meta name="twitter:image" content="https://yoni-biro.jonnybrx.chatgpt.site/assets/og.jpg" />
     <meta name="twitter:image:alt" content="Yoni Biro portfolio preview" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="assets/styles.css" />
 
     <script>
@@ -67,8 +67,24 @@
         "alternateName": "Jonathan Biro",
         "jobTitle": "QA Automation Engineer / SDET",
         "email": "mailto:jonathan@biro.dev",
-        "url": "https://yonibiro.com/",
+        "url": "https://yoni-biro.jonnybrx.chatgpt.site/",
         "image": "https://avatars.githubusercontent.com/u/35150204?v=4&size=192",
+        "homeLocation": {
+          "@type": "Place",
+          "name": "Los Angeles, California"
+        },
+        "alumniOf": {
+          "@type": "EducationalOrganization",
+          "name": "Flatiron School"
+        },
+        "knowsAbout": [
+          "Test automation",
+          "Quality engineering",
+          "UI testing",
+          "API testing",
+          "Mobile testing",
+          "Continuous integration"
+        ],
         "sameAs": [
           "https://github.com/jonbiro",
           "https://www.linkedin.com/in/jonathanbiro/",
@@ -80,7 +96,7 @@
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#home">Skip to content</a>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
     <div class="scroll-progress" aria-hidden="true">
       <div class="scroll-progress__bar" id="scrollProgressBar"></div>
@@ -102,7 +118,7 @@
           <a class="nav__link" href="#contact">Contact</a>
         </div>
 
-        <div class="nav__actions">
+        <div class="nav__actions js-only">
           <button
             class="icon-btn nav__menu"
             type="button"
@@ -133,9 +149,9 @@
       </nav>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="section hero" id="home">
-        <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+        <canvas class="hero__canvas js-only" id="heroCanvas" aria-hidden="true"></canvas>
 
         <div class="hero__inner">
           <div class="hero__copy reveal">
@@ -144,9 +160,7 @@
                 <span class="chip__dot" aria-hidden="true"></span>
                 <span data-bind="person.location">Los Angeles, CA</span>
               </span>
-              <span class="chip">
-                <span data-bind="person.role">QA Automation Engineer / SDET</span>
-              </span>
+              <span class="chip">UI · API · CI quality systems</span>
             </div>
 
             <h1 class="hero__title">
@@ -154,24 +168,26 @@
               <span class="hero__name" data-bind="person.name">Yoni Biro</span>
             </h1>
 
+            <p class="hero__roleline" data-bind="person.role">QA Automation Engineer / SDET</p>
+
             <p class="hero__lead" data-bind="person.headline">
-              I build reliable test automation and CI pipelines that help teams ship with confidence.
+              I turn flaky test suites into fast, trustworthy release signals.
             </p>
 
             <p class="hero__sublead" data-bind="person.subheadline">
-              UI + API automation, quality tooling, and fast feedback loops — with an obsession for flake-free runs.
+              I build UI, API, and CI automation with readable tests, useful failure evidence, and fast feedback—from Los Angeles.
             </p>
 
             <div class="hero__cta">
-              <a class="btn btn--primary" href="#projects">Selected work</a>
+              <a class="btn btn--primary" href="#projects">See the proof</a>
+              <button class="btn btn--signal js-only" type="button" id="briefBtn">60-sec brief</button>
               <a
                 class="btn btn--ghost"
                 id="resumeLink"
                 href="https://www.kickresume.com/cv/biro-cv/"
                 target="_blank"
                 rel="noopener noreferrer"
-              >Resume</a>
-              <a class="btn btn--ghost" href="#contact">Let’s talk</a>
+              >Open résumé</a>
             </div>
 
             <div class="hero__meta">
@@ -180,8 +196,8 @@
               <time class="hero__meta-item" id="laTime">Los Angeles time</time>
             </div>
 
-            <div class="hero__ticker" aria-label="What I care about">
-              <div class="hero__ticker-track">
+            <div class="hero__ticker" role="region" aria-label="What I care about">
+              <div class="hero__ticker-track" aria-hidden="true">
                 <span>Risk-first coverage</span>
                 <span>Fast feedback</span>
                 <span>Stable selectors</span>
@@ -212,11 +228,30 @@
                 </div>
               </div>
 
-              <div class="profile__stats" id="impactStats" aria-label="Impact highlights"></div>
+              <div class="profile__stats" id="impactStats" role="list" aria-label="Public project evidence">
+                <div class="stat" role="listitem">
+                  <div class="stat__label">Current public suite</div>
+                  <div class="stat__value">36/36 passing</div>
+                </div>
+                <div class="stat" role="listitem">
+                  <div class="stat__label">Cross-browser</div>
+                  <div class="stat__value">Chrome + Firefox</div>
+                </div>
+                <div class="stat" role="listitem">
+                  <div class="stat__label">Connected sites</div>
+                  <div class="stat__value">7 platforms</div>
+                </div>
+              </div>
+              <a class="profile__proof-note" href="#project-super-seerr">Evidence from Super Seerr →</a>
 
-              <div class="profile__links" id="socialLinks" aria-label="Social links"></div>
+              <nav class="profile__links" id="socialLinks" aria-label="Profile links">
+                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer">Résumé</a>
+                <a class="pill" href="mailto:jonathan@biro.dev">Email</a>
+              </nav>
 
-                <div class="toy">
+                <div class="toy js-only">
                   <div class="toy__top">
                     <div class="toy__title">Quality Cube</div>
                     <div class="toy__hint">Drag or press Enter</div>
@@ -241,7 +276,7 @@
                   </button>
               </div>
 
-              <div class="profile__mini">
+              <div class="profile__mini js-only">
                 <div class="profile__mini-row">
                   <span class="mini-label">Quick actions</span>
                   <div class="mini-actions">
@@ -275,11 +310,11 @@
             <div class="section__eyebrow">Proof, not buzzwords</div>
             <h2 class="section__title">Selected Work</h2>
             <p class="section__subtitle">
-              Recent public builds, quality experiments, and a few projects that still make me smile.
+              Public builds, quality experiments, and selected side projects. Start with the work closest to browser, API, and release quality.
             </p>
           </div>
 
-          <div class="projects-toolbar reveal">
+          <div class="projects-toolbar reveal js-only">
             <label class="project-search" for="projectSearch">
               <span class="sr-only">Search projects</span>
               <input
@@ -290,16 +325,151 @@
                 placeholder="Search by project, stack, or keyword"
               />
             </label>
-            <div class="project-sorts" id="projectSorts" aria-label="Project sort">
+            <div class="project-sorts" id="projectSorts" role="group" aria-label="Sort projects">
               <button class="filter" type="button" data-sort="featured" aria-pressed="true">Featured</button>
               <button class="filter" type="button" data-sort="recent" aria-pressed="false">Recently Updated</button>
               <button class="filter" type="button" data-sort="name" aria-pressed="false">A–Z</button>
             </div>
           </div>
 
-          <div class="filters reveal" id="projectFilters" aria-label="Project filters"></div>
+          <div class="filters reveal js-only" id="projectFilters" role="group" aria-label="Filter projects"></div>
+          <p class="projects__status" id="projectResultsStatus" role="status" aria-live="polite">Showing 5 projects</p>
 
-          <div class="projects reveal" id="projectsGrid" aria-label="Project cards"></div>
+          <div class="projects reveal" id="projectsGrid" role="region" aria-label="Selected project cards">
+            <article class="project" id="project-super-seerr" data-featured="true" style="--h1: 12deg; --h2: 82deg">
+              <div class="project__artifact" aria-hidden="true">
+                <span class="project__artifact-kind">Browser extension</span>
+                <span class="project__artifact-mark">SS</span>
+                <span class="project__artifact-proof">Chrome + Firefox builds</span>
+              </div>
+              <div class="project__top">
+                <div>
+                  <div class="project__eyebrow">Cross-browser extension</div>
+                  <h3 class="project__title">Super Seerr Extension</h3>
+                </div>
+                <div class="project__badge">Featured</div>
+              </div>
+              <p class="project__desc">A Chrome and Firefox extension that connects Seerr with seven movie and TV platforms, adds rating overlays, watchlists, and bulk request flows.</p>
+              <ul class="project__highlights" aria-label="Project highlights">
+                <li>Chrome + Firefox builds</li>
+                <li>36/36 passing at the public repository’s current HEAD</li>
+              </ul>
+              <time class="project__meta" datetime="2026-06-07">Updated Jun 2026</time>
+              <div class="project__tags" aria-label="Project tags">
+                <span class="tag">JavaScript</span><span class="tag">Browser Extension</span><span class="tag">API</span><span class="tag">Testing</span>
+              </div>
+              <div class="project__links" aria-label="Project links">
+                <a href="https://github.com/jonbiro/super-seerr-extension" target="_blank" rel="noopener noreferrer">Source code</a>
+              </div>
+            </article>
+
+            <article class="project" id="project-interactive-qa-portfolio" data-featured="true" style="--h1: 226deg; --h2: 296deg">
+              <div class="project__artifact" aria-hidden="true">
+                <span class="project__artifact-kind">Quality portfolio</span>
+                <span class="project__artifact-mark">QA</span>
+                <span class="project__artifact-proof">Accessibility + performance checks</span>
+              </div>
+              <div class="project__top">
+                <div>
+                  <div class="project__eyebrow">You are here</div>
+                  <h3 class="project__title">Interactive QA Portfolio</h3>
+                </div>
+                <div class="project__badge">Featured</div>
+              </div>
+              <p class="project__desc">A progressively enhanced portfolio with a command palette, live GitHub pulse, accessible 3D toy, QA simulator, and flake-cost calculator.</p>
+              <ul class="project__highlights" aria-label="Project highlights">
+                <li>Framework-free interface</li>
+                <li>Accessibility + performance checks</li>
+              </ul>
+              <time class="project__meta" datetime="2026-08-30">Updated Aug 2026</time>
+              <div class="project__tags" aria-label="Project tags">
+                <span class="tag">JavaScript</span><span class="tag">CSS</span><span class="tag">Accessibility</span><span class="tag">Portfolio</span>
+              </div>
+              <div class="project__links" aria-label="Project links">
+                <a href="https://yoni-biro.jonnybrx.chatgpt.site/" target="_blank" rel="noopener noreferrer">Live site</a>
+              </div>
+            </article>
+
+            <article class="project" id="project-pwa-testing-lab" data-featured="true" style="--h1: 174deg; --h2: 244deg">
+              <div class="project__artifact" aria-hidden="true">
+                <span class="project__artifact-kind">Quality experiment</span>
+                <span class="project__artifact-mark">PWA</span>
+                <span class="project__artifact-proof">Resilience + testability experiments</span>
+              </div>
+              <div class="project__top">
+                <div>
+                  <div class="project__eyebrow">Quality experiment</div>
+                  <h3 class="project__title">PWA Testing Lab</h3>
+                </div>
+                <div class="project__badge">Featured</div>
+              </div>
+              <p class="project__desc">A compact set of experiments around progressive web app behavior, resilience, and testability.</p>
+              <ul class="project__highlights" aria-label="Project highlights">
+                <li>PWA behavior</li>
+                <li>JavaScript test experiments</li>
+              </ul>
+              <time class="project__meta" datetime="2019-06-10">Updated Jun 2019</time>
+              <div class="project__tags" aria-label="Project tags">
+                <span class="tag">PWA</span><span class="tag">Testing</span><span class="tag">JavaScript</span>
+              </div>
+              <div class="project__links" aria-label="Project links">
+                <a href="https://github.com/jonbiro/PWA-testing" target="_blank" rel="noopener noreferrer">Source code</a>
+              </div>
+            </article>
+
+            <article class="project" id="project-travlr" style="--h1: 44deg; --h2: 114deg">
+              <div class="project__artifact" aria-hidden="true">
+                <span class="project__artifact-kind">Full-stack product</span>
+                <span class="project__artifact-mark">TR</span>
+                <span class="project__artifact-proof">Rails API + PostgreSQL</span>
+              </div>
+              <div class="project__top">
+                <div>
+                  <div class="project__eyebrow">Full-stack product</div>
+                  <h3 class="project__title">Travlr</h3>
+                </div>
+              </div>
+              <p class="project__desc">A React and Ruby on Rails itinerary planner using location APIs and PostgreSQL.</p>
+              <ul class="project__highlights" aria-label="Project highlights">
+                <li>React front end</li>
+                <li>Rails API + PostgreSQL</li>
+              </ul>
+              <time class="project__meta" datetime="2026-02-09">Updated Feb 2026</time>
+              <div class="project__tags" aria-label="Project tags">
+                <span class="tag">React</span><span class="tag">Rails</span><span class="tag">TypeScript</span><span class="tag">PostgreSQL</span>
+              </div>
+              <div class="project__links" aria-label="Project links">
+                <a href="https://github.com/jonbiro/Travlr---Itinerary-Planning" target="_blank" rel="noopener noreferrer">Source code</a>
+              </div>
+            </article>
+
+            <article class="project" id="project-dogequest-1989" style="--h1: 330deg; --h2: 40deg">
+              <div class="project__artifact" aria-hidden="true">
+                <span class="project__artifact-kind">Canvas game</span>
+                <span class="project__artifact-mark">DQ</span>
+                <span class="project__artifact-proof">Vanilla JavaScript + Canvas</span>
+              </div>
+              <div class="project__top">
+                <div>
+                  <div class="project__eyebrow">Canvas game</div>
+                  <h3 class="project__title">DogeQuest 1989</h3>
+                </div>
+              </div>
+              <p class="project__desc">A neon puppy platformer with double jump, dash, coyote time, jump buffering, particles, and mobile support.</p>
+              <ul class="project__highlights" aria-label="Project highlights">
+                <li>Playable in the browser</li>
+                <li>Vanilla JavaScript + Canvas</li>
+              </ul>
+              <time class="project__meta" datetime="2026-02-10">Updated Feb 2026</time>
+              <div class="project__tags" aria-label="Project tags">
+                <span class="tag">Game</span><span class="tag">Canvas</span><span class="tag">JavaScript</span>
+              </div>
+              <div class="project__links" aria-label="Project links">
+                <a href="https://jonbiro.github.io/DogeQuest-1989/" target="_blank" rel="noopener noreferrer">Live site</a>
+                <a href="https://github.com/jonbiro/DogeQuest-1989" target="_blank" rel="noopener noreferrer">Source code</a>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -309,19 +479,37 @@
             <div class="section__eyebrow">A little context</div>
             <h2 class="section__title">About</h2>
             <p class="section__subtitle" data-bind="about.subtitle">
-              I’m a QA Automation Engineer / SDET focused on high-signal tests and boringly reliable pipelines.
+              QA Automation Engineer / SDET in Los Angeles with a full-stack background and a systems mindset.
             </p>
           </div>
 
           <div class="about-grid">
             <div class="about-copy reveal">
               <p class="about-copy__lead" data-bind="about.lead">
-                I build and maintain automation that teams trust — from UI and API test suites to CI/CD quality gates.
+                I design automation around release risk: critical user journeys, explicit test data, fast feedback, and failures that tell the next person what to do.
               </p>
-              <ul class="about-copy__bullets" id="aboutBullets"></ul>
+              <ul class="about-copy__bullets" id="aboutBullets">
+                <li>Start with risk: map critical journeys and failure modes before choosing what to automate.</li>
+                <li>Make red builds useful: attach the logs, traces, screenshots, and data needed to act.</li>
+                <li>Use full-stack context to improve testability across browser, services, data, and CI.</li>
+                <li>Keep smoke suites small and deterministic; grow coverage where it improves release decisions.</li>
+              </ul>
             </div>
 
-            <div class="about-cards reveal" id="aboutCards" aria-label="Focus areas"></div>
+            <div class="about-cards reveal" id="aboutCards" role="region" aria-label="Focus areas">
+              <article class="card">
+                <h3 class="card__title">UI + Mobile Automation</h3>
+                <div class="card__text">Stable selectors, reusable fixtures, cross-browser coverage, and maintainable flows with Playwright, Selenium, Cypress, and Appium.</div>
+              </article>
+              <article class="card">
+                <h3 class="card__title">API + Integration</h3>
+                <div class="card__text">Contract-aware API coverage, explicit test data, useful logs, and checks that fail for one understandable reason.</div>
+              </article>
+              <article class="card">
+                <h3 class="card__title">CI Quality Systems</h3>
+                <div class="card__text">Parallel suites, sensible retries, failure artifacts, and quality gates that turn a red build into a quick decision.</div>
+              </article>
+            </div>
           </div>
         </div>
       </section>
@@ -334,7 +522,13 @@
             <p class="section__subtitle">The tools I reach for when quality, speed, and clarity matter.</p>
           </div>
 
-          <div class="skills" id="skillsGrid" aria-label="Skills categories"></div>
+          <div class="skills" id="skillsGrid" role="region" aria-label="Skills categories">
+            <section class="skill-cat"><h3 class="skill-cat__title">Automation</h3><div class="skill-cat__chips"><span class="tag">Playwright</span><span class="tag">Selenium</span><span class="tag">Cypress</span><span class="tag">Appium</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Languages</h3><div class="skill-cat__chips"><span class="tag">TypeScript</span><span class="tag">JavaScript</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Ruby</span><span class="tag">SQL</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Quality Systems</h3><div class="skill-cat__chips"><span class="tag">UI + API coverage</span><span class="tag">Test strategy</span><span class="tag">Flake triage</span><span class="tag">Risk-based testing</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Delivery</h3><div class="skill-cat__chips"><span class="tag">GitHub Actions</span><span class="tag">CI/CD</span><span class="tag">Parallelization</span><span class="tag">Failure artifacts</span></div></section>
+            <section class="skill-cat"><h3 class="skill-cat__title">Full-Stack Context</h3><div class="skill-cat__chips"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Ruby on Rails</span><span class="tag">PostgreSQL</span></div></section>
+          </div>
         </div>
       </section>
 
@@ -346,7 +540,51 @@
             <p class="section__subtitle">Three principles behind the automation I want teams to rely on.</p>
           </div>
 
-          <div class="principles reveal" id="principlesGrid" aria-label="Quality engineering principles"></div>
+          <div class="principles reveal" id="principlesGrid" aria-label="Quality engineering principles">
+            <article class="principle">
+              <div class="principle__number" aria-hidden="true">01</div>
+              <h3 class="principle__title">Start with release risk</h3>
+              <p class="principle__text">Map the critical journeys, failure modes, and customer impact before choosing what to automate.</p>
+              <div class="principle__tags"><span class="tag">Risk-based coverage</span><span class="tag">Acceptance criteria</span><span class="tag">Test strategy</span></div>
+            </article>
+            <article class="principle">
+              <div class="principle__number" aria-hidden="true">02</div>
+              <h3 class="principle__title">Make failures explain themselves</h3>
+              <p class="principle__text">A red build should arrive with enough context—logs, traces, screenshots, and clean test data—to make the next action obvious.</p>
+              <div class="principle__tags"><span class="tag">Debuggability</span><span class="tag">Artifacts</span><span class="tag">Fast triage</span></div>
+            </article>
+            <article class="principle">
+              <div class="principle__number" aria-hidden="true">03</div>
+              <h3 class="principle__title">Engineer for the whole system</h3>
+              <p class="principle__text">Use full-stack context to improve testability at the source, not just add more checks around brittle behavior.</p>
+              <div class="principle__tags"><span class="tag">Shift left</span><span class="tag">Developer experience</span><span class="tag">Quality by design</span></div>
+            </article>
+          </div>
+
+          <section class="quality-dossier reveal" id="qualityDossier" aria-labelledby="dossierTitle">
+            <div class="quality-dossier__intro">
+              <div class="signal-label">Verified on this build</div>
+              <h3 class="quality-dossier__title" id="dossierTitle">The site has its own quality dossier.</h3>
+              <p class="quality-dossier__summary" id="dossierSummary">
+                This site ships with an evidence trail instead of a vague “built with care” claim.
+              </p>
+              <p class="quality-dossier__date">Last checked <time id="dossierDate" datetime="2026-08-30">August 30, 2026</time></p>
+            </div>
+            <div class="quality-dossier__body">
+              <div class="dossier-metrics" id="dossierMetrics" role="list" aria-label="Audit scores">
+                <div class="dossier-metric" role="listitem"><strong>100</strong><span>Accessibility</span></div>
+                <div class="dossier-metric" role="listitem"><strong>100</strong><span>Best practices</span></div>
+                <div class="dossier-metric" role="listitem"><strong>100</strong><span>SEO</span></div>
+                <div class="dossier-metric" role="listitem"><strong>92–99</strong><span>Three-run performance</span></div>
+              </div>
+              <ul class="dossier-checks" id="dossierChecks">
+                <li>Keyboard-accessible navigation, dialogs, project controls, and Quality Cube</li>
+                <li>Reduced-motion behavior and off-screen animation pausing</li>
+                <li>Production runtime smoke test and social-card asset verification</li>
+                <li>Content, HTML, link, and dependency checks with zero known package vulnerabilities</li>
+              </ul>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -360,7 +598,11 @@
             </p>
           </div>
 
-          <div class="playground">
+          <noscript>
+            <p class="noscript-note">The QA Lab is an interactive simulation and needs JavaScript. The portfolio, project evidence, and contact details remain fully available.</p>
+          </noscript>
+
+          <div class="playground js-only">
             <div class="playground__panel reveal">
               <div class="panel__header">
                 <div>
@@ -391,18 +633,18 @@
               <div class="controls" aria-label="Suite controls">
                 <div class="control">
                   <label class="control__label" for="parallelism">Parallelism</label>
-                  <input id="parallelism" type="range" min="1" max="12" value="6" />
+                  <input id="parallelism" type="range" min="1" max="12" value="6" aria-valuetext="6 workers" />
                   <div class="control__value"><span id="parallelismVal">6</span> workers</div>
                 </div>
                 <div class="control">
                   <label class="control__label" for="retries">Retries</label>
-                  <input id="retries" type="range" min="0" max="3" value="1" />
+                  <input id="retries" type="range" min="0" max="3" value="1" aria-valuetext="1 retry" />
                   <div class="control__value"><span id="retriesVal">1</span> retry</div>
                 </div>
                 <div class="control">
                   <label class="control__label" for="flake">Flake rate</label>
-                  <input id="flake" type="range" min="0" max="30" value="6" />
-                  <div class="control__value"><span id="flakeVal">6</span>%</div>
+                  <input id="flake" type="range" min="0" max="30" value="3" aria-valuetext="3 percent flake rate" />
+                  <div class="control__value"><span id="flakeVal">3</span>%</div>
                 </div>
                 <div class="control control--wide">
                   <div class="control__label">Browsers</div>
@@ -445,15 +687,29 @@
                     <span class="runner__pill" aria-hidden="true">CI</span>
                     <span id="runnerTitle">Pipeline</span>
                   </div>
-                  <div class="runner__status" id="runnerStatus" aria-live="polite">Idle</div>
+                  <div class="runner__status" id="runnerStatus" aria-live="polite">Ready</div>
                 </div>
-                <div class="runner__bar">
+                <div class="runner__bar" id="runnerProgress" role="progressbar" aria-label="Suite progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                   <div class="runner__barFill" id="runnerBarFill" style="width: 0%"></div>
                 </div>
 
-                <div class="runner__summary" id="runnerSummary" aria-label="Run summary"></div>
+                <div class="runner__summary" id="runnerSummary" role="status" aria-live="polite" aria-atomic="true" aria-label="Run summary">
+                  <div class="metric"><div class="metric__label">Duration</div><div class="metric__value">—</div></div>
+                  <div class="metric"><div class="metric__label">Tests</div><div class="metric__value">—</div></div>
+                  <div class="metric"><div class="metric__label">Outcome</div><div class="metric__value">—</div></div>
+                </div>
 
-                <div class="runner__log" id="runnerLog" aria-label="Run log" role="log"></div>
+                <div class="runner__log" id="runnerLog" aria-label="Run log" role="log">
+                  <div class="logline">[ci] simulator ready — choose a preset or tune the controls</div>
+                </div>
+                <div class="runner__verdict" id="runnerVerdict" data-tone="idle">
+                  <div>
+                    <span class="runner__verdict-label">Release verdict</span>
+                    <strong id="runnerVerdictTitle">AWAITING RUN</strong>
+                    <p id="runnerVerdictText">Run the simulated release gate to generate a verdict and a copyable report.</p>
+                  </div>
+                  <button class="link-btn" type="button" id="copyRunBtn" disabled>Copy report</button>
+                </div>
               </div>
             </div>
 
@@ -473,6 +729,16 @@
                   This mirrors the decisions I make in real suites: what belongs in the release gate, what evidence a failure needs, and where speed is actually worth buying.
                 </p>
                 <a class="btn btn--ghost" href="#contact">Talk quality</a>
+              </div>
+              <div class="aside-card qa-challenge" id="qaChallenge">
+                <div class="qa-challenge__top">
+                  <div class="aside-card__title">60-second triage</div>
+                  <span id="challengeIndex">1 / 3</span>
+                </div>
+                <p class="qa-challenge__question" id="challengeQuestion">A UI test passes locally but fails in CI after navigation. The trace shows the target appears late. What is the best first fix?</p>
+                <div class="qa-challenge__choices" id="challengeChoices" role="group" aria-label="Choose an answer"></div>
+                <div class="qa-challenge__feedback" id="challengeFeedback" role="status" aria-live="polite"></div>
+                <button class="link-btn" type="button" id="challengeNext" hidden>Next challenge</button>
               </div>
               <div class="aside-card aside-card--calc">
                 <div class="aside-card__title">Flake Cost Estimator</div>
@@ -515,13 +781,18 @@
               <div class="contact__label">Email</div>
               <a class="contact__value" href="mailto:jonathan@biro.dev" id="emailLink">jonathan@biro.dev</a>
               <div class="contact__actions">
-                <button class="btn btn--primary" type="button" id="contactCopyEmail">Copy</button>
+                <button class="btn btn--primary js-only" type="button" id="contactCopyEmail">Copy</button>
                 <a class="btn btn--ghost" href="mailto:jonathan@biro.dev" id="contactEmailBtn">Email me</a>
               </div>
             </div>
             <div class="contact__card">
               <div class="contact__label">Links</div>
-              <div class="contact__links" id="contactLinks" aria-label="Contact links"></div>
+              <nav class="contact__links" id="contactLinks" aria-label="Profile links">
+                <a class="pill" href="https://github.com/jonbiro" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="pill" href="https://www.linkedin.com/in/jonathanbiro/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="pill" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer">Résumé</a>
+                <a class="pill" href="https://medium.com/@jonbiro" target="_blank" rel="noopener noreferrer">Medium</a>
+              </nav>
             </div>
           </div>
         </div>
@@ -535,11 +806,11 @@
           <span>
             <span data-bind="person.name">Yoni Biro</span>
             <span class="footer__sep" aria-hidden="true">•</span>
-            <span id="footerYear"></span>
+            <span id="footerYear">2026</span>
           </span>
         </div>
         <div class="footer__right">
-          <button class="link-btn" type="button" id="backToTop">Back to top</button>
+          <button class="link-btn js-only" type="button" id="backToTop">Back to top</button>
         </div>
       </div>
     </footer>
@@ -548,10 +819,10 @@
 
     <div class="mobile-menu" id="mobileMenu" aria-hidden="true" inert>
       <div class="mobile-menu__overlay" data-close></div>
-      <div class="mobile-menu__panel" id="mobileMenuDialog" role="dialog" aria-modal="true" aria-label="Menu" tabindex="-1">
+      <div class="mobile-menu__panel" id="mobileMenuDialog" role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle" tabindex="-1">
         <div class="mobile-menu__header">
-          <div class="mobile-menu__title">Menu</div>
-          <button class="mobile-menu__close" type="button" data-close aria-label="Close">✕</button>
+          <div class="mobile-menu__title" id="mobileMenuTitle">Menu</div>
+          <button class="mobile-menu__close" type="button" data-close aria-label="Close menu">✕</button>
         </div>
         <div class="mobile-menu__links" aria-label="Menu links">
           <a class="mobile-menu__link" href="#projects" data-close>Work</a>
@@ -566,7 +837,8 @@
 
     <div class="palette" id="palette" aria-hidden="true" inert>
       <div class="palette__overlay" data-close></div>
-      <div class="palette__dialog" id="paletteDialog" role="dialog" aria-modal="true" aria-label="Command palette" tabindex="-1">
+      <div class="palette__dialog" id="paletteDialog" role="dialog" aria-modal="true" aria-labelledby="paletteTitle" tabindex="-1">
+        <h2 class="sr-only" id="paletteTitle">Command palette</h2>
         <div class="palette__top">
           <input
             class="palette__input"
@@ -581,7 +853,7 @@
             aria-expanded="false"
             placeholder="Search… (Try: theme, projects, email, run)"
           />
-          <button class="palette__close" type="button" data-close aria-label="Close">Esc</button>
+          <button class="palette__close" type="button" data-close aria-label="Close command palette">Esc</button>
         </div>
         <div class="palette__list" id="paletteList" role="listbox" aria-label="Commands"></div>
         <div class="palette__bottom" aria-hidden="true">
@@ -590,6 +862,68 @@
           <span class="palette__hint"><span class="kbd">Esc</span> close</span>
         </div>
       </div>
+    </div>
+
+    <div class="sheet" id="projectReport" aria-hidden="true" inert>
+      <div class="sheet__overlay" data-close-report></div>
+      <section class="sheet__panel" id="projectReportDialog" role="dialog" aria-modal="true" aria-labelledby="reportTitle" tabindex="-1">
+        <div class="sheet__header">
+          <div>
+            <div class="signal-label" id="reportLabel">Test report</div>
+            <h2 class="sheet__title" id="reportTitle">Project report</h2>
+          </div>
+          <button class="sheet__close" type="button" data-close-report aria-label="Close project report">✕</button>
+        </div>
+        <p class="sheet__lede" id="reportSummary"></p>
+        <div class="report-gallery" id="reportGallery" aria-label="Project screenshots"></div>
+        <div class="report-context">
+          <span class="report-kicker">Context</span>
+          <p id="reportContext"></p>
+        </div>
+        <div class="report-columns">
+          <section><h3>Risk map</h3><ul id="reportRisks"></ul></section>
+          <section><h3>Test strategy</h3><ul id="reportStrategy"></ul></section>
+        </div>
+        <div class="report-evidence" id="reportEvidence" role="list" aria-label="Project evidence"></div>
+        <div class="report-decision"><span class="report-kicker">Engineering decision</span><p id="reportDecision"></p></div>
+        <div class="sheet__actions" id="reportActions"></div>
+        <button class="btn btn--ghost sheet__bottom-close" type="button" data-close-report>Close report</button>
+      </section>
+    </div>
+
+    <div class="sheet sheet--brief" id="brief" aria-hidden="true" inert>
+      <div class="sheet__overlay" data-close-brief></div>
+      <section class="sheet__panel" id="briefDialog" role="dialog" aria-modal="true" aria-labelledby="briefTitle" tabindex="-1">
+        <div class="sheet__header">
+          <div>
+            <div class="signal-label">Recruiter mode · 60 seconds</div>
+            <h2 class="sheet__title" id="briefTitle">The quality-engineering brief</h2>
+          </div>
+          <button class="sheet__close" type="button" data-close-brief aria-label="Close 60-second brief">✕</button>
+        </div>
+        <p class="brief__headline">Yoni turns flaky suites into fast, trustworthy release signals.</p>
+        <p class="brief__role">QA Automation Engineer / SDET · Los Angeles, California</p>
+        <div class="brief__proof" role="list" aria-label="Public evidence">
+          <div role="listitem"><strong>36/36</strong><span>passing at the public extension repo’s current HEAD</span></div>
+          <div role="listitem"><strong>7</strong><span>media sites behind explicit adapters</span></div>
+          <div role="listitem"><strong>2</strong><span>browser builds: Chrome + Firefox</span></div>
+        </div>
+        <div class="brief__strengths">
+          <h3>What I optimize for</h3>
+          <ul>
+            <li>Risk-first UI and API coverage</li>
+            <li>Failures with useful logs, traces, screenshots, and test data</li>
+            <li>Small deterministic smoke gates and fast CI feedback</li>
+            <li>Full-stack context that improves testability at the source</li>
+          </ul>
+        </div>
+        <div class="sheet__actions">
+          <button class="btn btn--primary" type="button" id="briefWorkBtn">Open strongest proof</button>
+          <a class="btn btn--ghost" href="https://www.kickresume.com/cv/biro-cv/" target="_blank" rel="noopener noreferrer">Résumé</a>
+          <a class="btn btn--ghost" href="mailto:jonathan@biro.dev">Email Yoni</a>
+        </div>
+        <button class="btn btn--ghost sheet__bottom-close" type="button" data-close-brief>Close brief</button>
+      </section>
     </div>
 
     <script type="module" src="assets/main.js"></script>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yoni-biro.jonnybrx.chatgpt.site/sitemap.xml

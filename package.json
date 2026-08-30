@@ -8,13 +8,17 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/copy-static-assets.mjs",
+    "build": "node scripts/clean-dist.mjs && vite build && node scripts/copy-static-assets.mjs",
     "preview": "vite preview",
-    "check": "node scripts/check-content.mjs && node --check assets/main.js && htmlhint index.html"
+    "check": "node scripts/check-content.mjs && node --check assets/main.js && htmlhint index.html",
+    "test:e2e": "playwright test",
+    "test": "npm run check && npm run build && npm run test:e2e"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@cloudflare/vite-plugin": "1.54.2",
     "@openai/sites-vite-plugin": "0.2.0",
+    "@playwright/test": "^1.62.1",
     "htmlhint": "1.9.2",
     "vite": "8.2.2",
     "wrangler": "4.127.1"

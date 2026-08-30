@@ -1,0 +1,17 @@
+{
+  "name": "Yoni Biro — QA Automation Engineer / SDET",
+  "short_name": "Yoni Biro",
+  "description": "Interactive QA Automation Engineer and SDET portfolio.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6eee2",
+  "theme_color": "#b83d2f",
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -6,12 +6,6 @@
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="192" height="192" rx="40" fill="url(#bg)"/>
-  <g fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round">
-    <path d="M60 160c10-22 28-32 36-32s26 10 36 32"/>
-    <circle cx="96" cy="74" r="28"/>
-  </g>
-  <text x="96" y="110" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="12" fill="rgba(255,255,255,0.72)">
-    Add your photo
-  </text>
+  <circle cx="96" cy="96" r="58" fill="rgba(17,13,21,0.28)" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
+  <text x="96" y="111" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="44" font-weight="800" letter-spacing="-3" fill="#fff8ee">YB</text>
 </svg>
-
