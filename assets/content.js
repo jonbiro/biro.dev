@@ -154,7 +154,7 @@ export const content = {
         ],
         evidence: [
           { value: "100", label: "Accessibility audit" },
-          { value: "92–99", label: "Three-run performance range" },
+          { value: "99–100", label: "Three-run performance range" },
           { value: "0", label: "Known package vulnerabilities" },
         ],
         decision:
@@ -210,7 +210,7 @@ export const content = {
       { value: "100", label: "Accessibility" },
       { value: "100", label: "Best practices" },
       { value: "100", label: "SEO" },
-      { value: "92–99", label: "Three-run performance" },
+      { value: "99–100", label: "Three-run performance" },
     ],
     checks: [
       "Keyboard-accessible navigation, dialogs, project controls, and Quality Cube",
