@@ -38,7 +38,6 @@ jobs:
           args: >-
             --no-progress
             --accept 200,206,429
-            --exclude-mail
             --exclude https://www.linkedin.com
             --exclude https://medium.com
             --exclude https://biro.dev
