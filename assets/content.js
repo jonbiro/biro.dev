@@ -26,7 +26,7 @@ export const content = {
         href: "https://github.com/jonbiro/super-seerr-extension/commit/49fca11",
       },
       { label: "External adapters", value: "7 + Seerr overlay", href: "#project-super-seerr" },
-      { label: "Lighthouse", value: "98–100 perf", href: "#qualityDossier" },
+      { label: "Lighthouse", value: "99–100 perf", href: "#qualityDossier" },
     ],
   },
 
@@ -224,7 +224,7 @@ export const content = {
         ],
         evidence: [
           { value: "100", label: "Accessibility audit" },
-          { value: "98–100", label: "Three-run performance range" },
+          { value: "99–100", label: "Three-run performance range" },
           { value: "0", label: "Known package vulnerabilities" },
         ],
         owned:
@@ -287,7 +287,7 @@ export const content = {
       { value: "100", label: "Accessibility" },
       { value: "100", label: "Best practices" },
       { value: "100", label: "SEO" },
-      { value: "98–100", label: "Three-run performance" },
+      { value: "99–100", label: "Three-run performance" },
     ],
     checks: [
       "Keyboard-accessible navigation, dialogs, project controls, and Quality Cube",

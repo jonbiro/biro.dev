@@ -16,11 +16,11 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@cloudflare/vite-plugin": "1.54.2",
+    "@cloudflare/vite-plugin": "1.54.10",
     "@openai/sites-vite-plugin": "0.2.0",
     "@playwright/test": "^1.62.1",
     "htmlhint": "1.9.2",
     "vite": "8.2.2",
-    "wrangler": "4.127.1"
+    "wrangler": "4.132.0"
   }
 }
