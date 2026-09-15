@@ -41,11 +41,11 @@ jobs:
             --exclude-mail
             --exclude https://www.linkedin.com
             --exclude https://medium.com
-            --exclude https://yoni-biro.jonnybrx.chatgpt.site
+            --exclude https://biro.dev
             --exclude '^https://medium\.com/.*'
             --exclude '^https://www\.linkedin\.com/.*'
             --exclude '^https://x\.com/.*'
-            --exclude '^https://yoni-biro\.jonnybrx\.chatgpt\.site/.*'
+            --exclude '^https://biro\.dev/.*'
             --timeout 20
             ./index.html
             ./assets/content.js

@@ -199,14 +199,14 @@ export const content = {
       eyebrow: "You are here",
       category: "Automation",
       description:
-        "A progressively enhanced portfolio with a command palette, live GitHub pulse, accessible 3D toy, QA simulator, and flake-cost calculator.",
+        "A progressively enhanced portfolio with a command palette, on-demand GitHub pulse, accessible 3D toy, QA simulator, and flake-cost calculator.",
       highlights: ["Framework-free interface", "Accessibility + performance checks"],
       tags: ["JavaScript", "CSS", "Accessibility", "Portfolio"],
       imageUrl: "assets/projects/portfolio-preview.webp",
       imageAlt: "Yoni Biro QA automation portfolio share card.",
       visualLabel: "Portfolio release card",
-      links: { code: "", demo: "https://yoni-biro.jonnybrx.chatgpt.site/" },
-      updatedAt: "2026-08-30",
+      links: { code: "https://github.com/jonbiro/biro.dev", demo: "https://biro.dev/" },
+      updatedAt: "2026-09-15",
       featured: false,
       caseStudy: {
         label: "Quality dossier",
@@ -280,8 +280,8 @@ export const content = {
   ],
 
   qualityDossier: {
-    checkedAt: "2026-08-30",
-    checkedOn: "August 30, 2026",
+    checkedAt: "2026-09-15",
+    checkedOn: "September 15, 2026",
     summary: "This site ships with an evidence trail instead of a vague “built with care” claim.",
     metrics: [
       { value: "100", label: "Accessibility" },

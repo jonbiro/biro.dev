@@ -14,7 +14,7 @@ An evidence-led, progressively enhanced portfolio for a QA Automation Engineer /
 - Theme toggle (light/dark)
 - Scroll reveal and subtle motion that respect reduced-motion preferences
 - Accessible, draggable 3D “Quality Cube”
-- Live GitHub pulse snapshot
+- On-demand live GitHub pulse snapshot
 - Live Los Angeles time
 
 The QA Lab is an explicit simulation: it models test-suite tradeoffs without presenting generated outcomes as real CI results.
@@ -40,7 +40,7 @@ npm run dev
 
 Vite prints the local address when it starts.
 
-## Deploy
+## Deploy to Netlify
 
 Build the production bundle with:
 
@@ -48,7 +48,9 @@ Build the production bundle with:
 npm run build
 ```
 
-The output in `dist/` includes the static portfolio, share card, discovery files, worker entrypoint, and Sites metadata.
+Netlify builds from the `main` branch using `netlify.toml` and publishes the static bundle in `dist/client/`.
+
+The production site is [biro.dev](https://biro.dev/).
 
 ## Quality checks
 

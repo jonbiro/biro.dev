@@ -6,6 +6,7 @@ test-results/
 node_modules/
 dist/
 .wrangler/
+.netlify/
 .dev.vars*
 .env*
 var/
