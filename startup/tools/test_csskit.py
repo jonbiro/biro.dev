@@ -145,5 +145,54 @@ class Tokenize(unittest.TestCase):
             ck.tokenize(ck.parse(':root{--muted:#acbad0}.a{color:var(--muted)}'))
 
 
+class Related(unittest.TestCase):
+    def test_shorthands_longhands_and_box_families_are_related(self):
+        for a, b in [('padding', 'padding-top'), ('gap', 'row-gap'), ('border-radius', 'border-top-left-radius'),
+                     ('margin-inline', 'margin-left'), ('font', 'line-height'), ('color', 'color')]:
+            self.assertTrue(ck.related(a, b), (a, b))
+            self.assertTrue(ck.related(b, a), (b, a))
+
+    def test_unrelated_properties(self):
+        for a, b in [('color', 'background-color'), ('display', 'gap'), ('--a', '--b')]:
+            self.assertFalse(ck.related(a, b), (a, b))
+
+
+class Merge(unittest.TestCase):
+    def test_earlier_rule_folds_into_the_last_one_when_nothing_between_conflicts(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{color:red}.b{margin:0}.a{padding:0}'))
+        self.assertEqual(ck.serialize(nodes), '.b{margin:0}\n.a{color:red;padding:0}\n')
+
+    def test_declaration_stays_when_a_rule_between_sets_a_related_property(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{color:red;padding:1px}.b{padding-top:2px}.a{margin:0}'))
+        self.assertEqual(ck.serialize(nodes), '.a{padding:1px}\n.b{padding-top:2px}\n.a{color:red;margin:0}\n')
+
+    def test_rules_in_different_contexts_are_not_merged(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{color:red}@media print{.a{color:blue}}'))
+        self.assertEqual(len([n for n in nodes if n.decls]), 2)
+
+
+class Split(unittest.TestCase):
+    def test_owner_is_the_leftmost_class_outside_pseudos(self):
+        self.assertEqual(ck.owner_file('.hero-visual .concept', ''), 'pages/home.css')
+        self.assertEqual(ck.owner_file('.js-enabled .header nav', ''), 'components/header.css')
+        self.assertEqual(ck.owner_file('main :is(h1,h2)', ''), 'base.css')
+        self.assertEqual(ck.owner_file('#af-progress', ''), 'components/demo.css')
+        self.assertEqual(ck.owner_file('.af-step', ''), 'components/demo.css')
+        self.assertEqual(ck.owner_file('.af-product-hero .pill', ''), 'pages/addvancedfocus.css')
+        self.assertEqual(ck.owner_file('.header', '@media print'), 'media.css')
+        self.assertEqual(ck.owner_file('.header', '@media(prefers-reduced-motion:reduce)'), 'media.css')
+
+    def test_unknown_class_is_an_error(self):
+        with self.assertRaises(KeyError):
+            ck.owner_file('.never-mapped', '')
+
+    def test_selector_lists_are_distributed_and_files_follow_style_order(self):
+        files = ck.split(ck.parse(':root{--x:1px}h1,.hero,.wrap{margin:0}.pill{color:red}@keyframes enter{to{opacity:1}}'))
+        self.assertEqual(list(files), ['tokens.css', 'base.css', 'layout.css', 'components/pills.css', 'pages/home.css'])
+        self.assertEqual(ck.serialize(files['base.css']), 'h1{margin:0}\n@keyframes enter{to{opacity:1}}\n')
+        self.assertEqual(ck.serialize(files['layout.css']), '.wrap{margin:0}\n')
+        self.assertEqual(ck.serialize(files['pages/home.css']), '.hero{margin:0}\n')
+
+
 if __name__ == '__main__':
     unittest.main()

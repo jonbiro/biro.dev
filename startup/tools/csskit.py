@@ -4,6 +4,7 @@
   python3 tools/csskit.py check    <css> --html dist
   python3 tools/csskit.py prune    <in.css> <out.css> --html dist
   python3 tools/csskit.py tokenize <in.css> <out.css> --html dist
+  python3 tools/csskit.py split    <in.css> --out-dir styles --html dist
 """
 from __future__ import annotations
 
@@ -348,12 +349,155 @@ def tokenize(nodes: list) -> list:
     return [Rule(':root', root_settings + tokens)] + body
 
 
+STYLE_ORDER = [
+    'tokens.css', 'base.css', 'layout.css',
+    'components/header.css', 'components/footer.css', 'components/buttons.css', 'components/pills.css',
+    'components/cards.css', 'components/faq.css', 'components/notice.css', 'components/closing.css',
+    'components/readiness.css', 'components/page-nav.css', 'components/steps.css', 'components/app-icon.css',
+    'components/app-mockup.css', 'components/concept-card.css', 'components/demo.css',
+    'pages/home.css', 'pages/about.css', 'pages/products.css', 'pages/addvancedfocus.css',
+    'pages/mission.css', 'pages/contact.css', 'pages/product-page.css', 'media.css',
+]
+
+# Class → file, from the class-usage map of the generated pages (2026-10-09).
+_PARTITION_SOURCE = {
+    'base.css': 'skip sr-only muted large intro micro eyebrow wide-copy divider',
+    'layout.css': 'wrap section section-intro page-hero split feature-section editorial-split editorial-copy title-row',
+    'components/header.css': 'header brand menu-toggle js-enabled open',
+    'components/footer.css': 'footer footer-top footer-bottom footer-email',
+    'components/buttons.css': 'button text-link actions',
+    'components/pills.css': 'pill tags',
+    'components/cards.css': 'cards card card-number',
+    'components/faq.css': 'faq',
+    'components/notice.css': 'notice',
+    'components/closing.css': 'closing',
+    'components/readiness.css': 'readiness-grid',
+    'components/page-nav.css': 'page-contents breadcrumbs',
+    'components/steps.css': 'development-steps',
+    'components/app-icon.css': 'app-icon',
+    'components/app-mockup.css': 'app-mockup',
+    'components/concept-card.css': 'concept concept-top task task-meta af-mini-horizons',
+    'pages/home.css': 'hero hero-visual ribbon visual-caption principle-strip feature flow-list founder-teaser home-product-grid portfolio-teaser',
+    'pages/about.css': 'founder-layout founder-panel monogram prose company-overview company-facts evaluation-list founder-contact',
+    'pages/products.css': 'product-large product-art product-guide portfolio-card portfolio-detail portfolio-grid portfolio-image-link portfolio-index portfolio-page-link portfolio-tagline logo-family brand-family',
+    'pages/addvancedfocus.css': 'af-product-hero af-product-promise focus-contexts horizon-guide concept-section concept-section-heading intent-example example-intention example-label approach-cards',
+    'pages/mission.css': 'mission-image mission-statement privacy-note',
+    'pages/contact.css': 'contact-address contact-card contact-layout contact-note contact-ready contact-stage contact-topics',
+    'pages/product-page.css': 'future-product-hero future-hero-grid product-brief product-brief-head product-brief-tagline product-detail-grid product-example example-boundary capability-list product-feedback related-grid related-product',
+}
+PARTITION = {name: file for file, names in _PARTITION_SOURCE.items() for name in names.split()}
+# Selector member → file, for rules that must sit later than their owner to keep today's cascade.
+OWNER_OVERRIDES = {}
+MEDIA_FILE_CONTEXTS = ('print', 'prefers-reduced-motion', 'prefers-contrast')
+
+SHORTHAND_GROUPS = {
+    'gap': {'row-gap', 'column-gap'}, 'inset': {'top', 'right', 'bottom', 'left'},
+    'place-items': {'align-items', 'justify-items'}, 'place-content': {'align-content', 'justify-content'},
+    'place-self': {'align-self', 'justify-self'}, 'font': {'line-height'}, 'flex-flow': {'flex-direction', 'flex-wrap'},
+    'border-radius': {'border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius'},
+    'grid-area': {'grid-row-start', 'grid-row-end', 'grid-column-start', 'grid-column-end'},
+    'grid-row': {'grid-row-start', 'grid-row-end'}, 'grid-column': {'grid-column-start', 'grid-column-end'},
+}
+BOX_FAMILIES = {'margin', 'padding', 'border', 'inset', 'overflow'}
+
+
+def related(a: str, b: str) -> bool:
+    if a == b:
+        return True
+    if a.startswith('--') or b.startswith('--'):
+        return False
+    if a.startswith(b + '-') or b.startswith(a + '-'):
+        return True
+    if a.split('-')[0] == b.split('-')[0] and a.split('-')[0] in BOX_FAMILIES:
+        return True
+    return any((a == s and b in longs) or (b == s and a in longs) for s, longs in SHORTHAND_GROUPS.items())
+
+
+def owner_file(member: str, context: str) -> str:
+    if any(word in context for word in MEDIA_FILE_CONTEXTS):
+        return 'media.css'
+    if member in OWNER_OVERRIDES:
+        return OWNER_OVERRIDES[member]
+    if member == ':root':
+        return 'tokens.css'
+    stripped = strip_functional_pseudos(member)
+    first_class = CLASS.search(stripped)
+    if first_class:
+        name = first_class.group(1)
+        if name in PARTITION:
+            return PARTITION[name]
+        if name.startswith('af-'):
+            return 'components/demo.css'
+        raise KeyError(f'No partition for class .{name} (selector "{member}"). Add it to _PARTITION_SOURCE: '
+                       'the page file if one page uses it, otherwise a components/ file.')
+    first_id = re.search(r'#([\w-]+)', stripped)
+    if first_id and first_id.group(1).startswith('af-'):
+        return 'components/demo.css'
+    return 'base.css'
+
+
+def merge_duplicates(nodes: list) -> list:
+    """Folds earlier rules into the last rule with the same selector and context when no rule in between sets a related property."""
+    nodes = [Rule(n.selector, list(n.decls), n.context) if isinstance(n, Rule) else n for n in nodes]
+    positions = defaultdict(list)
+    for index, node in enumerate(nodes):
+        if isinstance(node, Rule):
+            positions[(node.context, node.selector)].append(index)
+    for indexes in positions.values():
+        if len(indexes) < 2:
+            continue
+        last, moved = indexes[-1], []
+        for index in indexes[:-1]:
+            stay = []
+            for decl in nodes[index].decls:
+                between = [nodes[k] for k in range(index + 1, last) if isinstance(nodes[k], Rule)]
+                if any(related(decl.prop, other.prop) for rule in between for other in rule.decls):
+                    stay.append(decl)
+                else:
+                    moved.append(decl)
+            nodes[index].decls = stay
+        nodes[last].decls = moved + nodes[last].decls
+    return [n for n in nodes if not (isinstance(n, Rule) and not n.decls)]
+
+
+def _redistribute(ordered: list, owners: dict, merged: list) -> dict:
+    """Assigns merged nodes back to their files. A rule's file depends only on its selector, context and type, and
+    merging only moves declarations into a later rule with the same selector and context, so membership is stable."""
+    def key(node):
+        return (type(node).__name__, node.context, node.selector if isinstance(node, Rule) else node.text)
+    file_of = {key(node): owners[id(node)] for node in ordered}
+    result = {name: [] for name in STYLE_ORDER}
+    for node in merged:
+        result[file_of[key(node)]].append(node)
+    return {name: items for name, items in result.items() if items}
+
+
+def split(nodes: list) -> dict:
+    files = defaultdict(list)
+    for node in nodes:
+        if isinstance(node, Raw):
+            files['media.css' if any(w in node.context for w in MEDIA_FILE_CONTEXTS) else 'base.css'].append(node)
+            continue
+        for member in split_top_level(node.selector, ','):
+            files[owner_file(member, node.context)].append(Rule(member, list(node.decls), node.context))
+    unknown = set(files) - set(STYLE_ORDER)
+    if unknown:
+        raise KeyError(f'Files missing from STYLE_ORDER: {sorted(unknown)}')
+    ordered = [n for name in STYLE_ORDER for n in files.get(name, [])]
+    owners = {id(n): name for name in STYLE_ORDER for n in files.get(name, [])}
+    # Prune first so merged rules do not carry declarations a later rule already overrides.
+    pruned, _ = prune_overridden(ordered)
+    owners.update({id(new): owners[id(old)] for old, new in zip(ordered, pruned)})
+    return _redistribute(pruned, owners, merge_duplicates(pruned))
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=['report', 'check', 'prune', 'tokenize'])
+    parser.add_argument('command', choices=['report', 'check', 'prune', 'tokenize', 'split'])
     parser.add_argument('css', type=Path)
     parser.add_argument('out', type=Path, nargs='?')
     parser.add_argument('--html', type=Path, required=True, help='generated site directory (dist)')
+    parser.add_argument('--out-dir', type=Path)
     args = parser.parse_args(argv)
     nodes = parse(args.css.read_text())
     is_used = load_usage(args.html)
@@ -364,6 +508,19 @@ def main(argv=None) -> int:
         problems = check(nodes, is_used)
         print('\n'.join(problems) if problems else 'OK: stylesheet satisfies the Foundation rules.')
         return 1 if problems else 0
+    if args.command == 'split':
+        if args.out_dir is None:
+            parser.error('split needs --out-dir')
+        files = split(nodes)
+        for name, file_nodes in files.items():
+            target = args.out_dir / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(serialize(file_nodes))
+        print('STYLE_SOURCES = [')
+        for name in files:
+            print(f"    '{name}',")
+        print(']')
+        return 0
     if args.out is None:
         parser.error(f'{args.command} needs an output path')
     if args.command == 'prune':
