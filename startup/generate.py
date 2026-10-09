@@ -132,7 +132,7 @@ products = ('<section class="page-hero wrap"><p class="eyebrow">OUR PRODUCTS</p>
     + principles[:-len('</section>')] + LOGO_FAMILY + '</section>'
     + (ROOT / 'fragments/portfolio-faq.html').read_text() + cta())
 
-AF_MOCKUP = '<figure class="wrap app-mockup"><img src="/assets/products/addvancedfocus.webp" alt="AddvancedFocus concept interface and app icon, showing one small next step and a short focus session." width="1536" height="1024" loading="lazy" decoding="async"><figcaption><span>AddvancedFocus · Interface and logo concept</span><span>Illustrative design. Try the working website prototype below.</span></figcaption></figure>'
+AF_MOCKUP = '<figure class="wrap app-mockup"><img src="/assets/products/addvancedfocus.webp" alt="AddvancedFocus concept interface and app icon, showing one small next step and a short focus session." width="1536" height="1024" loading="lazy" decoding="async"><figcaption><span>AddvancedFocus · Interface and logo concept</span><span>Illustrative design. <a href="#concept-demo">Try the working website prototype</a>.</span></figcaption></figure>'
 addvancedfocus = ('<section class="wrap af-product-hero"><div><p class="eyebrow">MEET ADDVANCEDFOCUS</p>' + status_pill('development') + '<h1>Less deciding.<br><em>More beginning.</em></h1>'
     '<p class="intro">An AI-powered executive-function assistant being developed for ADHD, autism, and the everyday work of starting, planning, and following through.</p>'
     '<div class="actions"><a class="button" href="#concept-demo">Try the working demo</a><a class="text-link" href="#explore">See the product direction</a></div></div>'

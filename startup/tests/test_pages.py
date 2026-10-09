@@ -186,6 +186,11 @@ class AddvancedFocusPage(unittest.TestCase):
         self.assertEqual([s.text() for s in faq.find_all(tag='summary')],
                          ['Who is it being designed for?', 'How will personal information be handled?', 'Is AddvancedFocus a medical product?'])
 
+    def test_mockup_caption_points_to_the_demo_without_a_direction(self):
+        caption = self.root.find(cls='app-mockup').find(tag='figcaption')
+        self.assertNotIn('below', caption.text())
+        self.assertIn('#concept-demo', [a.attrs.get('href') for a in caption.find_all(tag='a')])
+
     def test_duplicate_small_print_is_gone(self):
         text = self.root.find(tag='main').text()
         self.assertNotIn('A working illustration of the idea', text)

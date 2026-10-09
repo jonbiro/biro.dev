@@ -1,5 +1,6 @@
 """Shared page parts for generate.py: status labels, the "Where things stand" block, and founder profile links."""
 from html import escape
+from urllib.parse import urlsplit
 
 STATUS_LABELS = {'demo': 'Working demo', 'development': 'In development', 'concept': 'Concept'}
 PROFILE_SERVICES = (('github', 'GitHub'), ('linkedin', 'LinkedIn'))
@@ -10,13 +11,21 @@ def status_pill(kind: str) -> str:
     return f'<span class="pill">{STATUS_LABELS[kind]}</span>'
 
 
+def _is_public_https_url(url: str) -> bool:
+    """An https:// URL with a real host, and no credentials, whitespace, control characters or quotes."""
+    if not url.startswith('https://') or UNSAFE_URL_CHARACTERS.intersection(url) or any(c.isspace() or ord(c) < 32 for c in url):
+        return False
+    parts = urlsplit(url)
+    return parts.scheme == 'https' and '.' in (parts.hostname or '') and '@' not in parts.netloc
+
+
 def profile_links(config: dict) -> list:
     """(label, url) for each configured profile whose URL is a plain https:// address, in a fixed order."""
     profiles = config.get('profiles', {})
     links = []
     for key, label in PROFILE_SERVICES:
         url = str(profiles.get(key, '')).strip()
-        if url.startswith('https://') and not UNSAFE_URL_CHARACTERS.intersection(url):
+        if _is_public_https_url(url):
             links.append((label, url))
     return links
 
@@ -34,7 +43,7 @@ def where_things_stand(variant: str) -> str:
         '<div class="readiness-grid">'
         f'<article>{status_pill("demo")}<h3>Built and working</h3><ul>'
         '<li>An interactive AddvancedFocus concept with three everyday situations and two energy levels</li>'
-        '<li>Two- and five-minute sessions you can pause with a return note, stop without marking the step complete, or undo</li>'
+        '<li>Two- and five-minute sessions you can pause with a return note, stop without marking the step complete, or undo a completion</li>'
         '<li>This website and its accessibility statement</li></ul>'
         '<a class="text-link" href="/addvancedfocus/#concept-demo">Try the working demo</a></article>'
         f'<article>{status_pill("development")}<h3>What we’re building</h3><ul>'

@@ -24,7 +24,8 @@ class ProfileLinks(unittest.TestCase):
                                                     ('LinkedIn', 'https://www.linkedin.com/in/example')])
 
     def test_empty_missing_or_unsafe_values_are_ignored(self):
-        for value in ('', 'http://github.com/jonbiro', 'javascript:alert(1)', 'https://x.test/"onmouseover', 'https://a b'):
+        for value in ('', 'http://github.com/jonbiro', 'javascript:alert(1)', 'https://x.test/"onmouseover', 'https://a b',
+                      'https://', 'https:///x', 'https://github.com/a\nb', 'https://user@github.com/x', 'https://localhost/x'):
             self.assertEqual(sp.profile_links({'profiles': {'github': value}}), [], value)
         self.assertEqual(sp.profile_links({}), [])
 
@@ -43,6 +44,9 @@ class WhereThingsStand(unittest.TestCase):
                      'href="/products/#where-things-stand"'):
             self.assertIn(text, html)
         self.assertNotIn('development-steps', html)
+
+    def test_undo_is_described_as_undoing_a_completion(self):
+        self.assertIn('or undo a completion', sp.where_things_stand('compact'))
 
     def test_full_adds_the_three_development_stages_and_no_self_link(self):
         html = sp.where_things_stand('full')
