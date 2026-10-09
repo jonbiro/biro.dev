@@ -63,7 +63,8 @@ The final file list may be split further or merged where a file would be trivial
 - Every color value used three or more times (20 values) becomes a token. Values used fewer than three times stay literal for now. The redesign normalizes them.
 - Tokens are named by role rather than appearance: `--color-bg`, `--surface-1..n`, `--text`, `--text-muted`, `--text-subtle`, `--accent`, `--accent-strong`, `--border-subtle`, `--border`, `--border-strong`, `--focus-ring`. Radii (`--radius-sm/md/lg/xl/pill`) and repeated spacing values are tokenized under the same three-use rule.
 - The existing names `--ink`, `--muted`, `--blue` and `--line` are replaced by their role-named equivalents at every use site. The unused `--pale`, `--white` and `--radius` are removed.
-- The `color-scheme: dark` and `font-size: 100%` declarations move to `base.css`.
+- The `color-scheme: dark` and `font-size: 100%` declarations stay in that single `:root`, as root-level settings, so the stylesheet has exactly one `:root` rule.
+- "Repeated spacing values" means whole values of `gap`, `row-gap` and `column-gap`. Eight `rem` values recur three or more times and become `--space-*` tokens. The recurring `10px`, `16px` and `0` stay literal for the redesign to normalize. Padding and margin shorthands stay literal until the redesign, because tokenizing parts of a shorthand adds risk for no visual benefit.
 
 ### 3. Cascade consolidation
 
