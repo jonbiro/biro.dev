@@ -104,5 +104,60 @@ class Home(unittest.TestCase):
             self.assertIsNone(self.root.find(cls=cls), cls)
 
 
+class Products(unittest.TestCase):
+    def setUp(self):
+        from pagecheck import main_sections
+        self.root = load('/products/')
+        self.sections = main_sections(self.root)
+
+    def test_seven_parts_in_order(self):
+        self.assertIn('page-hero', self.sections[0].classes)
+        self.assertEqual([s.attrs.get('id') for s in self.sections[1:7]],
+                         ['flagship', 'where-things-stand', 'product-guide', 'future-products', 'connected-vision', 'portfolio-questions'])
+        self.assertIn('closing', self.sections[7].classes)
+        self.assertEqual(len(self.sections), 8)
+
+    def test_on_page_menu_matches_the_sections(self):
+        nav = self.root.find(cls='page-contents')
+        self.assertEqual([a.attrs['href'] for a in nav.find_all(tag='a')],
+                         ['#flagship', '#where-things-stand', '#product-guide', '#future-products', '#portfolio-questions'])
+
+    def test_flagship_status_and_demo_button(self):
+        flagship = self.root.find(id='flagship')
+        self.assertEqual([p.text() for p in flagship.find_all(cls='pill')], ['Working demo', 'In development'])
+        button = flagship.find(cls='button')
+        self.assertEqual((button.text(), button.attrs['href']), ('Try the working demo', '/addvancedfocus/#concept-demo'))
+        self.assertEqual(flagship.find(cls='micro').text(), 'Illustrative concept.')
+
+    def test_full_status_block_has_the_development_stages(self):
+        block = self.root.find(id='where-things-stand')
+        self.assertEqual(len(block.find(cls='development-steps').find_all(tag='li')), 3)
+
+    def test_concept_cards_are_compact(self):
+        cards = self.root.find_all(cls='portfolio-card')
+        self.assertEqual(len(cards), 8)
+        for card in cards:
+            self.assertIsNotNone(card.find(cls='app-icon'), card.attrs['id'])
+            self.assertEqual([p.text() for p in card.find_all(cls='pill')], ['Concept'], card.attrs['id'])
+            self.assertIsNone(card.find(tag='details'), card.attrs['id'])
+
+    def test_connected_vision_holds_the_logo_family(self):
+        vision = self.root.find(id='connected-vision')
+        self.assertIsNotNone(vision.find(cls='logo-family'))
+        self.assertIsNone(vision.find(cls='micro'))
+
+    def test_faq_keeps_only_unanswered_questions(self):
+        faq = self.root.find(id='portfolio-questions')
+        self.assertEqual([s.text() for s in faq.find_all(tag='summary')],
+                         ['How are you deciding what to build first?', 'Can I help shape a product?'])
+
+    def test_word_budget_and_removed_sections(self):
+        self.assertLess(len(self.root.find(tag='main').text().split()), 1200)
+        for cls in ('notice', 'brand-family'):
+            self.assertIsNone(self.root.find(cls=cls), cls)
+        self.assertIsNone(self.root.find(id='development'))
+        self.assertIsNone(self.root.find(cls='product-guide').find(cls='micro'))
+
+
 if __name__ == '__main__':
     unittest.main()

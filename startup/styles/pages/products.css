@@ -28,11 +28,6 @@
 .portfolio-card>p:not(.eyebrow):not(.portfolio-tagline){color:var(--text-muted);margin:1.25rem 0}
 .portfolio-card details{border-top:1px solid var(--border-2);margin-top:1.5rem;padding-top:.5rem}
 .portfolio-card summary{cursor:pointer;color:var(--accent-text);font-size:.9375rem;padding:.625rem 0;line-height:1.6}
-.portfolio-detail{color:var(--text-muted)}
-.portfolio-detail h4{color:var(--text);font-size:1rem;font-weight:600;margin:1.5rem 0 .75rem;line-height:1.5}
-.portfolio-detail ul{padding-left:1.25rem;margin:0}
-.portfolio-detail li{padding-left:.125rem;margin-bottom:.625rem}
-.portfolio-detail p{margin:0;line-height:1.75}
 @media(max-width:47.5rem){
   .portfolio-grid{grid-template-columns:minmax(0,1fr)}
   .portfolio-index{gap:var(--space-2)}
@@ -40,9 +35,6 @@
 }
 .portfolio-page-link{margin-top:1rem}
 .logo-family img{display:block;width:100%;height:auto;border:1px solid var(--border-2);border-radius:var(--radius-lg);background:#0c1523}
-.portfolio-image-link{display:block;border-radius:.875rem;overflow:hidden;margin-bottom:1.5rem;border:1px solid var(--border-2);background:#0c1523}
-.portfolio-image-link img{display:block;width:100%;height:auto}
-.portfolio-image-link:hover{border-color:var(--accent)}
 .logo-family{margin:0;max-width:58rem}
 .logo-family figcaption{padding-top:1rem;font-size:.875rem;color:var(--text-muted)}
 @media(max-width:47.5rem){
@@ -61,3 +53,4 @@
   .product-guide th{width:42%;font-size:.9375rem;padding:.875rem .625rem}
   .product-guide td{padding:.875rem .625rem}
 }
+.product-large .pill+.pill{margin-left:.5rem}
