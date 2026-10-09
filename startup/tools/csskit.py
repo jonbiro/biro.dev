@@ -107,6 +107,10 @@ def parse_decls(block: str) -> list:
     return decls
 
 
+# Block at-rules that hold descriptors or keyframes, never style rules, so keeping them verbatim cannot hide a cascade change.
+VERBATIM_AT_RULES = {'@keyframes', '@-webkit-keyframes', '@font-face', '@property', '@counter-style', '@font-palette-values', '@page'}
+
+
 def _matching_brace(text: str, start: int) -> int:
     depth = 0
     for j in range(start, len(text)):
@@ -137,6 +141,9 @@ def _parse_block(text: str, context: str) -> list:
                 raise ValueError('Nested conditional at-rules are not supported')
             nodes.extend(_parse_block(body, normalize_context(prelude)))
         elif prelude.startswith('@'):
+            name = re.match(r'@[\w-]+', prelude).group(0).lower()
+            if name not in VERBATIM_AT_RULES:
+                raise ValueError(f'{name} is not supported: its rules would be invisible to pruning, merging and checks')
             nodes.append(Raw(prelude + '{' + re.sub(r'\s+', ' ', body.strip()) + '}', context))
         else:
             nodes.append(Rule(normalize_selector(prelude), parse_decls(body), context))
@@ -250,9 +257,17 @@ def report(nodes: list, is_used) -> str:
     return '\n'.join(lines)
 
 
-# Newer CSS features that may follow an older fallback value. Function names and units are matched as whole
-# tokens, so minmax( does not count as max(.
-FALLBACK_MARKERS = re.compile(r'(?<![\w-])(clamp|min|max|env|color-mix)\(|\d(dvh|svh|lvh|dvw|svw|lvw|cqw|cqh|cqi)\b|-webkit-|-moz-')
+# Cross-rule pruning only removes a declaration when both values use long-established CSS. Anything newer (an unknown
+# function, a newer unit or keyword) may be a progressive enhancement over the earlier value, which is then kept.
+CLASSIC_FUNCTIONS = {'rgb', 'rgba', 'hsl', 'hsla', 'var', 'calc', 'url', 'linear-gradient', 'radial-gradient',
+                     'repeating-linear-gradient', 'repeating-radial-gradient', 'repeat', 'minmax', 'translate',
+                     'translatex', 'translatey', 'translate3d', 'scale', 'scalex', 'scaley', 'rotate', 'skew', 'matrix',
+                     'cubic-bezier', 'steps', 'attr', 'counter', 'counters', 'format', 'local'}
+CLASSIC_UNITS = {'px', 'em', 'rem', '%', 'vh', 'vw', 'vmin', 'vmax', 's', 'ms', 'deg', 'rad', 'turn', 'fr', 'ch', 'ex',
+                 'pt', 'pc', 'in', 'cm', 'mm', 'dpi', 'dppx', 'x'}
+MODERN_KEYWORDS = {'clip', 'pretty', 'balance', 'stable', 'contents', 'subgrid', 'fit-content', 'min-content',
+                   'max-content', 'stretch', 'flow-root', 'anchor-center', 'safe', 'unsafe', 'start', 'end', 'self-start',
+                   'self-end', 'auto-phrase', 'sticky', 'revert', 'revert-layer', 'smooth', 'manual'}
 
 # Token table from the Foundation spec. Values are exact; the redesign normalizes them later.
 COLOR_TOKENS = {
@@ -288,31 +303,47 @@ def prune_dead_selectors(nodes: list, is_used) -> tuple:
     return out, removed
 
 
-def _markers(value: str) -> set:
-    return {match.group(0).lstrip('0123456789') for match in FALLBACK_MARKERS.finditer(value)}
+def _is_plain(value: str) -> bool:
+    lowered = value.lower()
+    if any(name not in CLASSIC_FUNCTIONS for name in re.findall(r'([a-z-]+)\(', lowered)):
+        return False
+    lowered = re.sub(r'#[0-9a-f]{3,8}\b', ' ', lowered)
+    if any(unit and unit not in CLASSIC_UNITS for unit in re.findall(r'(?<![a-z-])-?\d*\.?\d+([a-z%]*)', lowered)):
+        return False
+    return not any(word in MODERN_KEYWORDS for word in re.findall(r'(?<![\d.#-])\b([a-z][a-z-]*)\b(?!\()', lowered))
+
+
+MAX_WIDTH_CONTEXT = re.compile(r'^@media\(max-width:([\d.]+)(px|rem|em)\)$')
+
+
+def _dominates(outer: str, inner: str) -> bool:
+    """Whether a rule in context `outer` applies everywhere a rule in context `inner` does."""
+    if outer == inner or not outer:
+        return True
+    a, b = MAX_WIDTH_CONTEXT.match(outer), MAX_WIDTH_CONTEXT.match(inner)
+    return bool(a and b and a.group(2) == b.group(2) and float(a.group(1)) >= float(b.group(1)))
 
 
 def prune_overridden(nodes: list) -> tuple:
-    """Drops a declaration when a later rule with the same selector sets the same property, in the same context or at
-    the top level (which applies everywhere a conditional rule does)."""
-    later = defaultdict(list)
+    """Drops a declaration when a later rule with the same selector sets the same property in a context that applies
+    everywhere this one does (the same context, the top level, or a wider max-width), and both values are plain."""
+    later = defaultdict(list)  # (selector, property) -> [(context, declaration)], latest first
     kept_reversed, removed = [], 0
     for node in reversed(nodes):
         if not isinstance(node, Rule):
             kept_reversed.append(node)
             continue
-        key = (node.context, node.selector)
         decls = []
         for decl in node.decls:
-            # A later top-level rule with the same selector also applies wherever a conditional rule does.
-            candidates = later[(key, decl.prop)] + (later[(('', node.selector), decl.prop)] if node.context else [])
-            overriding = [d for d in candidates if (d.important or not decl.important) and _markers(d.value) == _markers(decl.value)]
+            overriding = [d for context, d in later[(node.selector, decl.prop)]
+                          if _dominates(context, node.context) and (d.important or not decl.important)
+                          and _is_plain(d.value) and _is_plain(decl.value)]
             if overriding:
                 removed += 1
             else:
                 decls.append(decl)
         for decl in node.decls:
-            later[(key, decl.prop)].append(decl)
+            later[(node.selector, decl.prop)].append((node.context, decl))
         kept_reversed.append(Rule(node.selector, decls, node.context))
     return list(reversed(kept_reversed)), removed
 
@@ -411,20 +442,105 @@ OWNER_OVERRIDES = {
 MEDIA_FILE_CONTEXTS = ('print', 'prefers-reduced-motion', 'prefers-contrast')
 
 SIDES = ('top', 'right', 'bottom', 'left')
-SHORTHAND_GROUPS = {
-    'gap': {'row-gap', 'column-gap', 'grid-gap'}, 'grid-gap': {'row-gap', 'column-gap'},
-    'inset': set(SIDES), 'place-items': {'align-items', 'justify-items'},
-    'place-content': {'align-content', 'justify-content'}, 'place-self': {'align-self', 'justify-self'},
-    'font': {'line-height'}, 'flex-flow': {'flex-direction', 'flex-wrap'},
-    'border-radius': {'border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius'},
-    'border-color': {f'border-{s}-color' for s in SIDES}, 'border-width': {f'border-{s}-width' for s in SIDES},
-    'border-style': {f'border-{s}-style' for s in SIDES},
-    'grid-area': {'grid-row-start', 'grid-row-end', 'grid-column-start', 'grid-column-end'},
-    'grid-row': {'grid-row-start', 'grid-row-end'}, 'grid-column': {'grid-column-start', 'grid-column-end'},
-}
-# Logical properties (margin-inline, padding-block, inset-inline-start, …) map onto physical sides, so within these
-# families a logical property is related to every other member.
-LOGICAL_FAMILIES = {'margin', 'padding', 'border', 'inset', 'overflow', 'scroll-margin', 'scroll-padding'}
+CORNERS = ('top-left', 'top-right', 'bottom-right', 'bottom-left')
+AXES = {'inline': ('left', 'right'), 'block': ('top', 'bottom')}  # logical axes, mapped to both physical sides
+
+
+def _shorthand_table() -> dict:
+    """Shorthand (or logical property) → the physical longhands it can set."""
+    table = {}
+    for box in ('margin', 'padding', 'scroll-margin', 'scroll-padding'):
+        table[box] = {f'{box}-{s}' for s in SIDES}
+        for axis, sides in AXES.items():
+            for name in (f'{box}-{axis}', f'{box}-{axis}-start', f'{box}-{axis}-end'):
+                table[name] = {f'{box}-{s}' for s in sides}
+    table['inset'] = set(SIDES)
+    for axis, sides in AXES.items():
+        for name in (f'inset-{axis}', f'inset-{axis}-start', f'inset-{axis}-end'):
+            table[name] = set(sides)
+    parts = ('width', 'style', 'color')
+    image = {'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset', 'border-image-repeat'}
+    table['border'] = {f'border-{s}-{p}' for s in SIDES for p in parts} | image
+    table['border-image'] = image
+    for part in parts:
+        table[f'border-{part}'] = {f'border-{s}-{part}' for s in SIDES}
+    for side in SIDES:
+        table[f'border-{side}'] = {f'border-{side}-{p}' for p in parts}
+    for axis, sides in AXES.items():
+        for name in (f'border-{axis}', f'border-{axis}-start', f'border-{axis}-end'):
+            table[name] = {f'border-{s}-{p}' for s in sides for p in parts}
+            for part in parts:
+                table[f'{name}-{part}'] = {f'border-{s}-{part}' for s in sides}
+    radii = {f'border-{c}-radius' for c in CORNERS}
+    table['border-radius'] = radii
+    for a in ('start', 'end'):
+        for b in ('start', 'end'):
+            table[f'border-{a}-{b}-radius'] = radii
+    font_variant = {f'font-variant-{v}' for v in ('caps', 'ligatures', 'numeric', 'east-asian', 'alternates', 'position')}
+    table['font-variant'] = font_variant
+    table['font'] = font_variant | {'font-style', 'font-weight', 'font-stretch', 'font-size', 'line-height', 'font-family',
+                                    'font-size-adjust', 'font-kerning', 'font-optical-sizing', 'font-feature-settings',
+                                    'font-variation-settings', 'font-language-override'}
+    table['outline'] = {'outline-width', 'outline-style', 'outline-color'}
+    table['background'] = {'background-color', 'background-image', 'background-position-x', 'background-position-y',
+                           'background-size', 'background-repeat', 'background-attachment', 'background-origin', 'background-clip'}
+    table['background-position'] = {'background-position-x', 'background-position-y'}
+    table['text-decoration'] = {'text-decoration-line', 'text-decoration-style', 'text-decoration-color', 'text-decoration-thickness'}
+    table['text-wrap'] = {'text-wrap-mode', 'text-wrap-style'}
+    table['white-space'] = {'white-space-collapse', 'text-wrap-mode'}
+    table['list-style'] = {'list-style-type', 'list-style-position', 'list-style-image'}
+    table['flex'] = {'flex-grow', 'flex-shrink', 'flex-basis'}
+    table['flex-flow'] = {'flex-direction', 'flex-wrap'}
+    template = {'grid-template-rows', 'grid-template-columns', 'grid-template-areas'}
+    table['grid-template'] = template
+    table['grid'] = template | {'grid-auto-rows', 'grid-auto-columns', 'grid-auto-flow'}
+    table['grid-area'] = {'grid-row-start', 'grid-row-end', 'grid-column-start', 'grid-column-end'}
+    table['grid-row'] = {'grid-row-start', 'grid-row-end'}
+    table['grid-column'] = {'grid-column-start', 'grid-column-end'}
+    table['gap'] = {'row-gap', 'column-gap'}
+    for kind in ('items', 'content', 'self'):
+        table[f'place-{kind}'] = {f'align-{kind}', f'justify-{kind}'}
+    table['overflow'] = {'overflow-x', 'overflow-y'}
+    table['overflow-inline'], table['overflow-block'] = {'overflow-x'}, {'overflow-y'}
+    table['transition'] = {f'transition-{p}' for p in ('property', 'duration', 'timing-function', 'delay', 'behavior')}
+    table['animation'] = {f'animation-{p}' for p in ('name', 'duration', 'timing-function', 'delay', 'iteration-count',
+                                                     'direction', 'fill-mode', 'play-state', 'timeline', 'composition')}
+    table['columns'] = {'column-width', 'column-count'}
+    table['column-rule'] = {'column-rule-width', 'column-rule-style', 'column-rule-color'}
+    table['container'] = {'container-name', 'container-type'}
+    table['mask'] = {f'mask-{p}' for p in ('image', 'mode', 'repeat', 'position', 'clip', 'origin', 'size', 'composite')}
+    table['offset'] = {f'offset-{p}' for p in ('position', 'path', 'distance', 'rotate', 'anchor')}
+    table['contain-intrinsic-size'] = {'contain-intrinsic-width', 'contain-intrinsic-height'}
+    for logical, physical in (('inline-size', 'width'), ('block-size', 'height'), ('min-inline-size', 'min-width'),
+                              ('max-inline-size', 'max-width'), ('min-block-size', 'min-height'), ('max-block-size', 'max-height')):
+        table[logical] = {physical}
+    return table
+
+
+SHORTHANDS = _shorthand_table()
+ALIASES = {'word-wrap': 'overflow-wrap', 'grid-gap': 'gap', 'grid-row-gap': 'row-gap', 'grid-column-gap': 'column-gap'}
+VENDOR_PREFIX = re.compile(r'^-(webkit|moz|ms|o)-')
+STANDALONE_LONGHANDS = set("""
+color display position width height min-width max-width min-height max-height z-index opacity visibility cursor content
+transform translate rotate scale filter backdrop-filter box-shadow text-shadow box-sizing float clear vertical-align
+text-align text-transform text-indent letter-spacing word-spacing overflow-wrap word-break hyphens accent-color
+caret-color color-scheme order aspect-ratio object-fit object-position pointer-events user-select resize appearance
+outline-offset isolation mix-blend-mode clip-path will-change contain content-visibility scroll-behavior
+scroll-snap-type scroll-snap-align overscroll-behavior touch-action tab-size quotes counter-increment counter-reset
+counter-set table-layout border-collapse border-spacing caption-side empty-cells break-inside break-before break-after
+orphans widows text-overflow text-underline-offset text-decoration-skip-ink text-rendering image-rendering
+tap-highlight-color fill stroke stroke-width font-display forced-color-adjust print-color-adjust
+""".split())
+KNOWN_LONGHANDS = STANDALONE_LONGHANDS | {longhand for longhands in SHORTHANDS.values() for longhand in longhands}
+
+
+def _expand(prop: str):
+    """Physical longhands a property sets, or None when the property is unknown (treated as related to everything)."""
+    name = ALIASES.get(prop, prop)
+    name = ALIASES.get(VENDOR_PREFIX.sub('', name), VENDOR_PREFIX.sub('', name))
+    if name in SHORTHANDS:
+        return set(SHORTHANDS[name])
+    return {name} if name in KNOWN_LONGHANDS else None
 
 
 def related(a: str, b: str) -> bool:
@@ -433,12 +549,10 @@ def related(a: str, b: str) -> bool:
         return True
     if a.startswith('--') or b.startswith('--'):
         return False
-    if a.startswith(b + '-') or b.startswith(a + '-'):
+    expanded_a, expanded_b = _expand(a), _expand(b)
+    if expanded_a is None or expanded_b is None:
         return True
-    if any((a == s and b in longs) or (b == s and a in longs) for s, longs in SHORTHAND_GROUPS.items()):
-        return True
-    logical = any(part in ('inline', 'block') for part in a.split('-') + b.split('-'))
-    return logical and a.split('-')[0] == b.split('-')[0] and a.split('-')[0] in LOGICAL_FAMILIES
+    return not expanded_a.isdisjoint(expanded_b)
 
 
 def owner_file(member: str, context: str) -> str:
@@ -554,6 +668,11 @@ def load_overlaps(path: Path):
     return overlaps
 
 
+def _conflicts_with_stayed(decl: Decl, stayed: list) -> bool:
+    """A declaration must not jump past a related sibling from its own rule that is staying put."""
+    return any(related(decl.prop, other.prop) and not (decl.prop == other.prop and decl.value == other.value) for other in stayed)
+
+
 def merge_duplicates(nodes: list, overlaps=None) -> list:
     """Folds earlier rules into the last rule with the same selector and context when no rule in between sets a
     related property on an element both selectors can match. Without an overlaps function, every pair may overlap."""
@@ -567,14 +686,17 @@ def merge_duplicates(nodes: list, overlaps=None) -> list:
             continue
         last, moved = indexes[-1], []
         for index in indexes[:-1]:
-            stay = []
-            for decl in nodes[index].decls:
-                between = [nodes[k] for k in range(index + 1, last) if isinstance(nodes[k], Rule)]
-                if any(_order_matters(nodes[index].selector, decl, rule.selector, other, overlaps) for rule in between for other in rule.decls):
-                    stay.append(decl)
+            between = [nodes[k] for k in range(index + 1, last) if isinstance(nodes[k], Rule)]
+            # Walk backwards: a declaration moving forward passes every later sibling that stays.
+            stay_reversed, move_reversed = [], []
+            for decl in reversed(nodes[index].decls):
+                blocked = any(_order_matters(nodes[index].selector, decl, rule.selector, other, overlaps) for rule in between for other in rule.decls)
+                if blocked or _conflicts_with_stayed(decl, stay_reversed):
+                    stay_reversed.append(decl)
                 else:
-                    moved.append(decl)
-            nodes[index].decls = stay
+                    move_reversed.append(decl)
+            nodes[index].decls = stay_reversed[::-1]
+            moved += move_reversed[::-1]
         nodes[last].decls = moved + nodes[last].decls
     # Backward pass: fold what is still apart into the first rule, under the same safety rule.
     for indexes in positions.values():
@@ -588,7 +710,10 @@ def merge_duplicates(nodes: list, overlaps=None) -> list:
                 between = [nodes[k] for k in range(first + 1, index) if isinstance(nodes[k], Rule)]
                 blockers = [rule for rule in between
                             if any(_order_matters(nodes[index].selector, decl, rule.selector, other, overlaps) for other in rule.decls)]
-                if not blockers:
+                if _conflicts_with_stayed(decl, stay):
+                    # A declaration moving backward passes every earlier sibling that stays.
+                    stay.append(decl)
+                elif not blockers:
                     nodes[first].decls.append(decl)
                 elif not nodes[index].context and all(r.selector == nodes[index].selector and r.context for r in blockers):
                     # Hoist a top-level declaration past same-selector conditional rules by also appending it to each

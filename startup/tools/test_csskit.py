@@ -32,6 +32,16 @@ class ParseSerialize(unittest.TestCase):
         decl = ck.parse(':root{--Brand-Blue:#fff}')[0].decls[0]
         self.assertEqual(decl.prop, '--Brand-Blue')
 
+    def test_block_at_rules_that_contain_style_rules_are_rejected(self):
+        for prelude in ('@container (min-width:30rem)', '@layer base', '@starting-style', '@scope (.card)'):
+            with self.assertRaises(ValueError, msg=prelude):
+                ck.parse(prelude + '{.a{gap:2rem}}')
+
+    def test_descriptor_at_rules_are_kept_verbatim(self):
+        for css in ('@font-face{font-family:x;src:url(x.woff2)}', '@keyframes k{to{opacity:1}}',
+                    '@property --x{syntax:"<length>";inherits:false;initial-value:0}'):
+            self.assertEqual(type(ck.parse(css)[0]).__name__, 'Raw', css)
+
     def test_nested_conditional_rules_are_rejected(self):
         with self.assertRaises(ValueError):
             ck.parse('@media print{@media (min-width:1px){.a{color:red}}}')
@@ -117,6 +127,16 @@ class PruneOverridden(unittest.TestCase):
         self.assertEqual(out, '.a{gap:2px}\n@media(max-width:10rem){\n  .a{gap:1px}\n}\n.a{font-size:14px}\n')
         self.assertEqual(count, 1)
 
+    def test_narrower_max_width_declaration_dominated_by_a_later_wider_one_is_removed(self):
+        out, count = self.run_prune('@media(max-width:47.5rem){.h{padding:22px 24px}}@media(max-width:59.999rem){.h{padding:1rem}}')
+        self.assertEqual((out, count), ('@media(max-width:59.999rem){\n  .h{padding:1rem}\n}\n', 1))
+
+    def test_wider_earlier_or_mixed_unit_conditions_are_kept(self):
+        for css in ('@media(max-width:60rem){.h{gap:1px}}@media(max-width:47.5rem){.h{gap:2px}}',
+                    '@media(max-width:700px){.h{gap:1px}}@media(max-width:60rem){.h{gap:2px}}',
+                    '@media(max-width:40rem){.h{gap:1px}}@media(min-width:10rem){.h{gap:2px}}'):
+            self.assertEqual(self.run_prune(css)[1], 0, css)
+
     def test_top_level_declaration_is_not_dominated_by_a_later_media_rule(self):
         _, count = self.run_prune('.a{font-size:14px}@media(max-width:10rem){.a{font-size:12px}}')
         self.assertEqual(count, 0)
@@ -128,6 +148,18 @@ class PruneOverridden(unittest.TestCase):
     def test_minmax_is_not_mistaken_for_a_max_fallback(self):
         _, count = self.run_prune('.a{grid-template-columns:1fr}.a{grid-template-columns:minmax(0,1fr)}')
         self.assertEqual(count, 1)
+
+    def test_newer_values_keep_their_earlier_fallback(self):
+        for older, newer in [('overflow:hidden', 'overflow:clip'), ('color:#fff', 'color:oklch(70% .1 250)'),
+                             ('text-wrap:balance', 'text-wrap:pretty'), ('margin-top:1.5em', 'margin-top:1lh')]:
+            _, count = self.run_prune(f'.a{{{older}}}.a{{{newer}}}')
+            self.assertEqual(count, 0, (older, newer))
+
+    def test_plain_values_are_still_pruned(self):
+        for older, newer in [('color:red', 'color:#8bb6ff'), ('padding:28px 24px', 'padding:1.5rem 1rem'),
+                             ('width:calc(100% - 2rem)', 'width:var(--w)'), ('display:block', 'display:flex')]:
+            _, count = self.run_prune(f'.a{{{older}}}.a{{{newer}}}')
+            self.assertEqual(count, 1, (older, newer))
 
     def test_duplicates_inside_one_rule_are_kept(self):
         _, count = self.run_prune('.a{display:block;display:grid}')
@@ -165,6 +197,14 @@ class Related(unittest.TestCase):
         for a, b in [('padding', 'padding-top'), ('gap', 'row-gap'), ('border-radius', 'border-top-left-radius'),
                      ('margin-inline', 'margin-left'), ('font', 'line-height'), ('color', 'color'),
                      ('border-color', 'border-top-color'), ('border', 'border-left-width'), ('grid-gap', 'gap'), ('all', 'color')]:
+            self.assertTrue(ck.related(a, b), (a, b))
+            self.assertTrue(ck.related(b, a), (b, a))
+
+    def test_overlapping_shorthands_aliases_and_logical_sizes_are_related(self):
+        for a, b in [('border-top', 'border-color'), ('border-left', 'border-width'), ('grid-area', 'grid-row'),
+                     ('inset-inline', 'left'), ('text-wrap', 'white-space'), ('-webkit-backdrop-filter', 'backdrop-filter'),
+                     ('word-wrap', 'overflow-wrap'), ('grid-row-gap', 'row-gap'), ('inline-size', 'width'),
+                     ('border-start-start-radius', 'border-radius'), ('frobnicate', 'color')]:
             self.assertTrue(ck.related(a, b), (a, b))
             self.assertTrue(ck.related(b, a), (b, a))
 
@@ -209,6 +249,22 @@ class Merge(unittest.TestCase):
         css = '.a{gap:1px}@media(max-width:10rem){.b{gap:2px}}.a{gap:3px}'
         nodes, _ = ck.prune_overridden(ck.parse(css))
         self.assertEqual(ck.serialize(ck.merge_duplicates(nodes)), '@media(max-width:10rem){\n  .b{gap:2px}\n}\n.a{gap:3px}\n')
+
+    def test_backward_fold_never_jumps_a_related_sibling_that_stayed(self):
+        css = '.card{padding-top:24px}.notice{padding-top:8px}.card{padding:0;padding-left:16px}'
+        self.assertEqual(ck.serialize(ck.merge_duplicates(ck.parse(css))),
+                         '.card{padding-top:24px}\n.notice{padding-top:8px}\n.card{padding:0;padding-left:16px}\n')
+
+    def test_forward_fold_never_jumps_a_related_sibling_that_stayed(self):
+        css = '.a{padding-left:1px;padding:0}.b{padding-top:2px}.a{color:red}'
+        self.assertEqual(ck.serialize(ck.merge_duplicates(ck.parse(css))),
+                         '.a{padding-left:1px;padding:0;color:red}\n.b{padding-top:2px}\n')
+
+    def test_hoist_never_jumps_a_related_sibling_that_stayed(self):
+        css = '.t{padding-top:4px}@media(max-width:10rem){.t{padding-left:clamp(1px,2vw,3px)}}.u{padding-top:1px}.t{padding:0;padding-left:9px}'
+        self.assertEqual(ck.serialize(ck.merge_duplicates(ck.parse(css))), (
+            '.t{padding-top:4px}\n@media(max-width:10rem){\n  .t{padding-left:clamp(1px,2vw,3px)}\n}\n'
+            '.u{padding-top:1px}\n.t{padding:0;padding-left:9px}\n'))
 
     def test_rules_in_different_contexts_are_not_merged(self):
         nodes = ck.merge_duplicates(ck.parse('.a{color:red}@media print{.a{color:blue}}'))

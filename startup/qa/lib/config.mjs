@@ -7,6 +7,8 @@ export const DIST = process.env.QA_DIST ?? fileURLToPath(new URL('../../dist/', 
 export const PORT = Number(process.env.QA_PORT ?? 4310);
 export const BASE_URL = `http://127.0.0.1:${PORT}`;
 export const WIDTHS = [320, 375, 1280];
+// One width inside each breakpoint band between the phone widths and desktop, used by the reduced-motion pass.
+export const BAND_WIDTHS = [400, 600, 800, 980];
 export const HEIGHT = 900;
 
 // Netlify answers /focusflow/ with a 301 before the file is ever served.

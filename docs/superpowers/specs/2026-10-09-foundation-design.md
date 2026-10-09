@@ -95,7 +95,7 @@ A separate package, so the Netlify build (base directory `startup`) never instal
 - The server is started by the toolkit itself: `python3 -m http.server` on `127.0.0.1`, serving `startup/dist`.
 - Engines: Chromium and WebKit. WebKit requires a one-time `npx playwright install webkit`.
 - Pages: the 15 content routes plus `404.html` (16 documents). `/focusflow/` is excluded because Netlify answers it with a 301 before the file is ever served.
-- Widths: 320, 375 and 1280 CSS pixels.
+- Widths: 320, 375 and 1280 CSS pixels; the reduced-motion pass also captures 400, 600, 800 and 980 so every breakpoint band between phone and desktop is compared. *(Added after the final review found the 384–1279px range uncaptured.)*
 
 Commands, run from `startup/qa`:
 

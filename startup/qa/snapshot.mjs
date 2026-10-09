@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from '@playwright/test';
-import { BASE_URL, DIST, HEIGHT, WIDTHS, discoverRoutes, routeSlug } from './lib/config.mjs';
+import { BAND_WIDTHS, BASE_URL, DIST, HEIGHT, WIDTHS, discoverRoutes, routeSlug } from './lib/config.mjs';
 import { PROPS, collectElements, collectFocused, settle, watchRequests } from './lib/capture.mjs';
 import { startServer } from './lib/server.mjs';
 
@@ -15,7 +15,7 @@ const completeDemo = async (page) => { await page.click('#af-primary'); await pa
 
 const SCENARIOS = [
   { pass: 'motion', widths: WIDTHS, media: { reducedMotion: 'no-preference' } },
-  { pass: 'reduced', widths: WIDTHS, media: { reducedMotion: 'reduce' } },
+  { pass: 'reduced', widths: [...WIDTHS, ...BAND_WIDTHS].sort((a, b) => a - b), media: { reducedMotion: 'reduce' } },
   { pass: 'print', widths: [1280], media: { reducedMotion: 'reduce', media: 'print' } },
   { pass: 'contrast', widths: WIDTHS, media: { reducedMotion: 'reduce', contrast: 'more' } },
   { pass: 'details-open', widths: WIDTHS, media: { reducedMotion: 'reduce' }, setup: openAllDetails },
@@ -32,6 +32,10 @@ function option(name) {
 const out = process.argv[2];
 if (!out || out.startsWith('--')) {
   console.error('Usage: npm run snapshot -- <out-dir> [--pass a,b] [--route /x/] [--width 375]');
+  process.exit(2);
+}
+if (existsSync(out) && readdirSync(out).length) {
+  console.error(`${out} already has files. Snapshot into a new directory so stale captures cannot mix with fresh ones.`);
   process.exit(2);
 }
 const passFilter = option('pass');
