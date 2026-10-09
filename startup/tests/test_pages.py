@@ -206,5 +206,63 @@ class ProductPages(unittest.TestCase):
             self.assertIn(f'When can I use {portfolio[slug]["name"]}?', summaries, slug)
 
 
+PHRASES = ('not a released', 'not yet publicly available', 'release timing', 'have not been announced', 'pre-release')
+
+
+def allowed_context(route, node):
+    chain = list(node.ancestors())
+    if route == '/accessibility/':
+        return True
+    if any(n.tag in ('figcaption', 'footer') or n.attrs.get('id') in ('where-things-stand', 'privacy') for n in chain):
+        return True
+    return route == '/' and 'micro' in node.classes and any('hero' in n.classes for n in chain)
+
+
+class Sitewide(unittest.TestCase):
+    def test_status_phrases_appear_only_in_allowed_places(self):
+        offenders = []
+        for route in ROUTES:
+            body = load(route).find(tag='body')
+            for text, parent in body.strings():
+                lowered = text.lower()
+                if any(phrase in lowered for phrase in PHRASES) and not allowed_context(route, parent):
+                    offenders.append(f'{route}: {" ".join(text.split())[:90]}')
+        self.assertEqual(offenders, [])
+
+    def test_cross_page_anchors_resolve(self):
+        broken = []
+        for route in ROUTES:
+            for a in load(route).find_all(tag='a'):
+                href = a.attrs.get('href', '')
+                if href.startswith('/') and '#' in href:
+                    target, fragment = href.split('#', 1)
+                    if fragment and load(target or route).find(id=fragment) is None:
+                        broken.append(f'{route} → {href}')
+        self.assertEqual(broken, [])
+
+    def test_mission_keeps_the_shared_connected_vision_section(self):
+        root = load('/mission/')
+        vision = root.find(id='connected-vision')
+        self.assertIsNotNone(vision)
+        self.assertIn('Useful on its own.', vision.text())
+        self.assertIsNone(vision.find(cls='logo-family'))
+        self.assertIsNotNone(root.find(id='privacy'))
+
+    def test_contact_stage_points_to_where_things_stand(self):
+        stage = load('/contact/').find(cls='contact-stage')
+        self.assertEqual([p.text() for p in stage.find_all(cls='pill')], ['In development'])
+        self.assertIn('/products/#where-things-stand', [a.attrs.get('href') for a in stage.find_all(tag='a')])
+
+    def test_about_stage_uses_the_status_label(self):
+        facts = load('/about/').find(cls='company-facts')
+        stage = next(div for div in facts.find_all(tag='div') if div.find(tag='dt').text() == 'Current stage')
+        self.assertEqual(stage.find(tag='dd').text(), 'In development')
+
+    def test_accessibility_statement_describes_the_current_checks(self):
+        text = load('/accessibility/').find(tag='main').text()
+        self.assertIn('Reviewed October 9, 2026', text)
+        self.assertIn('Performed in Chromium and WebKit using automated (axe) and keyboard checks.', text)
+
+
 if __name__ == '__main__':
     unittest.main()
