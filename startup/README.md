@@ -24,3 +24,9 @@ The QA toolkit in `qa/` is a separate Node package. Netlify never installs it.
     npm run trace -- /products/ 375 'body:2>main:3' padding-top
 
 Take a snapshot before and after any styling change; `compare` lists every element and property that changed. `known-issues.json` documents any accessibility finding that is deliberately deferred, and the audit fails if a listed issue stops occurring.
+
+Page tests pin the site's structure and copy rules: section order, status labels, the places status small print may appear, cross-page anchors, and profile links. Run them after `python3 generate.py`:
+
+    python3 -m unittest discover -s tests -p 'test_*.py'
+
+Founder profile links come from `profiles` in `site-config.json`; a link renders only for an `https://` URL.
