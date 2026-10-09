@@ -12,7 +12,7 @@ The improvement program optimizes the site for startup-program reviewers first, 
 - `startup/dist/assets/site.css` is one 44.7 KB file built from 10 appended patch layers.
 - 112 selectors are defined more than once (`.hero-visual` 9×, `.header nav` 6×, `.footer-top` 6×).
 - 66 distinct hex colors, 59 distinct font-size values, about 20 border-radius values, and 10 media-query conditions, some of them equivalent (`760px` and `47.5rem`).
-- `:root` is declared twice. The second declaration silently redefines `--muted` (`#acbad0` → `#d2def0`) and `--line` (`#293b55` → `#6685af`). `--pale`, `--white` (a dark navy) and `--radius` are defined but never referenced.
+- `:root` is declared twice at the top level (custom properties, then `font-size:100%`), and a third time inside `@media(prefers-contrast:more)`, where a deliberate high-contrast mode raises `--muted` (`#acbad0` → `#d2def0`) and `--line` (`#293b55` → `#6685af`). `--pale`, `--white` (a dark navy) and `--radius` are defined but never referenced. *(Corrected during implementation: the first version of this spec misread the high-contrast override as a silent redefinition.)*
 
 There is also no repeatable way to prove that a change did or did not alter the rendered site. Every check so far has been ad hoc in-browser JavaScript.
 
@@ -59,7 +59,7 @@ The final file list may be split further or merged where a file would be trivial
 
 `tokens.css` holds a single `:root` declaration. Rules:
 
-- The tokens preserve **effective** values: `--muted` resolves to `#d2def0` and `--line` to `#6685af`, as they do today.
+- The tokens preserve today's values in every mode. `--muted` and `--line` become the **adaptive** tokens `--text-muted` (`#acbad0`) and `--border-line` (`#293b55`). The high-contrast block keeps raising them (to `#d2def0` and `#6685af`) under their new names.
 - Every color value used three or more times (20 values) becomes a token. Values used fewer than three times stay literal for now. The redesign normalizes them.
 - Tokens are named by role rather than appearance: `--color-bg`, `--surface-1..n`, `--text`, `--text-muted`, `--text-subtle`, `--accent`, `--accent-strong`, `--border-subtle`, `--border`, `--border-strong`, `--focus-ring`. Radii (`--radius-sm/md/lg/xl/pill`) and repeated spacing values are tokenized under the same three-use rule.
 - The existing names `--ink`, `--muted`, `--blue` and `--line` are replaced by their role-named equivalents at every use site. The unused `--pale`, `--white` and `--radius` are removed.
@@ -114,7 +114,7 @@ Commands, run from `startup/qa`:
 1. `npm run compare` between a snapshot of `claude/visual-polish` (baseline) and `claude/foundation` reports **zero differences**, in every pass and in both data and screenshots.
 2. `npm test` passes in Chromium and WebKit. If axe or WebKit surfaces pre-existing issues on the baseline, they are listed in the pull request and either fixed in a separate commit (when the fix is invisible) or deferred to the redesign. They are never silently suppressed.
 3. `python3 generate.py` and `node check-concept.cjs` pass. `git diff` shows `dist/assets/site.css` changing only as the regenerated output of `styles/`.
-4. Every selector appears in exactly one rule per media context. No `:root` duplicates. No unused custom properties. `!important` appears only in print and reduced-motion blocks.
+4. Every selector appears in exactly one rule per media context. One top-level `:root` (plus the high-contrast override in its own media context). No unused custom properties. `!important` appears only in print and reduced-motion blocks.
 5. The generated `site.css` is no larger than today's 44.7 KB.
 6. `netlify.toml`, HTML output, JavaScript and images are byte-identical to the baseline.
 

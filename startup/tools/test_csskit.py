@@ -123,26 +123,28 @@ class PruneOverridden(unittest.TestCase):
 
 class Tokenize(unittest.TestCase):
     def test_colors_vars_radii_gaps_and_breakpoints_are_tokenized(self):
-        css = (':root{color-scheme:dark;--ink:#e7eef9;--muted:#d2def0;--blue:#8bb6ff;--line:#6685af;--pale:#101d30}'
+        css = (':root{color-scheme:dark;--ink:#e7eef9;--muted:#acbad0;--blue:#8bb6ff;--line:#293b55;--pale:#101d30}'
                '.a{color:var(--ink);background:#101D30;border:1px solid #304965;border-radius:1rem;gap:1.5rem;'
                'box-shadow:0 0 4px #00000040;outline-color:var(--blue);border-color:var(--line);fill:var(--muted)}'
+               '@media(prefers-contrast:more){:root{--muted:#d2def0;--line:#6685af}}'
                '@media(max-width:760px){.a{gap:10px}}')
         out = ck.serialize(ck.tokenize(ck.parse(css)))
         root, rest = out.split('\n', 1)
         self.assertTrue(root.startswith(':root{color-scheme:dark;--color-bg:#090f1b;'))
-        for token in ('--text:#e7eef9', '--text-muted:#d2def0', '--accent:#8bb6ff', '--border-5:#6685af', '--space-6:1.5rem'):
+        for token in ('--text:#e7eef9', '--text-muted:#acbad0', '--border-line:#293b55', '--accent:#8bb6ff', '--space-6:1.5rem'):
             self.assertIn(token, root)
         for removed in ('--ink', '--pale', '--muted:', '--blue', '--line'):
             self.assertNotIn(removed, root)
         self.assertEqual(rest, (
             '.a{color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);'
             'border-radius:var(--radius-md);gap:var(--space-6);box-shadow:0 0 4px var(--shadow-color);'
-            'outline-color:var(--accent);border-color:var(--border-5);fill:var(--text-muted)}\n'
+            'outline-color:var(--accent);border-color:var(--border-line);fill:var(--text-muted)}\n'
+            '@media(prefers-contrast:more){\n  :root{--text-muted:#d2def0;--border-line:var(--border-5)}\n}\n'
             '@media(max-width:47.5rem){\n  .a{gap:10px}\n}\n'))
 
     def test_effective_values_of_renamed_properties_must_match_the_token_table(self):
         with self.assertRaises(ValueError):
-            ck.tokenize(ck.parse(':root{--muted:#acbad0}.a{color:var(--muted)}'))
+            ck.tokenize(ck.parse(':root{--muted:#d2def0}.a{color:var(--muted)}'))
 
 
 class Related(unittest.TestCase):

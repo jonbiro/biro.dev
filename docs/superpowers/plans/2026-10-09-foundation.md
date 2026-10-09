@@ -20,15 +20,16 @@
 - Token names (exact):
   - surfaces: `--color-bg` `#090f1b`, `--surface-1` `#0d1727`, `--surface-2` `#101d30`, `--surface-3` `#111d30`, `--surface-4` `#142238`, `--surface-5` `#14243a`, `--surface-6` `#132640`
   - borders: `--border-1` `#2b415e`, `--border-2` `#304965`, `--border-3` `#3b5576`, `--border-4` `#415b7d`, `--border-5` `#6685af`
-  - text: `--text` `#e7eef9`, `--text-muted` `#d2def0`, `--text-quiet` `#c1cfe0`, `--text-subtle` `#acbad0`
+  - text: `--text` `#e7eef9`, `--text-quiet` `#c1cfe0`, `--text-subtle` `#acbad0`
+  - adaptive (raised by `@media(prefers-contrast:more)`): `--text-muted` `#acbad0` → `#d2def0`, `--border-line` `#293b55` → `#6685af`
   - accent: `--accent` `#8bb6ff`, `--accent-text` `#b4cfff`, `--accent-text-soft` `#c0d5f4`, `--on-accent` `#091321`
   - shadow: `--shadow-color` `#00000040`
   - radii: `--radius-sm` `.75rem`, `--radius-md` `1rem`, `--radius-lg` `1.5rem`, `--radius-lg-px` `24px`, `--radius-pill` `100px`
   - gap spacing: `--space-2` `.5rem`, `--space-3` `.75rem`, `--space-4` `1rem`, `--space-5` `1.25rem`, `--space-6` `1.5rem`, `--space-8` `2rem`, `--space-10` `2.5rem`, `--space-16` `4rem`
-- Old custom properties map: `--ink` → `--text`, `--muted` → `--text-muted`, `--blue` → `--accent`, `--line` → `--border-5`. Remove `--pale`, `--white`, `--radius`.
+- Old custom properties map: `--ink` → `--text`, `--muted` → `--text-muted`, `--blue` → `--accent`, `--line` → `--border-line`. Remove `--pale`, `--white`, `--radius`.
 - Breakpoints: `(max-width:760px)` → `(max-width:47.5rem)`; `(min-width:761px)` → `(min-width:47.5625rem)`; `(max-width:1000px)` → `(max-width:62.5rem)`; `(max-width:440px)` → `(max-width:27.5rem)`. Others unchanged.
 - `!important` only inside `print` or `prefers-reduced-motion` contexts.
-- Exactly one `:root` rule (in `styles/tokens.css`), holding all custom properties plus `color-scheme:dark` and `font-size:100%`.
+- Exactly one top-level `:root` rule (in `styles/tokens.css`), holding all custom properties plus `color-scheme:dark` and `font-size:100%`; the high-contrast override `:root` lives in `media.css`.
 - The generated `site.css` must be no larger than the baseline's byte size, which Task 2 records.
 - Every commit message ends with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 - Work on branch `claude/foundation`. Push it when the plan is complete, open a pull request, and never merge it without the user's explicit instruction.

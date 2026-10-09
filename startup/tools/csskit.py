@@ -255,11 +255,13 @@ COLOR_TOKENS = {
     '#090f1b': '--color-bg', '#0d1727': '--surface-1', '#101d30': '--surface-2', '#111d30': '--surface-3',
     '#142238': '--surface-4', '#14243a': '--surface-5', '#132640': '--surface-6',
     '#2b415e': '--border-1', '#304965': '--border-2', '#3b5576': '--border-3', '#415b7d': '--border-4', '#6685af': '--border-5',
-    '#e7eef9': '--text', '#d2def0': '--text-muted', '#c1cfe0': '--text-quiet', '#acbad0': '--text-subtle',
+    '#e7eef9': '--text', '#c1cfe0': '--text-quiet', '#acbad0': '--text-subtle',
     '#8bb6ff': '--accent', '#b4cfff': '--accent-text', '#c0d5f4': '--accent-text-soft', '#091321': '--on-accent',
     '#00000040': '--shadow-color',
 }
-RENAMED_VARS = {'--ink': '--text', '--muted': '--text-muted', '--blue': '--accent', '--line': '--border-5'}
+RENAMED_VARS = {'--ink': '--text', '--muted': '--text-muted', '--blue': '--accent', '--line': '--border-line'}
+# Tokens that @media(prefers-contrast:more) raises for people who ask for more contrast. Values are the defaults.
+ADAPTIVE_TOKENS = {'--text-muted': '#acbad0', '--border-line': '#293b55'}
 RADIUS_TOKENS = {'.75rem': '--radius-sm', '1rem': '--radius-md', '1.5rem': '--radius-lg', '24px': '--radius-lg-px', '100px': '--radius-pill'}
 GAP_TOKENS = {'.5rem': '--space-2', '.75rem': '--space-3', '1rem': '--space-4', '1.25rem': '--space-5',
               '1.5rem': '--space-6', '2rem': '--space-8', '2.5rem': '--space-10', '4rem': '--space-16'}
@@ -317,7 +319,7 @@ def tokenize(nodes: list) -> list:
     unknown = used - set(RENAMED_VARS)
     if unknown:
         raise ValueError(f'Custom properties without a token mapping: {sorted(unknown)}')
-    token_values = {token: hex_value for hex_value, token in COLOR_TOKENS.items()}
+    token_values = {**{token: hex_value for hex_value, token in COLOR_TOKENS.items()}, **ADAPTIVE_TOKENS}
     for old, new in RENAMED_VARS.items():
         if old in used and effective.get(old) != token_values.get(new):
             raise ValueError(f'{old} resolves to {effective.get(old)}, but {new} is {token_values.get(new)}')
@@ -329,7 +331,7 @@ def tokenize(nodes: list) -> list:
             value = f'var({RADIUS_TOKENS[value]})'
         if decl.prop in ('gap', 'row-gap', 'column-gap') and value in GAP_TOKENS:
             value = f'var({GAP_TOKENS[value]})'
-        return Decl(decl.prop, value, decl.important)
+        return Decl(RENAMED_VARS.get(decl.prop, decl.prop), value, decl.important)
 
     root_settings, body = [], []
     for node in nodes:
@@ -344,6 +346,7 @@ def tokenize(nodes: list) -> list:
         else:
             body.append(type(node)(node.text, context))
     tokens = [Decl(name, value) for value, name in COLOR_TOKENS.items()]
+    tokens += [Decl(name, value) for name, value in ADAPTIVE_TOKENS.items()]
     tokens += [Decl(name, value) for value, name in RADIUS_TOKENS.items()]
     tokens += [Decl(name, value) for value, name in GAP_TOKENS.items()]
     return [Rule(':root', root_settings + tokens)] + body
