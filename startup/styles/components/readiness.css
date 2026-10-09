@@ -1,0 +1,10 @@
+.readiness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-5);margin-top:2rem}
+.readiness-grid article{padding:1.75rem;border:1px solid var(--border-2);border-radius:1.25rem;background:var(--surface-2)}
+.readiness-grid h3{font-size:1.25rem;margin:1.25rem 0 1rem}
+.readiness-grid ul{padding-left:1.25rem;color:var(--text-subtle)}
+.readiness-grid li{margin-bottom:.6rem}
+@media(max-width:60rem){
+  .readiness-grid{grid-template-columns:1fr}
+  .readiness-grid article{padding:1.5rem}
+  .readiness-grid ul{margin-bottom:0}
+}

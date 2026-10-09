@@ -8,6 +8,7 @@
     "snapshot": "node snapshot.mjs",
     "compare": "node compare.mjs",
     "trace": "node trace.mjs",
+    "selector-index": "node selector-index.mjs",
     "audit": "playwright test audit",
     "demo": "playwright test demo",
     "test": "playwright test"

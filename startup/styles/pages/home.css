@@ -1,0 +1,70 @@
+.hero{gap:48px;min-height:680px;display:grid;align-items:center;padding-top:64px;padding-bottom:78px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.hero-visual{padding:24px;padding:clamp(1rem,2vw,1.5rem);position:relative;min-height:490px;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:6rem 6rem 1.75rem 1.75rem;overflow:visible;background:var(--surface-6);box-shadow:inset 0 0 0 1px var(--border-2)}
+.visual-caption{text-align:center;font-size:15px;line-height:1.6;z-index:1;margin:30px 0 0;color:var(--accent-text-soft)}
+.principle-strip{border-top:1px solid var(--border-line);border-bottom:1px solid var(--border-line);background:#0e192a}
+.principle-strip .wrap{display:flex;justify-content:space-between;gap:24px;padding-top:23px;padding-bottom:23px;font-size:14px;color:#b8c8df}
+@media(max-width:47.5rem){
+  .hero{gap:36px;min-height:0;grid-template-columns:minmax(0,1fr);padding-top:2.75rem;padding-bottom:3rem}
+  .principle-strip .wrap{flex-wrap:wrap;justify-content:center;gap:12px 28px}
+}
+@media(max-width:27.5rem){
+  .hero-visual{padding:16px;padding:clamp(1rem,2vw,1.5rem)}
+}
+.feature{gap:90px;padding-top:80px;padding-bottom:80px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.feature h2{font-size:42px;margin:16px 0}
+.feature .large{font-size:24px;line-height:1.45;color:var(--text)}
+.feature p{color:var(--text-muted)}
+.feature .button{margin-top:14px}
+.flow-list{display:flex;flex-direction:column;justify-content:center}
+.flow-list>div{padding:22px 0 22px 50px;border-bottom:1px solid var(--border-1);position:relative}
+.flow-list>div:last-child{border:0}
+.flow-list span{position:absolute;left:0;top:26px;color:#a4bfe5;font-size:13px}
+.flow-list h3{margin:0 0 6px;font-size:20px}
+.flow-list p{margin:0}
+.founder-teaser{gap:80px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.founder-teaser p{color:var(--text-muted)}
+.founder-teaser .large{margin-top:0;color:var(--text)}
+.hero>div:first-child{animation:enter .65s ease both}
+@media(max-width:62.5rem){
+  .feature{gap:40px}
+  .feature h2{font-size:36px}
+}
+@media(max-width:47.5rem){
+  .flow-list>div{padding-top:20px;padding-bottom:20px}
+}
+.hero>*{min-width:0}
+.feature>*{min-width:0}
+.principle-strip span:before{color:var(--accent);margin-right:12px;content:none}
+.principle-strip span{border-left:2px solid #7d9cc7;padding-left:1rem}
+@media(max-width:59.999rem){
+  .hero{gap:var(--space-8)}
+}
+@media(max-width:47.5rem){
+  .feature{gap:36px;padding-top:55px;padding-bottom:55px;grid-template-columns:minmax(0,1fr)}
+  .founder-teaser{gap:36px;grid-template-columns:minmax(0,1fr)}
+  .feature h2{font-size:2.125rem;letter-spacing:-.035em}
+}
+@media(max-width:24rem){
+  .hero-visual{padding:1rem}
+}
+.ribbon{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;opacity:.22;mix-blend-mode:luminosity}
+.hero-visual .concept{position:relative;background:var(--surface-3);border-color:var(--border-3);box-shadow:0 20px 60px var(--shadow-color)}
+.hero-visual .visual-caption{border-radius:12px;padding:8px 20px;position:relative;background:var(--surface-2);color:#c5d8f3}
+.portfolio-teaser .section-intro{max-width:46rem}
+.home-product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin:2rem 0}
+.home-product-grid strong{font-size:1.125rem;color:var(--accent-text);font-weight:600}
+.home-product-grid span{color:var(--text-muted);font-size:.9375rem}
+.home-product-grid a:hover{border-color:var(--accent);background:#182b45}
+@media(max-width:47.5rem){
+  .home-product-grid{grid-template-columns:minmax(0,1fr)}
+}
+.home-product-grid a{flex-direction:column;gap:.35rem;justify-content:center;min-height:6.5rem;border:1px solid var(--border-2);border-radius:var(--radius-md);padding:1.25rem 1.5rem;background:var(--surface-2);display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:var(--space-4);row-gap:.25rem;align-content:center}
+.home-product-grid a .app-icon{grid-row:1/3;align-self:center}
+.home-product-grid a strong{grid-column:2}
+.home-product-grid a span{grid-column:2}
+@media(max-width:47.5rem){
+  .hero-visual{max-width:540px;width:100%;margin:auto;min-height:0;padding-top:2rem;padding-bottom:2rem;border-radius:3rem 3rem 1.5rem 1.5rem;padding:1.25rem .75rem}
+  .hero-visual .visual-caption{display:none}
+  .hero-visual .af-mini-horizons{display:none}
+  .hero-visual .concept>.muted{display:none}
+}

@@ -112,9 +112,22 @@ class PruneOverridden(unittest.TestCase):
         _, count = self.run_prune('.a{color:red}@media print{.a{color:blue}}')
         self.assertEqual(count, 0)
 
+    def test_media_declaration_dominated_by_a_later_top_level_rule_is_removed(self):
+        out, count = self.run_prune('.a{gap:2px}@media(max-width:10rem){.a{font-size:12px;gap:1px}}.a{font-size:14px}')
+        self.assertEqual(out, '.a{gap:2px}\n@media(max-width:10rem){\n  .a{gap:1px}\n}\n.a{font-size:14px}\n')
+        self.assertEqual(count, 1)
+
+    def test_top_level_declaration_is_not_dominated_by_a_later_media_rule(self):
+        _, count = self.run_prune('.a{font-size:14px}@media(max-width:10rem){.a{font-size:12px}}')
+        self.assertEqual(count, 0)
+
     def test_progressive_fallbacks_are_kept(self):
         _, count = self.run_prune('.a{min-height:100vh}.a{min-height:100dvh}')
         self.assertEqual(count, 0)
+
+    def test_minmax_is_not_mistaken_for_a_max_fallback(self):
+        _, count = self.run_prune('.a{grid-template-columns:1fr}.a{grid-template-columns:minmax(0,1fr)}')
+        self.assertEqual(count, 1)
 
     def test_duplicates_inside_one_rule_are_kept(self):
         _, count = self.run_prune('.a{display:block;display:grid}')
@@ -148,14 +161,16 @@ class Tokenize(unittest.TestCase):
 
 
 class Related(unittest.TestCase):
-    def test_shorthands_longhands_and_box_families_are_related(self):
+    def test_shorthands_longhands_logical_and_side_groups_are_related(self):
         for a, b in [('padding', 'padding-top'), ('gap', 'row-gap'), ('border-radius', 'border-top-left-radius'),
-                     ('margin-inline', 'margin-left'), ('font', 'line-height'), ('color', 'color')]:
+                     ('margin-inline', 'margin-left'), ('font', 'line-height'), ('color', 'color'),
+                     ('border-color', 'border-top-color'), ('border', 'border-left-width'), ('grid-gap', 'gap'), ('all', 'color')]:
             self.assertTrue(ck.related(a, b), (a, b))
             self.assertTrue(ck.related(b, a), (b, a))
 
     def test_unrelated_properties(self):
-        for a, b in [('color', 'background-color'), ('display', 'gap'), ('--a', '--b')]:
+        for a, b in [('color', 'background-color'), ('display', 'gap'), ('--a', '--b'),
+                     ('padding-top', 'padding-left'), ('border-radius', 'border-color'), ('margin-top', 'margin-bottom')]:
             self.assertFalse(ck.related(a, b), (a, b))
 
 
@@ -166,12 +181,82 @@ class Merge(unittest.TestCase):
 
     def test_declaration_stays_when_a_rule_between_sets_a_related_property(self):
         nodes = ck.merge_duplicates(ck.parse('.a{color:red;padding:1px}.b{padding-top:2px}.a{margin:0}'))
-        self.assertEqual(ck.serialize(nodes), '.a{padding:1px}\n.b{padding-top:2px}\n.a{color:red;margin:0}\n')
+        # padding never moves past .b's padding-top; the unrelated declarations fold back into the first rule.
+        self.assertEqual(ck.serialize(nodes), '.a{padding:1px;color:red;margin:0}\n.b{padding-top:2px}\n')
+
+    def test_later_rule_folds_back_into_the_first_when_forward_is_blocked(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{gap:1px}@media print{.a{gap:2px}}.a{color:red}'))
+        self.assertEqual(ck.serialize(nodes), '.a{gap:1px;color:red}\n@media print{\n  .a{gap:2px}\n}\n')
+
+    def test_rules_stay_apart_when_both_directions_are_blocked(self):
+        # The blocker is a different selector, so neither moving nor replicating is safe.
+        nodes = ck.merge_duplicates(ck.parse('.a{gap:1px}@media print{.b{gap:2px;color:blue}}.a{color:red}'))
+        self.assertEqual(ck.serialize(nodes), '.a{gap:1px}\n@media print{\n  .b{gap:2px;color:blue}\n}\n.a{color:red}\n')
+
+    def test_later_declaration_is_hoisted_and_replicated_into_a_same_selector_media_rule(self):
+        css = '.t{display:none}@media(max-width:10rem){.t{display:block;border:1px solid red}}.t{border-color:blue}'
+        self.assertEqual(ck.serialize(ck.merge_duplicates(ck.parse(css))), (
+            '.t{display:none;border-color:blue}\n@media(max-width:10rem){\n  .t{display:block;border:1px solid red;border-color:blue}\n}\n'))
+
+    def test_fallback_chain_keeps_old_browser_values(self):
+        css = '.a{font-size:66px}@media(max-width:10rem){.a{font-size:46px}}.a{font-size:clamp(1rem,2vw,3rem)}'
+        nodes, _ = ck.prune_overridden(ck.parse(css))
+        self.assertEqual(ck.serialize(ck.merge_duplicates(nodes)), (
+            '.a{font-size:66px;font-size:clamp(1rem,2vw,3rem)}\n'
+            '@media(max-width:10rem){\n  .a{font-size:46px;font-size:clamp(1rem,2vw,3rem)}\n}\n'))
+
+    def test_no_replication_into_a_different_selector(self):
+        css = '.a{gap:1px}@media(max-width:10rem){.b{gap:2px}}.a{gap:3px}'
+        nodes, _ = ck.prune_overridden(ck.parse(css))
+        self.assertEqual(ck.serialize(ck.merge_duplicates(nodes)), '@media(max-width:10rem){\n  .b{gap:2px}\n}\n.a{gap:3px}\n')
 
     def test_rules_in_different_contexts_are_not_merged(self):
         nodes = ck.merge_duplicates(ck.parse('.a{color:red}@media print{.a{color:blue}}'))
         self.assertEqual(len([n for n in nodes if n.decls]), 2)
 
+
+class ProbeSelector(unittest.TestCase):
+    def test_states_attributes_and_pseudo_elements_are_stripped(self):
+        self.assertEqual(ck.probe_selector('.a:hover::before'), '.a')
+        self.assertEqual(ck.probe_selector('button[aria-pressed=true]:focus-visible'), 'button')
+        self.assertEqual(ck.probe_selector('.header nav.open a'), '.header nav a')
+
+    def test_compounds_left_empty_become_universal(self):
+        self.assertEqual(ck.probe_selector('main :is(h1,h2)'), 'main *')
+        self.assertEqual(ck.probe_selector(':root'), '*')
+        self.assertEqual(ck.probe_selector('.cards:has(.card:nth-child(4)) > p:not(.x)'), '.cards > p')
+
+
+class Specificity(unittest.TestCase):
+    def test_selectors_level_4_specificity(self):
+        cases = {'.a': (0, 1, 0), 'a': (0, 0, 1), '#af-progress': (1, 0, 0), '.skip:focus': (0, 2, 0),
+                 '.a::before': (0, 1, 1), '*:after': (0, 0, 1), 'button[aria-pressed=true]': (0, 1, 1),
+                 'main :is(h1,h2,.x)': (0, 1, 1), ':where(.a) p': (0, 0, 1),
+                 '.cards:has(.card:nth-child(4):last-child)': (0, 4, 0), '.header nav>a:not(.nav-contact)': (0, 2, 2)}
+        for selector, expected in cases.items():
+            self.assertEqual(ck.specificity(selector), expected, selector)
+
+    def test_order_between_different_specificities_never_blocks_a_merge(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{color:red}a{color:blue}.a{margin:0}'))
+        self.assertEqual(ck.serialize(nodes), 'a{color:blue}\n.a{color:red;margin:0}\n')
+
+    def test_identical_values_never_block_a_merge(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{color:red}@media print{.a{color:red;gap:1px}}.a{margin:0}'))
+        self.assertEqual(ck.serialize(nodes), '@media print{\n  .a{color:red;gap:1px}\n}\n.a{color:red;margin:0}\n')
+
+    def test_order_between_different_importance_never_blocks_a_merge(self):
+        nodes = ck.merge_duplicates(ck.parse('@media print{.a{color:red}.b{color:blue!important}.a{margin:0}}'))
+        self.assertEqual(ck.serialize(nodes), '@media print{\n  .b{color:blue!important}\n  .a{color:red;margin:0}\n}\n')
+
+class MergeWithOverlap(unittest.TestCase):
+    def test_rules_that_never_share_an_element_do_not_block_a_merge(self):
+        overlaps = lambda a, b: {a, b} != {'.a', '.b'}
+        nodes = ck.merge_duplicates(ck.parse('.a{padding:1px}.b{padding-top:2px}.a{margin:0}'), overlaps)
+        self.assertEqual(ck.serialize(nodes), '.b{padding-top:2px}\n.a{padding:1px;margin:0}\n')
+
+    def test_rules_that_can_share_an_element_still_block(self):
+        nodes = ck.merge_duplicates(ck.parse('.a{padding:1px}.b{padding-top:2px}.a{margin:0}'), lambda a, b: True)
+        self.assertEqual(ck.serialize(nodes), '.a{padding:1px;margin:0}\n.b{padding-top:2px}\n')
 
 class Split(unittest.TestCase):
     def test_owner_is_the_leftmost_class_outside_pseudos(self):
@@ -183,6 +268,16 @@ class Split(unittest.TestCase):
         self.assertEqual(ck.owner_file('.af-product-hero .pill', ''), 'pages/addvancedfocus.css')
         self.assertEqual(ck.owner_file('.header', '@media print'), 'media.css')
         self.assertEqual(ck.owner_file('.header', '@media(prefers-reduced-motion:reduce)'), 'media.css')
+
+    def test_overrides_can_target_one_media_context(self):
+        saved = dict(ck.OWNER_OVERRIDES)
+        try:
+            ck.OWNER_OVERRIDES[('.concept h2', '@media(max-width:24rem)')] = 'pages/products.css'
+            self.assertEqual(ck.owner_file('.concept h2', '@media(max-width:24rem)'), 'pages/products.css')
+            self.assertEqual(ck.owner_file('.concept h2', ''), 'components/concept-card.css')
+        finally:
+            ck.OWNER_OVERRIDES.clear()
+            ck.OWNER_OVERRIDES.update(saved)
 
     def test_unknown_class_is_an_error(self):
         with self.assertRaises(KeyError):

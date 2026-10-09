@@ -4,11 +4,13 @@
   python3 tools/csskit.py check    <css> --html dist
   python3 tools/csskit.py prune    <in.css> <out.css> --html dist
   python3 tools/csskit.py tokenize <in.css> <out.css> --html dist
-  python3 tools/csskit.py split    <in.css> --out-dir styles --html dist
+  python3 tools/csskit.py split    <in.css> --out-dir styles --html dist [--overlap index.json]
+  python3 tools/csskit.py selectors <in.css> --html dist   (probe selectors for qa/selector-index.mjs)
 """
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from collections import Counter, defaultdict
@@ -248,7 +250,9 @@ def report(nodes: list, is_used) -> str:
     return '\n'.join(lines)
 
 
-FALLBACK_MARKERS = ('dvh', 'svh', 'lvh', 'dvw', 'svw', 'lvw', 'cqw', 'cqh', 'cqi', 'clamp(', 'min(', 'max(', 'env(', 'color-mix(', '-webkit-', '-moz-')
+# Newer CSS features that may follow an older fallback value. Function names and units are matched as whole
+# tokens, so minmax( does not count as max(.
+FALLBACK_MARKERS = re.compile(r'(?<![\w-])(clamp|min|max|env|color-mix)\(|\d(dvh|svh|lvh|dvw|svw|lvw|cqw|cqh|cqi)\b|-webkit-|-moz-')
 
 # Token table from the Foundation spec. Values are exact; the redesign normalizes them later.
 COLOR_TOKENS = {
@@ -285,11 +289,12 @@ def prune_dead_selectors(nodes: list, is_used) -> tuple:
 
 
 def _markers(value: str) -> set:
-    return {marker for marker in FALLBACK_MARKERS if marker in value}
+    return {match.group(0).lstrip('0123456789') for match in FALLBACK_MARKERS.finditer(value)}
 
 
 def prune_overridden(nodes: list) -> tuple:
-    """Drops a declaration when a later rule with the same selector and context sets the same property."""
+    """Drops a declaration when a later rule with the same selector sets the same property, in the same context or at
+    the top level (which applies everywhere a conditional rule does)."""
     later = defaultdict(list)
     kept_reversed, removed = [], 0
     for node in reversed(nodes):
@@ -299,7 +304,9 @@ def prune_overridden(nodes: list) -> tuple:
         key = (node.context, node.selector)
         decls = []
         for decl in node.decls:
-            overriding = [d for d in later[(key, decl.prop)] if (d.important or not decl.important) and _markers(d.value) == _markers(decl.value)]
+            # A later top-level rule with the same selector also applies wherever a conditional rule does.
+            candidates = later[(key, decl.prop)] + (later[(('', node.selector), decl.prop)] if node.context else [])
+            overriding = [d for d in candidates if (d.important or not decl.important) and _markers(d.value) == _markers(decl.value)]
             if overriding:
                 removed += 1
             else:
@@ -380,6 +387,9 @@ _PARTITION_SOURCE = {
     'components/app-icon.css': 'app-icon',
     'components/app-mockup.css': 'app-mockup',
     'components/concept-card.css': 'concept concept-top task task-meta af-mini-horizons',
+    # .example is the old demo's scenario button. No page uses it, but the word appears in site.js prose,
+    # so the conservative usage scan keeps it. Delete it in the visual redesign.
+    'components/demo.css': 'example',
     'pages/home.css': 'hero hero-visual ribbon visual-caption principle-strip feature flow-list founder-teaser home-product-grid portfolio-teaser',
     'pages/about.css': 'founder-layout founder-panel monogram prose company-overview company-facts evaluation-list founder-contact',
     'pages/products.css': 'product-large product-art product-guide portfolio-card portfolio-detail portfolio-grid portfolio-image-link portfolio-index portfolio-page-link portfolio-tagline logo-family brand-family',
@@ -389,36 +399,53 @@ _PARTITION_SOURCE = {
     'pages/product-page.css': 'future-product-hero future-hero-grid product-brief product-brief-head product-brief-tagline product-detail-grid product-example example-boundary capability-list product-feedback related-grid related-product',
 }
 PARTITION = {name: file for file, names in _PARTITION_SOURCE.items() for name in names.split()}
-# Selector member → file, for rules that must sit later than their owner to keep today's cascade.
-OWNER_OVERRIDES = {}
+# Selector member, or (member, media context), → file, for rules that must sit later than their owner to keep
+# today's cascade between equal-specificity rules in different files.
+OWNER_OVERRIDES = {
+    # The card heading's narrow-phone size must still beat `.product-large h2` (products.css), as it did before the split.
+    ('.concept h2', '@media(max-width:24rem)'): 'pages/products.css',
+    # The notice heading sits inside .section; keeping it in layout.css preserves its original order between the
+    # .section and .editorial-split heading rules it competes with.
+    '.notice h2': 'layout.css',
+}
 MEDIA_FILE_CONTEXTS = ('print', 'prefers-reduced-motion', 'prefers-contrast')
 
+SIDES = ('top', 'right', 'bottom', 'left')
 SHORTHAND_GROUPS = {
-    'gap': {'row-gap', 'column-gap'}, 'inset': {'top', 'right', 'bottom', 'left'},
-    'place-items': {'align-items', 'justify-items'}, 'place-content': {'align-content', 'justify-content'},
-    'place-self': {'align-self', 'justify-self'}, 'font': {'line-height'}, 'flex-flow': {'flex-direction', 'flex-wrap'},
+    'gap': {'row-gap', 'column-gap', 'grid-gap'}, 'grid-gap': {'row-gap', 'column-gap'},
+    'inset': set(SIDES), 'place-items': {'align-items', 'justify-items'},
+    'place-content': {'align-content', 'justify-content'}, 'place-self': {'align-self', 'justify-self'},
+    'font': {'line-height'}, 'flex-flow': {'flex-direction', 'flex-wrap'},
     'border-radius': {'border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius'},
+    'border-color': {f'border-{s}-color' for s in SIDES}, 'border-width': {f'border-{s}-width' for s in SIDES},
+    'border-style': {f'border-{s}-style' for s in SIDES},
     'grid-area': {'grid-row-start', 'grid-row-end', 'grid-column-start', 'grid-column-end'},
     'grid-row': {'grid-row-start', 'grid-row-end'}, 'grid-column': {'grid-column-start', 'grid-column-end'},
 }
-BOX_FAMILIES = {'margin', 'padding', 'border', 'inset', 'overflow'}
+# Logical properties (margin-inline, padding-block, inset-inline-start, …) map onto physical sides, so within these
+# families a logical property is related to every other member.
+LOGICAL_FAMILIES = {'margin', 'padding', 'border', 'inset', 'overflow', 'scroll-margin', 'scroll-padding'}
 
 
 def related(a: str, b: str) -> bool:
-    if a == b:
+    """True when one declaration of a could change the value another declaration of b sets on the same element."""
+    if a == b or 'all' in (a, b):
         return True
     if a.startswith('--') or b.startswith('--'):
         return False
     if a.startswith(b + '-') or b.startswith(a + '-'):
         return True
-    if a.split('-')[0] == b.split('-')[0] and a.split('-')[0] in BOX_FAMILIES:
+    if any((a == s and b in longs) or (b == s and a in longs) for s, longs in SHORTHAND_GROUPS.items()):
         return True
-    return any((a == s and b in longs) or (b == s and a in longs) for s, longs in SHORTHAND_GROUPS.items())
+    logical = any(part in ('inline', 'block') for part in a.split('-') + b.split('-'))
+    return logical and a.split('-')[0] == b.split('-')[0] and a.split('-')[0] in LOGICAL_FAMILIES
 
 
 def owner_file(member: str, context: str) -> str:
     if any(word in context for word in MEDIA_FILE_CONTEXTS):
         return 'media.css'
+    if (member, context) in OWNER_OVERRIDES:
+        return OWNER_OVERRIDES[(member, context)]
     if member in OWNER_OVERRIDES:
         return OWNER_OVERRIDES[member]
     if member == ':root':
@@ -439,8 +466,97 @@ def owner_file(member: str, context: str) -> str:
     return 'base.css'
 
 
-def merge_duplicates(nodes: list) -> list:
-    """Folds earlier rules into the last rule with the same selector and context when no rule in between sets a related property."""
+JS_STATE_CLASSES = {'open'}
+PSEUDO_ELEMENT = re.compile(r'::[a-zA-Z-]+(\([^()]*\))?')
+SIMPLE_PSEUDO = re.compile(r':[a-zA-Z-]+')
+ATTRIBUTE = re.compile(r'\[[^\]]*\]')
+COMBINATOR = re.compile(r'(\s*[>+~]\s*|\s+)')
+
+
+def probe_selector(member: str) -> str:
+    """Over-approximates a selector: drops states, attributes, pseudo-elements and functional pseudo-classes, so the
+    probe matches every element the selector could match in any state. Compounds left empty become `*`."""
+    text = PSEUDO_ELEMENT.sub('', member)
+    text = strip_functional_pseudos(text)
+    text = ATTRIBUTE.sub('', text)
+    text = SIMPLE_PSEUDO.sub('', text)
+    for name in JS_STATE_CLASSES:
+        text = re.sub(r'\.' + re.escape(name) + r'(?![\w-])', '', text)
+    parts = COMBINATOR.split(text)
+    return ''.join((' ' if not part.strip() else f' {part.strip()} ') if i % 2 else (part or '*') for i, part in enumerate(parts))
+
+
+IDENT = re.compile(r'-?[_a-zA-Z][\w-]*')
+LEGACY_PSEUDO_ELEMENTS = {'before', 'after', 'first-line', 'first-letter'}
+
+
+def specificity(selector: str) -> tuple:
+    """Selectors Level 4 specificity (ids, classes/attributes/pseudo-classes, types/pseudo-elements) of one
+    complex selector. :is/:not/:has take their most specific argument; :where adds nothing."""
+    ids = classes = types = 0
+    i, n = 0, len(selector)
+    while i < n:
+        ch = selector[i]
+        if ch in '#.':
+            match = IDENT.match(selector, i + 1)
+            ids, classes = (ids + 1, classes) if ch == '#' else (ids, classes + 1)
+            i = match.end() if match else i + 1
+        elif ch == '[':
+            classes += 1
+            i = selector.index(']', i) + 1
+        elif ch == ':':
+            element = selector.startswith('::', i)
+            match = IDENT.match(selector, i + (2 if element else 1))
+            name = match.group(0).lower() if match else ''
+            i = match.end() if match else i + 1
+            args = None
+            if i < n and selector[i] == '(':
+                depth, j = 0, i
+                while j < n:
+                    depth += selector[j] == '('
+                    depth -= selector[j] == ')'
+                    if depth == 0:
+                        break
+                    j += 1
+                args, i = selector[i + 1:j], j + 1
+            if element or name in LEGACY_PSEUDO_ELEMENTS:
+                types += 1
+            elif name in ('is', 'not', 'has') and args is not None:
+                best = max(specificity(arg.strip()) for arg in split_top_level(args, ','))
+                ids, classes, types = ids + best[0], classes + best[1], types + best[2]
+            elif name != 'where':
+                classes += 1
+        elif IDENT.match(selector, i) and (i == 0 or selector[i - 1] in ' >+~('):
+            types += 1
+            i = IDENT.match(selector, i).end()
+        else:
+            i += 1
+    return ids, classes, types
+
+
+def _order_matters(a_selector: str, a_decl: Decl, b_selector: str, b_decl: Decl, overlaps) -> bool:
+    """Whether swapping the order of two declarations could change a computed value."""
+    if a_decl.prop == b_decl.prop and a_decl.value == b_decl.value:
+        return False
+    return (related(a_decl.prop, b_decl.prop) and a_decl.important == b_decl.important
+            and specificity(a_selector) == specificity(b_selector)
+            and (overlaps is None or overlaps(a_selector, b_selector)))
+
+
+def load_overlaps(path: Path):
+    """Returns overlaps(a, b) from a selector index ({member: [element keys]}). Unknown selectors always overlap."""
+    index = {member: set(keys) for member, keys in json.loads(path.read_text()).items()}
+
+    def overlaps(a: str, b: str) -> bool:
+        if a not in index or b not in index:
+            return True
+        return not index[a].isdisjoint(index[b])
+    return overlaps
+
+
+def merge_duplicates(nodes: list, overlaps=None) -> list:
+    """Folds earlier rules into the last rule with the same selector and context when no rule in between sets a
+    related property on an element both selectors can match. Without an overlaps function, every pair may overlap."""
     nodes = [Rule(n.selector, list(n.decls), n.context) if isinstance(n, Rule) else n for n in nodes]
     positions = defaultdict(list)
     for index, node in enumerate(nodes):
@@ -454,12 +570,35 @@ def merge_duplicates(nodes: list) -> list:
             stay = []
             for decl in nodes[index].decls:
                 between = [nodes[k] for k in range(index + 1, last) if isinstance(nodes[k], Rule)]
-                if any(related(decl.prop, other.prop) for rule in between for other in rule.decls):
+                if any(_order_matters(nodes[index].selector, decl, rule.selector, other, overlaps) for rule in between for other in rule.decls):
                     stay.append(decl)
                 else:
                     moved.append(decl)
             nodes[index].decls = stay
         nodes[last].decls = moved + nodes[last].decls
+    # Backward pass: fold what is still apart into the first rule, under the same safety rule.
+    for indexes in positions.values():
+        live = [i for i in indexes if nodes[i].decls]
+        if len(live) < 2:
+            continue
+        first = live[0]
+        for index in live[1:]:
+            stay = []
+            for decl in nodes[index].decls:
+                between = [nodes[k] for k in range(first + 1, index) if isinstance(nodes[k], Rule)]
+                blockers = [rule for rule in between
+                            if any(_order_matters(nodes[index].selector, decl, rule.selector, other, overlaps) for other in rule.decls)]
+                if not blockers:
+                    nodes[first].decls.append(decl)
+                elif not nodes[index].context and all(r.selector == nodes[index].selector and r.context for r in blockers):
+                    # Hoist a top-level declaration past same-selector conditional rules by also appending it to each
+                    # of them, so it still wins inside their conditions exactly as it did from its later position.
+                    nodes[first].decls.append(decl)
+                    for rule in blockers:
+                        rule.decls.append(decl)
+                else:
+                    stay.append(decl)
+            nodes[index].decls = stay
     return [n for n in nodes if not (isinstance(n, Rule) and not n.decls)]
 
 
@@ -475,7 +614,7 @@ def _redistribute(ordered: list, owners: dict, merged: list) -> dict:
     return {name: items for name, items in result.items() if items}
 
 
-def split(nodes: list) -> dict:
+def split(nodes: list, overlaps=None) -> dict:
     files = defaultdict(list)
     for node in nodes:
         if isinstance(node, Raw):
@@ -491,16 +630,17 @@ def split(nodes: list) -> dict:
     # Prune first so merged rules do not carry declarations a later rule already overrides.
     pruned, _ = prune_overridden(ordered)
     owners.update({id(new): owners[id(old)] for old, new in zip(ordered, pruned)})
-    return _redistribute(pruned, owners, merge_duplicates(pruned))
+    return _redistribute(pruned, owners, merge_duplicates(pruned, overlaps))
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=['report', 'check', 'prune', 'tokenize', 'split'])
+    parser.add_argument('command', choices=['report', 'check', 'prune', 'tokenize', 'split', 'selectors'])
     parser.add_argument('css', type=Path)
     parser.add_argument('out', type=Path, nargs='?')
     parser.add_argument('--html', type=Path, required=True, help='generated site directory (dist)')
     parser.add_argument('--out-dir', type=Path)
+    parser.add_argument('--overlap', type=Path, help='selector index from qa/selector-index.mjs')
     args = parser.parse_args(argv)
     nodes = parse(args.css.read_text())
     is_used = load_usage(args.html)
@@ -511,10 +651,14 @@ def main(argv=None) -> int:
         problems = check(nodes, is_used)
         print('\n'.join(problems) if problems else 'OK: stylesheet satisfies the Foundation rules.')
         return 1 if problems else 0
+    if args.command == 'selectors':
+        members = {m for n in nodes if isinstance(n, Rule) for m in split_top_level(n.selector, ',')}
+        print(json.dumps({m: probe_selector(m) for m in sorted(members)}, indent=1))
+        return 0
     if args.command == 'split':
         if args.out_dir is None:
             parser.error('split needs --out-dir')
-        files = split(nodes)
+        files = split(nodes, load_overlaps(args.overlap) if args.overlap else None)
         for name, file_nodes in files.items():
             target = args.out_dir / name
             target.parent.mkdir(parents=True, exist_ok=True)

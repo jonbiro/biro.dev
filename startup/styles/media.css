@@ -1,0 +1,78 @@
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+  *:before{animation:none!important;transition:none!important}
+  *:after{animation:none!important;transition:none!important}
+  .af-demo *{scroll-behavior:auto;transition:none!important}
+}
+@media(prefers-contrast:more){
+  :root{--text-muted:#d2def0;--border-line:var(--border-5)}
+  .af-demo{border-color:var(--border-5)}
+  .card{border-color:var(--border-5)}
+  .notice{border-color:var(--border-5)}
+  .af-session{border-color:var(--border-5)}
+  .af-topbar{border-color:var(--border-5)}
+  .af-tabs{border-color:var(--border-5)}
+  .muted{color:#d2def0}
+  .micro{color:#d2def0}
+  .af-step{color:#d2def0}
+  .af-sidebar p{color:#d2def0}
+  .af-disclosure{color:#d2def0}
+  a:focus-visible{outline-width:4px}
+  button:focus-visible{outline-width:4px}
+}
+@media print{
+  html{background:white!important;color:#111!important}
+  body{background:white!important;color:#111!important}
+  .header{display:none!important}
+  .footer{display:none!important}
+  .hero-visual{display:none!important}
+  .af-demo{display:none!important}
+  .mission-image{display:none!important}
+  .actions{display:none!important}
+  .button{display:none!important}
+  .skip{display:none!important}
+  main *{color:#111!important;background:transparent!important;box-shadow:none!important;animation:none!important}
+  section{max-width:none!important;padding:1rem 0!important;margin:0!important}
+  .wrap{max-width:none!important;padding:1rem 0!important;margin:0!important}
+  .cards{display:block!important}
+  .feature{display:block!important}
+  .founder-layout{display:block!important}
+  .af-product-hero{display:block!important}
+  .readiness-grid{display:block!important}
+  .privacy-note{display:block!important}
+  h1{font-size:28pt!important}
+  h2{font-size:20pt!important}
+  .card{break-inside:avoid}
+  .readiness-grid article{break-inside:avoid}
+  details>p{display:block!important}
+  .editorial-split{display:block!important}
+  .company-overview{display:block!important}
+  .development-steps{display:block!important}
+  .intent-example{display:block!important}
+  .contact-note{display:block!important}
+  .intent-example>div{break-inside:avoid}
+  .development-steps li{break-inside:avoid}
+  .contact-address{font-size:16pt!important}
+  .portfolio-grid{display:block!important}
+  .portfolio-card{break-inside:avoid}
+  .portfolio-card details>div{display:block!important}
+  .portfolio-index{display:none!important}
+  .future-hero-grid{display:block!important}
+  .product-detail-grid{display:block!important}
+  .related-grid{display:block!important}
+  .product-feedback{display:block!important}
+  .product-brief{break-inside:avoid}
+  .product-example{break-inside:avoid}
+  .breadcrumbs{display:none!important}
+  .product-feedback .button{display:none!important}
+  .app-mockup{display:none!important}
+  .portfolio-image-link{display:none!important}
+  .brand-family{display:none!important}
+  .home-product-grid{display:block!important}
+  .focus-contexts{display:block!important}
+  .horizon-guide{display:block!important}
+  .evaluation-list{display:block!important}
+  .page-contents{display:none!important}
+  .product-guide tr{break-inside:avoid}
+}

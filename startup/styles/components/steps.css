@@ -1,0 +1,11 @@
+.development-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-8);list-style:none;padding:0;margin:2.5rem 0 0;counter-reset:stage}
+.development-steps li{counter-increment:stage;border-top:1px solid var(--border-4);padding-top:1.5rem;min-width:0}
+.development-steps li::before{content:'0' counter(stage);display:block;color:var(--accent);font-size:2rem;line-height:1;margin-bottom:1.5rem;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.development-steps h3{margin-top:1.25rem;font-size:1.25rem}
+.development-steps p{color:var(--text-muted)}
+@media(max-width:60rem){
+  .development-steps{gap:var(--space-5)}
+}
+@media(max-width:47.5rem){
+  .development-steps{grid-template-columns:minmax(0,1fr);gap:var(--space-8)}
+}
