@@ -1,5 +1,9 @@
 {
   "canonical_origin": "https://biro.dev",
   "contact_email": "founder@biro.dev",
-  "indexing_enabled": true
+  "indexing_enabled": true,
+  "profiles": {
+    "github": "https://github.com/jonbiro",
+    "linkedin": ""
+  }
 }
