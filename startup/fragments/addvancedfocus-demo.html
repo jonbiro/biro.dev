@@ -1,0 +1,47 @@
+<section class="concept-section wrap" id="concept-demo" tabindex="-1" aria-labelledby="concept-heading">
+  <div class="concept-section-heading"><div><p class="eyebrow">TRY A SMALL PART OF THE IDEA</p><h2 id="concept-heading">A little less to hold.<br>A clear place to start.</h2></div><p>Explore three everyday situations. Adjust the energy level, start a short session, or leave yourself a return note.</p></div>
+  <div class="af-demo" data-af-demo>
+    <div class="af-topbar"><strong class="af-wordmark">Addvanced<span>Focus</span></strong><span class="pill">Interactive prototype</span></div>
+    <div class="af-body">
+      <aside class="af-sidebar" aria-label="Example settings">
+        <details class="af-settings" id="af-settings" open><summary>Choose a situation &amp; energy</summary><div class="af-settings-content"><p class="eyebrow">AN EVERYDAY MOMENT</p>
+        <div class="af-scenarios" role="group" aria-label="Choose a situation">
+          <button type="button" data-scenario="work" aria-pressed="true"><strong>A task I’m avoiding</strong><span>Get a draft off the ground</span></button>
+          <button type="button" data-scenario="routine" aria-pressed="false"><strong>A routine that feels big</strong><span>Make tomorrow easier</span></button>
+          <button type="button" data-scenario="home" aria-pressed="false"><strong>A lot to keep track of</strong><span>Lighten the household load</span></button>
+        </div>
+        <fieldset class="af-energy" aria-describedby="af-settings-help"><legend>What feels doable?</legend><label><input type="radio" name="demo-energy" value="low" checked> A tiny step <span>2 min</span></label><label><input type="radio" name="demo-energy" value="steady"> A little more <span>5 min</span></label></fieldset>
+        <p class="micro" id="af-settings-help">Choose what fits your energy. You can stop whenever you need.</p>
+        </div></details>
+      </aside>
+      <div class="af-workspace">
+        <p class="af-context-line" id="af-context-line">A task I’m avoiding · A tiny step</p><div class="af-tabs" role="tablist" aria-label="Plan horizon">
+          <button type="button" role="tab" id="af-tab-now" data-horizon="now" aria-controls="af-panel-now" aria-selected="true" tabindex="0">Now</button>
+          <button type="button" role="tab" id="af-tab-today" data-horizon="today" aria-controls="af-panel-today" aria-selected="false" tabindex="-1">Today</button>
+          <button type="button" role="tab" id="af-tab-upcoming" data-horizon="upcoming" aria-controls="af-panel-upcoming" aria-selected="false" tabindex="-1">Upcoming</button>
+          <button type="button" role="tab" id="af-tab-later" data-horizon="later" aria-controls="af-panel-later" aria-selected="false" tabindex="-1">Later</button>
+        </div>
+        <div role="tabpanel" id="af-panel-now" aria-labelledby="af-tab-now" tabindex="0">
+          <div class="af-now-heading"><span class="eyebrow">JUST ONE THING</span><span id="af-task-meta" class="af-effort">2 min · Low effort</span></div>
+          <p id="af-task-context" class="muted">The report you’ve been putting off</p>
+          <h3 id="af-task-title" tabindex="-1">Open a blank document.</h3>
+          <p id="af-task-step" class="af-step">Give it a working title. That’s enough for a beginning.</p>
+          <details class="af-why"><summary>Why this step?</summary><p id="af-task-why">It removes the setup barrier without asking you to write the whole report.</p></details>
+          <div class="af-session">
+            <div class="af-clock"><span id="af-timer" role="timer" aria-label="Time remaining" aria-live="off">02:00</span><span id="af-session-label">A little time to begin</span></div>
+            <div class="af-session-actions"><button type="button" class="button" id="af-primary" data-af-action="primary">Start 2 minutes</button><button type="button" class="af-quiet" id="af-done" data-af-action="done">Done for now</button></div>
+          <div class="af-alternatives"><button type="button" class="af-quiet" id="af-stop" data-af-action="stop" hidden>Stop session</button><button type="button" class="af-quiet" id="af-smaller" data-af-action="smaller" hidden>Make this step smaller</button></div><progress id="af-progress" max="120" value="0" aria-label="Elapsed focus time"></progress></div>
+          <p class="af-return-hint" id="af-return-hint" hidden></p>
+          <div class="af-checkpoint" id="af-checkpoint" hidden><label for="af-return-note">Leave a note for when you return <span>(optional)</span></label><textarea id="af-return-note" rows="2" maxlength="240" placeholder="e.g. The document is open. Next: write the first heading."></textarea><p class="micro">Kept only while this page stays open. Nothing is sent or saved to browser storage.</p></div>
+          <div class="af-completion" id="af-completion" hidden><strong>A step forward counts.</strong><p>You can continue when it feels right—or leave it here.</p><button type="button" class="af-quiet" id="af-undo" data-af-action="undo">Undo completion</button></div>
+        </div>
+        <div role="tabpanel" id="af-panel-today" aria-labelledby="af-tab-today" tabindex="0" hidden><h3>A small plan for today.</h3><p class="muted">Only a few things in view. Choose one to make it your next step.</p><div id="af-today-list" class="af-task-list"></div></div>
+        <div role="tabpanel" id="af-panel-upcoming" aria-labelledby="af-tab-upcoming" tabindex="0" hidden><h3>On the horizon.</h3><p class="muted">Useful to remember. No need to carry it all right now.</p><ul id="af-upcoming-list" class="af-later-list"></ul></div>
+        <div role="tabpanel" id="af-panel-later" aria-labelledby="af-tab-later" tabindex="0" hidden><h3>Out of the way, not forgotten.</h3><p class="muted">Ideas that can wait until you have room for them.</p><ul id="af-later-list" class="af-later-list"></ul></div>
+        <div class="af-bottom"><p id="af-announcement" role="status" aria-live="polite">No perfect plan needed. Just a place to begin.</p><button type="button" class="af-quiet" data-af-action="reset">Reset example</button></div>
+      </div>
+    </div>
+    <p class="af-disclosure">Scripted examples, not live AI. The timer and controls work in this prototype. Your selections and return note stay in this page’s memory and disappear when you leave this product page or refresh.</p>
+    <noscript><p class="af-disclosure">Enable JavaScript to try the timer and planning controls. The sample above shows the intended experience.</p></noscript>
+  </div>
+</section>

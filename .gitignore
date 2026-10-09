@@ -10,3 +10,8 @@ dist/
 .dev.vars*
 .env*
 var/
+
+# Generated static startup website; keep deployment assets with source.
+!startup/dist/
+!startup/dist/**
+startup/__pycache__/

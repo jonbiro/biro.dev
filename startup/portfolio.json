@@ -1,0 +1,441 @@
+[
+  {
+    "name": "CareBridge",
+    "slug": "carebridge",
+    "category": "Family care coordination",
+    "tagline": "Less paperwork. More progress.",
+    "description": "An AI family assistant being designed to help parents coordinate evaluations, therapies, school services, and the follow-ups that connect them.",
+    "features": [
+      "Organize developmental evaluations, IEPs, IFSPs, and therapy reports.",
+      "Surface recommendations, outstanding referrals, and follow-up actions.",
+      "Track deadlines, appointments, and services in one chronological history.",
+      "Summarize progress across providers and prepare questions for appointments.",
+      "Draft emails requesting evaluations or additional services for parents to review.",
+      "Highlight possible services or accommodations for families to investigate."
+    ],
+    "example": "A parent uploads a developmental evaluation. The intended experience would turn its recommendations into a reviewable checklist, help track which services have been scheduled, and draft requests for outstanding follow-ups.",
+    "principle": "Parents review recommendations and approve communications. Eligibility and services would need to be confirmed with the relevant providers or agencies.",
+    "headline": "A clearer picture of care.",
+    "audience": "Parents and family caregivers coordinating developmental evaluations, early intervention, therapies, and school services.",
+    "problem": "A recommendation in one report can become a referral, an appointment, a request to a school, and several follow-ups. The work spans providers and systems, while the family is left to keep the whole picture in mind.",
+    "goal": "Make the next outstanding action visible, with the original recommendation close at hand.",
+    "workflow": [
+      [
+        "Bring the pieces together",
+        "Start with an evaluation or therapy report. The intended experience would identify recommendations and preserve their source so a parent can review them."
+      ],
+      [
+        "Check what is already happening",
+        "Mark a recommendation as scheduled, in progress, waiting for a response, or still to arrange. Make uncertainty explicit instead of treating an extracted suggestion as a confirmed need."
+      ],
+      [
+        "Prepare the next conversation",
+        "Build an appointment question list or an editable request. Parents decide what to share, with whom, and when."
+      ]
+    ],
+    "access": "Plain-language summaries, a chronological view, and a short list of outstanding actions would help reduce the effort of reviewing a large care history.",
+    "questions": [
+      [
+        "Would CareBridge decide which services a child qualifies for?",
+        "No. The concept would help organize documented recommendations and questions. Eligibility decisions and service availability would still need to be confirmed with the relevant professionals and agencies."
+      ],
+      [
+        "Would it send requests automatically?",
+        "The intended workflow is to prepare drafts for a parent to review. Sending, sharing, and permissions would need explicit user control."
+      ],
+      [
+        "Could multiple family members use it?",
+        "Permission-controlled collaboration is a possible direction. Roles, access to a child’s information, and sharing boundaries have not been finalized."
+      ]
+    ],
+    "related": [
+      "plainpath",
+      "storyready"
+    ],
+    "mockup_asset": "/assets/products/carebridge.png"
+  },
+  {
+    "name": "StoryReady",
+    "slug": "storyready",
+    "category": "Visual stories & transitions",
+    "tagline": "Make the unfamiliar feel familiar.",
+    "description": "Personalized visual preparation for children who benefit from predictable routines, clear sequences, and support with unfamiliar experiences.",
+    "features": [
+      "Generate visual stories and illustrated routines from a simple description.",
+      "Keep child and family characters consistent across stories.",
+      "Prepare for preschool, doctor visits, travel, haircuts, and other transitions.",
+      "Explain emotions and social situations with accessible illustrations.",
+      "Offer visual countdowns and first-then schedules.",
+      "Support familiar recorded voices, multiple languages, and adaptable visual complexity."
+    ],
+    "example": "Before a dentist visit, a family could create a short story showing the likely sequence, the people their child may meet, and how to ask for a break.",
+    "principle": "Families would review stories for accuracy and fit. Preparation should make room for uncertainty and a child’s choices, including asking for a pause.",
+    "headline": "A little preparation.<br>A more familiar tomorrow.",
+    "audience": "Children who benefit from visual preparation, including autistic children and children with developmental or communication differences, together with their families.",
+    "problem": "An unfamiliar place can bring unfamiliar people, sounds, expectations, and transitions all at once. A short, recognizable story can offer a way to talk through what may happen before arriving.",
+    "goal": "Make the sequence easier to understand while leaving room for questions, breaks, and changes.",
+    "workflow": [
+      [
+        "Describe the upcoming moment",
+        "A parent could describe a dentist visit, a first day at preschool, or a trip, including what the child already knows and what needs explanation."
+      ],
+      [
+        "Review and personalize the story",
+        "Choose familiar characters, adjust the wording and sequence, and remove details that do not fit. The adult would check the story before sharing it with the child."
+      ],
+      [
+        "Prepare together",
+        "Revisit a short illustrated sequence, use a first-then view, or listen to a familiar recorded voice. Include ways to ask for help or a pause."
+      ]
+    ],
+    "access": "Adjustable visual detail, short sequences, familiar voices, and language choices would support different communication needs without assuming that one story format works for every child.",
+    "questions": [
+      [
+        "Would the story promise exactly what will happen?",
+        "No. The intended approach would distinguish likely events from details that may change, and include ways to respond when an experience differs from the story."
+      ],
+      [
+        "Could a family use it for everyday routines?",
+        "Yes, that is part of the planned direction, alongside preparation for specific upcoming events. A routine could be broken into a short illustrated sequence."
+      ],
+      [
+        "Would family photos be required?",
+        "Photo requirements and personalization methods are not finalized. The goal is recognizable characters with meaningful choices about personal information."
+      ]
+    ],
+    "related": [
+      "sensoryscout",
+      "sayable"
+    ],
+    "mockup_asset": "/assets/products/storyready.png"
+  },
+  {
+    "name": "ClearCue",
+    "slug": "clearcue",
+    "category": "Speech comprehension & follow-through",
+    "tagline": "Hear it. Understand it. Remember it.",
+    "description": "An auditory processing assistant focused on understanding and remembering spoken information, including for people with ADHD, auditory processing differences, or hearing difficulties.",
+    "features": [
+      "Provide real-time transcription and accessible conversation summaries.",
+      "Identify instructions, commitments, and important details.",
+      "Offer a “What did I miss?” review of recent conversation.",
+      "Turn complex verbal instructions into manageable steps.",
+      "Make confusing passages easier to revisit and clarify.",
+      "Suggest follow-up questions and optional visual reminders."
+    ],
+    "example": "After an appointment, someone could review a concise summary, find the next steps, and see which instructions need clarification with the provider.",
+    "principle": "Recording would require appropriate consent and clear controls. Transcripts and summaries can be wrong; important details should be checked against the conversation.",
+    "headline": "Keep the meaning.<br>Find the next step.",
+    "audience": "People who find spoken information difficult to process or retain, including some people with ADHD, auditory processing differences, and hearing difficulties.",
+    "problem": "Hearing a sentence, understanding its meaning, and remembering what to do next are different demands. Instructions can be lost when a conversation moves faster than someone can process it.",
+    "goal": "Turn a conversation into something the person can revisit, clarify, and act on at their own pace.",
+    "workflow": [
+      [
+        "Start with clear consent",
+        "The planned experience would make recording state visible and provide start, pause, and stop controls. Consent and privacy requirements would shape the capture process."
+      ],
+      [
+        "Recover the thread",
+        "Review a transcript or a brief recap of what was missed. Keep a path back to the relevant passage instead of relying only on an AI summary."
+      ],
+      [
+        "Clarify before acting",
+        "Separate instructions, commitments, and open questions. A user could review a suggested follow-up question when a detail is uncertain."
+      ]
+    ],
+    "access": "Readable live text, concise recaps, adjustable presentation, and discreet optional reminders would focus on comprehension and follow-through.",
+    "questions": [
+      [
+        "Would ClearCue record in the background?",
+        "Background recording is not a promised feature. The product direction centers on visible recording controls and appropriate consent."
+      ],
+      [
+        "Would it replace hearing support or an interpreter?",
+        "No replacement is claimed. ClearCue is a concept for reviewing and understanding speech, with limitations that would need to be evaluated before release."
+      ],
+      [
+        "Would conversations be processed on the device?",
+        "The processing model is still being defined. Local and cloud processing choices, retention, and deletion would be explained before people use the product."
+      ]
+    ],
+    "related": [
+      "plainpath",
+      "addvancedfocus"
+    ],
+    "mockup_asset": "/assets/products/clearcue.png"
+  },
+  {
+    "name": "PlainPath",
+    "slug": "plainpath",
+    "category": "Written information & action",
+    "tagline": "Make complicated things understandable.",
+    "description": "A cognitive accessibility assistant that would help people understand complex documents and follow through on what those documents ask them to do.",
+    "features": [
+      "Photograph or upload letters, forms, and instructions.",
+      "Explain complex language and unfamiliar terms in accessible wording.",
+      "Highlight required actions and stated deadlines.",
+      "Turn information into step-by-step checklists and reminders.",
+      "Offer read-aloud support, adjustable reading levels, and visual formatting.",
+      "Draft responses for the user to review and approve."
+    ],
+    "example": "An insurance letter could become a plain-language explanation with its stated deadline and a checklist of possible next steps tied to the original document.",
+    "principle": "Explanations should preserve access to the original wording and distinguish stated facts from suggestions. Important deadlines and requirements would need verification.",
+    "headline": "Understand the document.<br>Know what comes next.",
+    "audience": "People who need support with dense or unfamiliar written information, including people with learning differences, cognitive disabilities, or executive-function challenges.",
+    "problem": "A letter may contain a decision, a deadline, exceptions, and instructions spread across several pages. A shorter summary is useful only if it preserves the details the person needs to make a decision.",
+    "goal": "Connect an accessible explanation to the original text and a manageable, reviewable action list.",
+    "workflow": [
+      [
+        "Bring in the document",
+        "Photograph or upload a letter, form, or set of instructions. The planned experience would flag unclear text rather than silently filling in missing information."
+      ],
+      [
+        "Understand it in context",
+        "Read an accessible explanation, look up an unfamiliar term, or listen aloud. Return to the source wording when a detail matters."
+      ],
+      [
+        "Review the next steps",
+        "Check extracted deadlines and actions. Prepare an editable response or choose a reminder after confirming the underlying requirement."
+      ]
+    ],
+    "access": "Adjustable reading complexity, read-aloud support, spacing, and step-by-step views would let people choose how to approach the same information.",
+    "questions": [
+      [
+        "Would simplifying a document change its meaning?",
+        "The goal is to preserve meaning while making the language easier to understand. AI can make mistakes, so access to the original document and checks for important details are central to the concept."
+      ],
+      [
+        "Would PlainPath provide professional advice?",
+        "The concept focuses on explaining supplied information and organizing possible actions. It is not presented as a substitute for legal, medical, financial, or other professional advice."
+      ],
+      [
+        "Could it complete forms for me?",
+        "Drafting responses for review is planned. Automatic filing, signing, or submitting forms is not an announced capability."
+      ]
+    ],
+    "related": [
+      "carebridge",
+      "clearcue"
+    ],
+    "mockup_asset": "/assets/products/plainpath.png"
+  },
+  {
+    "name": "StepAble",
+    "slug": "stepable",
+    "category": "Independent living skills",
+    "tagline": "Independence, one step at a time.",
+    "description": "An independent-living coach being conceived for people with intellectual or developmental disabilities, autism, and other cognitive support needs.",
+    "features": [
+      "Break cooking, cleaning, laundry, and organization into understandable steps.",
+      "Offer picture-based and spoken instructions.",
+      "Explore optional camera-based assistance for recognizing objects.",
+      "Adapt the pace and complexity of guidance.",
+      "Help prepare for errands and using public transportation.",
+      "Offer optional caregiver support with explicit permissions.",
+      "Reduce prompts as the person becomes more confident."
+    ],
+    "example": "A laundry routine could guide someone through sorting, loading, choosing settings, and putting clothes away, with additional visual guidance when requested.",
+    "principle": "The direction is to develop with input from people with disabilities and relevant specialists. StepAble would support how to do a task; AddvancedFocus focuses on choosing and starting it.",
+    "headline": "Build confidence<br>in the everyday.",
+    "audience": "People with intellectual or developmental disabilities, autism, or other cognitive support needs who want guidance with everyday activities.",
+    "problem": "A task described as one instruction—“do the laundry”—contains many smaller decisions. Support needs can vary by task, environment, and day, so guidance should be adjustable rather than fixed.",
+    "goal": "Offer the amount of guidance a person chooses, with a clear way to repeat, pause, or ask for help.",
+    "workflow": [
+      [
+        "Choose a familiar activity",
+        "Begin with a defined household routine or an errand to prepare for. The intended experience would account for the person’s environment and preferred level of support."
+      ],
+      [
+        "Move one step at a time",
+        "Follow a picture or spoken instruction, repeat it, or request more detail. Optional camera assistance is an area to explore, not a working capability."
+      ],
+      [
+        "Adjust the support",
+        "Keep helpful prompts and reduce unnecessary ones as confidence develops. Any caregiver access would be optional and permission-controlled."
+      ]
+    ],
+    "access": "Picture-based and spoken guidance, adjustable pace, large usable controls, and repeatable steps would support different cognitive and motor needs.",
+    "questions": [
+      [
+        "How is this different from AddvancedFocus?",
+        "AddvancedFocus centers on deciding what to do and getting started. StepAble would focus on understanding how to carry out a chosen activity, step by step."
+      ],
+      [
+        "Would a caregiver need to monitor every task?",
+        "Constant supervision is not the goal. The right level of support depends on the person and the activity; optional caregiver roles would need careful design."
+      ],
+      [
+        "Could camera guidance handle any activity?",
+        "No such capability is promised. Camera interpretation can be wrong, and the suitability of an activity would need to be assessed as part of development."
+      ]
+    ],
+    "related": [
+      "addvancedfocus",
+      "storyready"
+    ],
+    "mockup_asset": "/assets/products/stepable.png"
+  },
+  {
+    "name": "SayAble",
+    "slug": "sayable",
+    "category": "Communication & expression",
+    "tagline": "Your voice. Your choices.",
+    "description": "An AI-assisted communication concept for people who have difficulty speaking, with an emphasis on personal expression and control over every message.",
+    "features": [
+      "Provide picture-based communication boards and personalized vocabulary.",
+      "Suggest contextually relevant phrases for the user to choose.",
+      "Offer text-to-speech and multilingual communication.",
+      "Adapt interfaces to motor and cognitive access needs.",
+      "Explore optional personal voice technology.",
+      "Support compatible accessibility input methods."
+    ],
+    "example": "At a restaurant, someone could quickly choose a phrase to ask for a menu, check ingredients, or communicate a preference.",
+    "principle": "AI would suggest, never independently speak on someone’s behalf. Development would need to be shaped with AAC users and speech-language professionals, with communication autonomy at its center.",
+    "headline": "Support for expression.<br>Control stays with you.",
+    "audience": "People who have difficulty speaking, including people with speech disabilities, cerebral palsy, autism, and neurological conditions.",
+    "problem": "Communication is personal. A useful system needs to make it easier to express a preference, ask a question, or say something unexpected, without letting suggested language decide the message.",
+    "goal": "Make personally meaningful words and phrases easier to access while leaving every communication choice with the user.",
+    "workflow": [
+      [
+        "Make the vocabulary personal",
+        "The concept would let a person build useful words, pictures, and phrases around their life and communication preferences."
+      ],
+      [
+        "Find a phrase when it matters",
+        "Use a communication board or review contextually relevant suggestions. Suggestions should remain optional and easy to change or ignore."
+      ],
+      [
+        "Choose what to communicate",
+        "The person selects the message and controls speech output. AI would not independently speak on their behalf."
+      ]
+    ],
+    "access": "Motor access, input-method compatibility, board layout, vocabulary, and multilingual support would need to be shaped with AAC users and speech-language professionals.",
+    "questions": [
+      [
+        "What does AAC mean?",
+        "Augmentative and alternative communication describes ways of supporting or replacing speech. SayAble is a proposed communication tool in that broad area."
+      ],
+      [
+        "Would AI decide what someone means?",
+        "No. The direction is optional phrase suggestions, with the user choosing the message. A suggestion must not be treated as a statement of the person’s intent."
+      ],
+      [
+        "Would it work with personal voices or switch access?",
+        "Personal voice technology and accessibility input methods are areas to explore. Specific supported technologies and platforms have not been announced."
+      ]
+    ],
+    "related": [
+      "storyready",
+      "clearcue"
+    ],
+    "mockup_asset": "/assets/products/sayable.png"
+  },
+  {
+    "name": "SensoryScout",
+    "slug": "sensoryscout",
+    "category": "Sensory access & outings",
+    "tagline": "Explore the world on your terms.",
+    "description": "A sensory accessibility assistant intended to help people plan outings around their preferences for noise, lighting, crowds, and predictability.",
+    "features": [
+      "Discover destinations with available sensory-access information.",
+      "Bring together reports about noise, lighting, and crowd conditions.",
+      "Create personal sensory preferences and outing plans.",
+      "Suggest potentially quieter visiting times and accommodations to request.",
+      "Combine user reports with available environmental information.",
+      "Offer preparation and calming strategies selected by the person using it."
+    ],
+    "example": "A museum visit could start with a review of reported sensory conditions, possible quieter periods, and a personal plan for breaks.",
+    "principle": "Conditions change. Reports would need source and freshness information, with uncertainty made clear. A useful service depends on reliable data and participation.",
+    "headline": "Plan the outing<br>around your needs.",
+    "audience": "People affected by sensory overload and families planning around individual needs for noise, light, crowds, and predictability.",
+    "problem": "A place described as quiet may be very different at another time. Useful sensory information needs context: who reported it, when they visited, and which conditions mattered to them.",
+    "goal": "Help people make informed plans using available information, personal preferences, and visible uncertainty.",
+    "workflow": [
+      [
+        "Describe what matters",
+        "Set preferences for aspects such as noise, lighting, crowds, and break opportunities. Needs should be adjustable from one outing to the next."
+      ],
+      [
+        "Review the available picture",
+        "Compare reports and available environmental information. The intended experience would show source and freshness details rather than implying guaranteed conditions."
+      ],
+      [
+        "Prepare a flexible plan",
+        "Consider possible quieter periods, accommodations to ask about, and user-selected preparation strategies. Keep space for a break or a change of plan."
+      ]
+    ],
+    "access": "Clear comparisons, predictable navigation, readable reports, and control over sensory preferences would be part of the design direction.",
+    "questions": [
+      [
+        "Would it measure live conditions everywhere?",
+        "No. Reliable location information is a development challenge. Live coverage, specific data sources, and participating venues have not been announced."
+      ],
+      [
+        "Would a sensory-friendly label fit everyone?",
+        "No. People experience environments differently. The goal is information matched to individual preferences, rather than a universal rating."
+      ],
+      [
+        "Could families prepare a child for the visit?",
+        "Preparation is part of the planned direction. A future optional connection with StoryReady could be useful, but cross-product connections are not available today."
+      ]
+    ],
+    "related": [
+      "storyready",
+      "stepable"
+    ],
+    "mockup_asset": "/assets/products/sensoryscout.png"
+  },
+  {
+    "name": "OpenCall",
+    "slug": "opencall",
+    "category": "Accessible scam awareness",
+    "tagline": "A clearer pause before you act.",
+    "description": "An accessibility-focused direction for OpenCall: help people with cognitive support needs recognize potentially fraudulent messages and calls, understand the warning signs, and consider safer next steps.",
+    "features": [
+      "Explore checks for suspicious messages and calls.",
+      "Explain warning signs in clear, accessible language.",
+      "Offer practical next steps, such as verifying a request through a known channel.",
+      "Keep the decision with the user rather than automatically acting on a message."
+    ],
+    "example": "An urgent payment request could be explained in plain language, with its warning signs highlighted and a suggestion to verify the request using independently known contact details.",
+    "principle": "A scam assessment would be guidance, not a guarantee. The accessibility-focused experience is a future product direction; no detection accuracy or released capability is claimed.",
+    "headline": "A moment to pause.<br>A clearer next move.",
+    "audience": "People who would benefit from accessible explanations of suspicious messages or calls, including people with cognitive support needs and age-related difficulties.",
+    "problem": "An urgent request can make someone feel they must act before checking. A warning label alone may not explain what is concerning or give the person an understandable next step.",
+    "goal": "Explain the concern in plain language and support the person’s decision about how to respond.",
+    "workflow": [
+      [
+        "Review a concerning interaction",
+        "The future accessibility-focused experience would help examine a suspicious message or call. Capture methods and supported platforms remain to be defined."
+      ],
+      [
+        "Understand the warning signs",
+        "Explain what prompted concern and distinguish observed details from an uncertain assessment. Avoid presenting a prediction as a guarantee."
+      ],
+      [
+        "Choose a safer next step",
+        "Offer understandable options, such as checking a request through independently known contact details. The user stays in charge of responding."
+      ]
+    ],
+    "access": "Plain-language explanations, concise next steps, and an interface that avoids adding pressure would be central to the accessibility-focused direction.",
+    "questions": [
+      [
+        "Would OpenCall catch every scam?",
+        "No detection system can promise that. This concept would provide an assessment and explanation, with the uncertainty and limitations made clear."
+      ],
+      [
+        "Would it automatically block calls or respond to messages?",
+        "Automatic blocking and responding are not announced features of this concept. The current direction emphasizes explanation and user choice."
+      ],
+      [
+        "Is there a working scam checker on this website?",
+        "No. This page describes the future accessibility-focused direction for OpenCall. It does not analyze uploaded content, calls, or messages."
+      ]
+    ],
+    "related": [
+      "plainpath",
+      "clearcue"
+    ],
+    "mockup_asset": "/assets/products/opencall.png"
+  }
+]

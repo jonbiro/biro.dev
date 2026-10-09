@@ -1,6 +1,7 @@
 [build]
-  command = "npm run build"
-  publish = "dist/client"
+  base = "startup"
+  command = "python3 generate.py"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
