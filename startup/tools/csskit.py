@@ -1,7 +1,9 @@
 """Parse, audit and restructure the Biro.dev stylesheet. Standard library only.
 
-  python3 tools/csskit.py report <css> --html dist
-  python3 tools/csskit.py check  <css> --html dist
+  python3 tools/csskit.py report   <css> --html dist
+  python3 tools/csskit.py check    <css> --html dist
+  python3 tools/csskit.py prune    <in.css> <out.css> --html dist
+  python3 tools/csskit.py tokenize <in.css> <out.css> --html dist
 """
 from __future__ import annotations
 
@@ -245,10 +247,112 @@ def report(nodes: list, is_used) -> str:
     return '\n'.join(lines)
 
 
+FALLBACK_MARKERS = ('dvh', 'svh', 'lvh', 'dvw', 'svw', 'lvw', 'cqw', 'cqh', 'cqi', 'clamp(', 'min(', 'max(', 'env(', 'color-mix(', '-webkit-', '-moz-')
+
+# Token table from the Foundation spec. Values are exact; the redesign normalizes them later.
+COLOR_TOKENS = {
+    '#090f1b': '--color-bg', '#0d1727': '--surface-1', '#101d30': '--surface-2', '#111d30': '--surface-3',
+    '#142238': '--surface-4', '#14243a': '--surface-5', '#132640': '--surface-6',
+    '#2b415e': '--border-1', '#304965': '--border-2', '#3b5576': '--border-3', '#415b7d': '--border-4', '#6685af': '--border-5',
+    '#e7eef9': '--text', '#d2def0': '--text-muted', '#c1cfe0': '--text-quiet', '#acbad0': '--text-subtle',
+    '#8bb6ff': '--accent', '#b4cfff': '--accent-text', '#c0d5f4': '--accent-text-soft', '#091321': '--on-accent',
+    '#00000040': '--shadow-color',
+}
+RENAMED_VARS = {'--ink': '--text', '--muted': '--text-muted', '--blue': '--accent', '--line': '--border-5'}
+RADIUS_TOKENS = {'.75rem': '--radius-sm', '1rem': '--radius-md', '1.5rem': '--radius-lg', '24px': '--radius-lg-px', '100px': '--radius-pill'}
+GAP_TOKENS = {'.5rem': '--space-2', '.75rem': '--space-3', '1rem': '--space-4', '1.25rem': '--space-5',
+              '1.5rem': '--space-6', '2rem': '--space-8', '2.5rem': '--space-10', '4rem': '--space-16'}
+BREAKPOINTS = {'(max-width:760px)': '(max-width:47.5rem)', '(min-width:761px)': '(min-width:47.5625rem)',
+               '(max-width:1000px)': '(max-width:62.5rem)', '(max-width:440px)': '(max-width:27.5rem)'}
+HEX = re.compile(r'#[0-9a-fA-F]{3,8}\b')
+
+
+def prune_dead_selectors(nodes: list, is_used) -> tuple:
+    out, removed = [], []
+    for node in nodes:
+        if isinstance(node, Rule):
+            members = split_top_level(node.selector, ',')
+            alive = [m for m in members if all(is_used(name) for name in classes_outside_pseudos(m))]
+            removed += [m for m in members if m not in alive]
+            if not alive:
+                continue
+            node = Rule(','.join(alive), node.decls, node.context)
+        out.append(node)
+    return out, removed
+
+
+def _markers(value: str) -> set:
+    return {marker for marker in FALLBACK_MARKERS if marker in value}
+
+
+def prune_overridden(nodes: list) -> tuple:
+    """Drops a declaration when a later rule with the same selector and context sets the same property."""
+    later = defaultdict(list)
+    kept_reversed, removed = [], 0
+    for node in reversed(nodes):
+        if not isinstance(node, Rule):
+            kept_reversed.append(node)
+            continue
+        key = (node.context, node.selector)
+        decls = []
+        for decl in node.decls:
+            overriding = [d for d in later[(key, decl.prop)] if (d.important or not decl.important) and _markers(d.value) == _markers(decl.value)]
+            if overriding:
+                removed += 1
+            else:
+                decls.append(decl)
+        for decl in node.decls:
+            later[(key, decl.prop)].append(decl)
+        kept_reversed.append(Rule(node.selector, decls, node.context))
+    return list(reversed(kept_reversed)), removed
+
+
+def tokenize(nodes: list) -> list:
+    effective = {}
+    for node in nodes:
+        if isinstance(node, Rule) and node.selector == ':root' and not node.context:
+            effective.update({d.prop: d.value.lower() for d in node.decls if d.prop.startswith('--')})
+    used = {name for n in nodes if isinstance(n, Rule) for d in n.decls for name in VAR_USE.findall(d.value)}
+    unknown = used - set(RENAMED_VARS)
+    if unknown:
+        raise ValueError(f'Custom properties without a token mapping: {sorted(unknown)}')
+    token_values = {token: hex_value for hex_value, token in COLOR_TOKENS.items()}
+    for old, new in RENAMED_VARS.items():
+        if old in used and effective.get(old) != token_values.get(new):
+            raise ValueError(f'{old} resolves to {effective.get(old)}, but {new} is {token_values.get(new)}')
+
+    def swap(decl: Decl) -> Decl:
+        value = re.sub(r'var\(\s*(--[\w-]+)', lambda m: 'var(' + RENAMED_VARS.get(m.group(1), m.group(1)), decl.value)
+        value = HEX.sub(lambda m: f'var({COLOR_TOKENS[m.group(0).lower()]})' if m.group(0).lower() in COLOR_TOKENS else m.group(0), value)
+        if decl.prop == 'border-radius' and value in RADIUS_TOKENS:
+            value = f'var({RADIUS_TOKENS[value]})'
+        if decl.prop in ('gap', 'row-gap', 'column-gap') and value in GAP_TOKENS:
+            value = f'var({GAP_TOKENS[value]})'
+        return Decl(decl.prop, value, decl.important)
+
+    root_settings, body = [], []
+    for node in nodes:
+        context = node.context
+        for old, new in BREAKPOINTS.items():
+            context = context.replace(old, new)
+        if isinstance(node, Rule) and node.selector == ':root' and not node.context:
+            root_settings += [d for d in node.decls if not d.prop.startswith('--')]
+            continue
+        if isinstance(node, Rule):
+            body.append(Rule(node.selector, [swap(d) for d in node.decls], context))
+        else:
+            body.append(type(node)(node.text, context))
+    tokens = [Decl(name, value) for value, name in COLOR_TOKENS.items()]
+    tokens += [Decl(name, value) for value, name in RADIUS_TOKENS.items()]
+    tokens += [Decl(name, value) for value, name in GAP_TOKENS.items()]
+    return [Rule(':root', root_settings + tokens)] + body
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=['report', 'check'])
+    parser.add_argument('command', choices=['report', 'check', 'prune', 'tokenize'])
     parser.add_argument('css', type=Path)
+    parser.add_argument('out', type=Path, nargs='?')
     parser.add_argument('--html', type=Path, required=True, help='generated site directory (dist)')
     args = parser.parse_args(argv)
     nodes = parse(args.css.read_text())
@@ -256,10 +360,23 @@ def main(argv=None) -> int:
     if args.command == 'report':
         print(report(nodes, is_used))
         return 0
-    problems = check(nodes, is_used)
-    print('\n'.join(problems) if problems else 'OK: stylesheet satisfies the Foundation rules.')
-    return 1 if problems else 0
-
+    if args.command == 'check':
+        problems = check(nodes, is_used)
+        print('\n'.join(problems) if problems else 'OK: stylesheet satisfies the Foundation rules.')
+        return 1 if problems else 0
+    if args.out is None:
+        parser.error(f'{args.command} needs an output path')
+    if args.command == 'prune':
+        nodes, dead = prune_dead_selectors(nodes, is_used)
+        nodes, overridden = prune_overridden(nodes)
+        print(f'Removed {len(dead)} dead selectors and {overridden} overridden declarations.')
+        for member in dead:
+            print(f'  dead: {member}')
+    else:
+        nodes = tokenize(nodes)
+        print('Tokenized colors, radii, gaps and breakpoints.')
+    args.out.write_text(serialize(nodes))
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main())
