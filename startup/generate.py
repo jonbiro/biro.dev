@@ -96,7 +96,7 @@ HOW_WE_BUILD = ('<section class="section wrap" id="how-we-build">'
     + cards([('Accessibility', 'WCAG 2.2 Level AA is the design target for this website. <a class="text-link" href="/accessibility/">Read the accessibility statement</a>'),
              ('Privacy', 'This website has no sign-up, live AI request, analytics script, or marketing cookie.'),
              ('User autonomy', 'In the demo, you can stop a session without marking the step complete, and undo a completion.'),
-             ('Affordability', 'Practical value at an accessible price is a design requirement. Pricing has not been set.')])
+             ('Affordability', 'Practical value at an accessible price is a design requirement.')])
     + '<a class="text-link" href="/mission/">Read our design commitments</a></section>')
 FOUNDER_CLOSE = ('<section class="closing wrap founder-close"><p class="eyebrow">FOUNDED WITH PURPOSE</p><h2>Technology should<br>adapt to people.</h2>'
     '<p>Biro.dev was founded by Jonathan Biro in Los Angeles. ' + render_profile_links(PROFILE_LINKS, 'text-link') + '</p>'

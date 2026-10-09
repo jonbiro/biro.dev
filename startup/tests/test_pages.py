@@ -234,6 +234,12 @@ class Sitewide(unittest.TestCase):
                     offenders.append(f'{route}: {" ".join(text.split())[:90]}')
         self.assertEqual(offenders, [])
 
+    def test_undecided_items_are_not_repeated_outside_the_status_block(self):
+        for route in ['/'] + [f'/{slug}/' for slug in PRODUCT_SLUGS]:
+            text = load(route).find(tag='main').text()
+            for phrase in ('Pricing has not been set', 'are still being decided'):
+                self.assertNotIn(phrase, text, route)
+
     def test_cross_page_anchors_resolve(self):
         broken = []
         for route in ROUTES:
