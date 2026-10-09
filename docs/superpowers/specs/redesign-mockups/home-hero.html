@@ -1,0 +1,117 @@
+<h2>Design section 2: the Home hero and the constellation</h2>
+<p class="subtitle">Shown at real size on desktop (scroll sideways if the window is narrow) and on a 375px phone. The orbit drifts once every 48 seconds and the icons stay upright. With reduced motion turned on, it is still.</p>
+
+<style>
+  .site { --bg:#090f1b; --s1:#0d1727; --s2:#101d30; --s3:#142238; --line:#304965; --lc:#6685af; --text:#e7eef9; --soft:#c1cfe0; --muted:#acbad0; --accent:#8bb6ff; --as:#b4cfff; --on:#091321;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+  .site a { color:inherit; }
+  .site .nav { display:flex; justify-content:space-between; align-items:center; max-width:1232px; margin:auto; padding:26px 48px; }
+  .site .brand { font-size:22px; font-weight:600; letter-spacing:-.03em; } .site .brand span { color:var(--muted); font-weight:500; }
+  .site .links { display:flex; gap:28px; font-size:15px; font-weight:500; color:var(--soft); align-items:center; }
+  .site .links .cta { border:1px solid var(--lc); border-radius:999px; padding:9px 18px; color:var(--text); }
+  .site .eyebrow { font-size:11px; letter-spacing:.14em; font-weight:700; color:var(--as); }
+  .site .display { font-size:clamp(48px,7.5vw,96px); line-height:.98; letter-spacing:-.05em; font-weight:600; margin:22px 0 28px; }
+  .site .display em { font-style:normal; color:var(--accent); }
+  .site .lead { font-size:clamp(19px,1.7vw,22px); line-height:1.5; color:var(--soft); max-width:30ch; border-top:1px solid var(--line); padding-top:22px; margin:0; }
+  .site .actions { display:flex; gap:24px; align-items:center; margin-top:32px; flex-wrap:wrap; }
+  .site .btn { background:var(--accent); color:var(--on); font-weight:600; font-size:15px; padding:14px 24px; border-radius:999px; }
+  .site .tl { font-weight:600; font-size:15px; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; text-decoration-color:var(--lc); }
+  .site .micro { font-size:13px; color:var(--muted); margin-top:28px; }
+  .hero { display:grid; grid-template-columns:1.15fr 1fr; gap:48px; align-items:center; max-width:1232px; margin:auto; padding:40px 48px 96px; }
+  .orbit { position:relative; aspect-ratio:1; max-width:520px; width:100%; justify-self:end; }
+  .orbit::before { content:""; position:absolute; inset:12%; border-radius:50%; background:radial-gradient(circle, #1a3a6eaa 0%, transparent 68%); }
+  .orbit .ring { position:absolute; border:1px dashed var(--line); border-radius:50%; }
+  .orbit .spin { position:absolute; inset:0; animation:drift 48s linear infinite; }
+  .orbit .spin img { position:absolute; width:12%; border-radius:22%; animation:drift 48s linear infinite reverse; box-shadow:0 8px 24px #00000055; }
+  .orbit .core { position:absolute; left:50%; top:50%; width:24%; transform:translate(-50%,-50%); border-radius:22%; box-shadow:0 0 70px #8bb6ff66, 0 0 0 10px #8bb6ff12; }
+  .orbit .tag { position:absolute; left:50%; top:calc(50% + 15%); transform:translateX(-50%); font-size:12px; color:var(--muted); white-space:nowrap; }
+  @keyframes drift { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .orbit .spin, .orbit .spin img { animation:none; } }
+  .strip { background:var(--s1); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .strip .in { max-width:1232px; margin:auto; padding:32px 48px; display:grid; grid-template-columns:repeat(3,1fr) auto; gap:40px; align-items:start; }
+  .strip h3 { font-size:17px; margin:10px 0 6px; font-weight:600; } .strip p { margin:0; font-size:15px; color:var(--muted); line-height:1.5; }
+  .strip .more { font-size:15px; font-weight:600; text-decoration:underline; text-underline-offset:6px; white-space:nowrap; align-self:center; }
+  .next { max-width:1232px; margin:auto; padding:128px 48px 64px; }
+  .next h2 { font-size:clamp(34px,4.2vw,54px); line-height:1.05; letter-spacing:-.04em; font-weight:600; margin:18px 0 0; }
+  .phone { width:375px; margin:24px auto 0; border:10px solid #1b2433; border-radius:36px; overflow:hidden; }
+  .phone .nav { padding:18px 20px; } .phone .links { display:none; } .phone .menu { border:1px solid var(--lc); border-radius:999px; padding:8px 16px; font-size:15px; }
+  .phone .hero { grid-template-columns:1fr; padding:16px 20px 48px; gap:28px; }
+  .phone .display { font-size:48px; }
+  .phone .orbit { max-width:280px; justify-self:center; }
+  .phone .strip .in { grid-template-columns:1fr; gap:22px; padding:28px 20px; }
+  .phone .next { padding:72px 20px 40px; } .phone .next h2 { font-size:34px; }
+  .viewport { overflow-x:auto; border-radius:14px; }
+</style>
+
+<h3 style="margin-top:6px;">Desktop · 1280px</h3>
+<div class="viewport"><div class="site" style="width:1280px;">
+  <div class="nav"><span class="brand">biro<span>.dev</span></span><span class="links"><span style="color:var(--accent);text-decoration:underline;text-underline-offset:8px;">Home</span><span>About</span><span>Products</span><span>AddvancedFocus</span><span>Mission</span><span class="cta">Contact</span></span></div>
+  <div class="hero">
+    <div>
+      <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+      <div class="display">Life is complex.<br>Support should<br>feel <em>simple.</em></div>
+      <p class="lead">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus, an executive-function assistant.</p>
+      <div class="actions"><span class="btn">Try the working demo</span><span class="tl">Meet AddvancedFocus</span></div>
+      <div class="micro">Founded in Los Angeles by Jonathan Biro · Pre-release</div>
+    </div>
+    <div class="orbit">
+      <div class="ring" style="inset:4%"></div><div class="ring" style="inset:22%"></div>
+      <div class="spin">
+        <img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="left:44%;top:-2%">
+        <img src="http://localhost:8080/assets/products/icons/storyready.webp" style="left:77%;top:10%">
+        <img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="left:90%;top:42%">
+        <img src="http://localhost:8080/assets/products/icons/plainpath.webp" style="left:77%;top:76%">
+        <img src="http://localhost:8080/assets/products/icons/stepable.webp" style="left:44%;top:88%">
+        <img src="http://localhost:8080/assets/products/icons/sayable.webp" style="left:11%;top:76%">
+        <img src="http://localhost:8080/assets/products/icons/sensoryscout.webp" style="left:-2%;top:42%">
+        <img src="http://localhost:8080/assets/products/icons/opencall.webp" style="left:11%;top:10%">
+      </div>
+      <img class="core" src="http://localhost:8080/assets/products/icons/addvancedfocus.webp">
+      <div class="tag">AddvancedFocus · in development</div>
+    </div>
+  </div>
+  <div class="strip"><div class="in">
+    <div><div class="eyebrow">BUILT AND WORKING</div><h3>An interactive AddvancedFocus concept</h3><p>Three situations, two energy levels, pause with a note, undo a completion.</p></div>
+    <div><div class="eyebrow">IN DEVELOPMENT</div><h3>The AddvancedFocus app</h3><p>AI-assisted starting, planning, routines and household coordination.</p></div>
+    <div><div class="eyebrow">NOT YET DECIDED</div><h3>Launch, pricing, platforms</h3><p>AI provider and data practices, explained before public release.</p></div>
+    <span class="more">Where things stand →</span>
+  </div></div>
+  <div class="next"><div class="eyebrow">WHY WE’RE HERE</div><h2>Knowing what to do<br>is only part of the work.</h2></div>
+</div></div>
+
+<h3 style="margin-top:28px;">Phone · 375px</h3>
+<div class="phone"><div class="site">
+  <div class="nav"><span class="brand">biro<span>.dev</span></span><span class="menu">Menu</span></div>
+  <div class="hero">
+    <div>
+      <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+      <div class="display">Life is complex. Support should feel <em>simple.</em></div>
+      <p class="lead">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus.</p>
+      <div class="actions"><span class="btn">Try the working demo</span><span class="tl">Meet AddvancedFocus</span></div>
+    </div>
+    <div class="orbit">
+      <div class="ring" style="inset:4%"></div><div class="ring" style="inset:22%"></div>
+      <div class="spin">
+        <img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="left:44%;top:-2%"><img src="http://localhost:8080/assets/products/icons/storyready.webp" style="left:77%;top:10%"><img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="left:90%;top:42%"><img src="http://localhost:8080/assets/products/icons/plainpath.webp" style="left:77%;top:76%"><img src="http://localhost:8080/assets/products/icons/stepable.webp" style="left:44%;top:88%"><img src="http://localhost:8080/assets/products/icons/sayable.webp" style="left:11%;top:76%"><img src="http://localhost:8080/assets/products/icons/sensoryscout.webp" style="left:-2%;top:42%"><img src="http://localhost:8080/assets/products/icons/opencall.webp" style="left:11%;top:10%">
+      </div>
+      <img class="core" src="http://localhost:8080/assets/products/icons/addvancedfocus.webp">
+    </div>
+  </div>
+  <div class="strip"><div class="in">
+    <div><div class="eyebrow">BUILT AND WORKING</div><h3>An interactive AddvancedFocus concept</h3></div>
+    <div><div class="eyebrow">IN DEVELOPMENT</div><h3>The AddvancedFocus app</h3></div>
+    <div><div class="eyebrow">NOT YET DECIDED</div><h3>Launch, pricing, platforms</h3></div>
+    <span class="more">Where things stand →</span>
+  </div></div>
+  <div class="next"><div class="eyebrow">WHY WE’RE HERE</div><h2>Knowing what to do is only part of the work.</h2></div>
+</div></div>
+
+<div class="section" style="margin-top:22px;">
+  <h3>What's specified here</h3>
+  <ul>
+    <li><b>The constellation is decorative.</b> The icons have empty alt text, and the whole figure is hidden from screen readers. The facts it implies (one flagship in development, eight concepts) are already in the text and the status strip, so nothing is lost.</li>
+    <li><b>The status strip replaces Home's current three-card status block.</b> The full three-column block with the development stages stays on Products, and "Where things stand →" links to it.</li>
+    <li><b>The hero's old concept card and the ribbon artwork are retired on Home.</b> The working demo gets the button, and the constellation becomes the visual.</li>
+    <li><b>On phones,</b> the headline comes first, then the constellation at 280px, then the strip as a stacked list. The phone headline no longer breaks into short forced lines.</li>
+  </ul>
+</div>

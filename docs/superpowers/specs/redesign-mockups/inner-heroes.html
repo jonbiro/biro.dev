@@ -1,0 +1,54 @@
+<h2>How should inner pages fill their hero?</h2>
+<p class="subtitle">Today About, Products, Mission, Contact and Accessibility leave the right half of the hero empty on desktop. All three options keep the large editorial headline on the left. Shown here: the About page.</p>
+
+<style>
+  .m { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#090f1b; color:#e7eef9; border-radius:14px; overflow:hidden; }
+  .m .nav { display:flex; justify-content:space-between; padding:12px 24px; font-size:10px; color:#acbad0; }
+  .m .nav b { color:#e7eef9; font-size:13px; } .m .nav b span { color:#acbad0; font-weight:500; }
+  .m .eyebrow { font-size:8px; letter-spacing:.14em; color:#8bb6ff; font-weight:700; }
+  .m .h { font-size:40px; line-height:1.02; letter-spacing:-.045em; font-weight:600; margin:10px 0 10px; }
+  .m .muted { color:#acbad0; font-size:10px; }
+  .m .grid { display:grid; grid-template-columns:1.3fr 1fr; gap:22px; padding:8px 24px 24px; align-items:center; min-height:190px; }
+  .orbit { position:relative; height:170px; } .orbit img { position:absolute; border-radius:22%; } .orbit .ring { position:absolute; border:1px dashed #304965; border-radius:50%; }
+</style>
+
+<div class="options">
+
+  <div class="option" data-choice="echo" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content" style="width:100%">
+      <h3>Constellation echo</h3>
+      <p>Each page shows a small piece of the constellation tied to its subject. About: the founder's monogram at the center with the family around it. Products: the full family. Contact: one icon with an open orbit. It's consistent and recognizable, but icon-heavy.</p>
+      <div class="m" style="margin-top:10px;"><div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · …</span></div>
+        <div class="grid"><div><div class="eyebrow">ABOUT BIRO.DEV</div><div class="h">Human needs.<br><span style="color:#8bb6ff">Technical ambition.</span></div><div class="muted">Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.</div></div>
+          <div class="orbit"><div class="ring" style="inset:14px 30px;"></div>
+            <div style="position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:#233d61;color:#c5dcff;display:grid;place-items:center;font-size:22px;box-shadow:0 0 36px #8bb6ff55;">JB</div>
+            <img src="http://localhost:8080/assets/products/icons/addvancedfocus.webp" style="left:16%;top:8%;width:30px;"><img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="right:16%;top:10%;width:26px;"><img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="left:8%;bottom:14%;width:26px;"><img src="http://localhost:8080/assets/products/icons/opencall.webp" style="right:10%;bottom:12%;width:26px;"></div></div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="facts" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content" style="width:100%">
+      <h3>Ruled "at a glance" column</h3>
+      <p>The same ruled side column the Home status strip uses, filled with the page's key facts. About: company, founder, based in, stage. Products: one flagship, eight concepts. Contact: email, what to write about. It's useful to a reviewer, and quiet. The constellation stays special to Home and Products.</p>
+      <div class="m" style="margin-top:10px;"><div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · …</span></div>
+        <div class="grid"><div><div class="eyebrow">ABOUT BIRO.DEV</div><div class="h">Human needs.<br><span style="color:#8bb6ff">Technical ambition.</span></div><div class="muted">Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.</div></div>
+          <div style="border-left:1px solid #304965;padding-left:18px;font-size:10px;">
+            <div class="eyebrow" style="margin-bottom:10px;">AT A GLANCE</div>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;"><span class="muted">Company</span><span>Biro.dev</span><span class="muted">Founder</span><span>Jonathan Biro · <u>GitHub</u></span><span class="muted">Based in</span><span>Los Angeles, California</span><span class="muted">First product</span><span>AddvancedFocus</span><span class="muted">Stage</span><span>In development</span></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="index" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content" style="width:100%">
+      <h3>Oversized section index</h3>
+      <p>A very large outlined page number and title ("02 / About") fills the right side as pure typography. It's striking and calm, but purely decorative, so it carries no information.</p>
+      <div class="m" style="margin-top:10px;"><div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · …</span></div>
+        <div class="grid"><div><div class="eyebrow">ABOUT BIRO.DEV</div><div class="h">Human needs.<br><span style="color:#8bb6ff">Technical ambition.</span></div><div class="muted">Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.</div></div>
+          <div style="text-align:right;"><div style="font-size:120px;font-weight:700;line-height:.9;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1px #3b5576;">02</div><div class="eyebrow" style="margin-top:6px;">ABOUT</div></div></div></div>
+    </div>
+  </div>
+
+</div>

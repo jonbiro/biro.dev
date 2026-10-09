@@ -1,0 +1,44 @@
+<h2>How dramatic should the type scale be?</h2>
+<p class="subtitle">The site currently uses 52 different font sizes. The redesign replaces them with one scale of about 8 steps. Each specimen uses system fonts at real desktop pixel sizes. Phones scale down smoothly with clamp().</p>
+
+<style>
+  .spec { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#090f1b; color:#e7eef9; border-radius:14px; padding:22px 26px; }
+  .spec .row { display:grid; grid-template-columns:70px 1fr; align-items:baseline; gap:12px; border-top:1px solid #1e2f47; padding:6px 0; }
+  .spec .row span:first-child { font-size:10px; color:#6685af; font-family:ui-monospace,Menlo,monospace; }
+  .spec .eyebrow { font-size:11px; letter-spacing:.14em; color:#8bb6ff; font-weight:700; }
+</style>
+
+<div class="options">
+  <div class="option" data-choice="dramatic" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content" style="width:100%">
+      <h3>Dramatic: ratio 1.333, display 96px</h3>
+      <p>The headline dominates the screen, which is the most "editorial publication" option. Section headings are large too, so pages feel spacious, but they get longer to scroll.</p>
+      <div class="spec" style="margin-top:10px;">
+        <div class="row"><span>display 96</span><span style="font-size:96px;line-height:.98;letter-spacing:-.05em;font-weight:600;">Life is complex.</span></div>
+        <div class="row"><span>h2 54</span><span style="font-size:54px;line-height:1.05;letter-spacing:-.04em;font-weight:600;">Knowing what to do</span></div>
+        <div class="row"><span>h3 30</span><span style="font-size:30px;letter-spacing:-.02em;font-weight:600;">Built and working</span></div>
+        <div class="row"><span>lead 22</span><span style="font-size:22px;color:#c1cfe0;">Biro.dev is building affordable, accessible software.</span></div>
+        <div class="row"><span>body 17</span><span style="font-size:17px;color:#acbad0;">Daily life involves more than keeping a list. It means deciding where to begin.</span></div>
+        <div class="row"><span>small 13</span><span style="font-size:13px;color:#acbad0;">Illustrative design. Not a released application.</span></div>
+        <div class="row"><span>eyebrow 11</span><span class="eyebrow">WHERE THINGS STAND</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="confident" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content" style="width:100%">
+      <h3>Confident: ratio 1.25, display 76px</h3>
+      <p>The headline is still bigger and bolder than today's 70px, but the scale steps are tighter, so dense pages (Products, the product pages) stay compact. Clearly editorial without shouting.</p>
+      <div class="spec" style="margin-top:10px;">
+        <div class="row"><span>display 76</span><span style="font-size:76px;line-height:1;letter-spacing:-.048em;font-weight:600;">Life is complex.</span></div>
+        <div class="row"><span>h2 44</span><span style="font-size:44px;line-height:1.08;letter-spacing:-.035em;font-weight:600;">Knowing what to do</span></div>
+        <div class="row"><span>h3 26</span><span style="font-size:26px;letter-spacing:-.02em;font-weight:600;">Built and working</span></div>
+        <div class="row"><span>lead 21</span><span style="font-size:21px;color:#c1cfe0;">Biro.dev is building affordable, accessible software.</span></div>
+        <div class="row"><span>body 17</span><span style="font-size:17px;color:#acbad0;">Daily life involves more than keeping a list. It means deciding where to begin.</span></div>
+        <div class="row"><span>small 13</span><span style="font-size:13px;color:#acbad0;">Illustrative design. Not a released application.</span></div>
+        <div class="row"><span>eyebrow 11</span><span class="eyebrow">WHERE THINGS STAND</span></div>
+      </div>
+    </div>
+  </div>
+</div>
