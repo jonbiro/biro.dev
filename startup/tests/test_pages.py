@@ -159,5 +159,52 @@ class Products(unittest.TestCase):
         self.assertIsNone(self.root.find(cls='product-guide').find(cls='micro'))
 
 
+PRODUCT_SLUGS = ['carebridge', 'storyready', 'clearcue', 'plainpath', 'stepable', 'sayable', 'sensoryscout', 'opencall']
+
+
+class AddvancedFocusPage(unittest.TestCase):
+    def setUp(self):
+        from pagecheck import main_sections
+        self.root = load('/addvancedfocus/')
+        self.sections = main_sections(self.root)
+
+    def test_demo_comes_right_after_the_hero(self):
+        self.assertIn('af-product-hero', self.sections[0].classes)
+        self.assertEqual(self.sections[1].attrs.get('id'), 'concept-demo')
+        self.assertIn('app-mockup', self.sections[2].classes)
+
+    def test_status_pills(self):
+        hero_pills = [p.text() for p in self.sections[0].find_all(cls='pill')]
+        self.assertEqual(hero_pills, ['In development'])
+        heading = self.root.find(cls='concept-section-heading')
+        self.assertEqual([p.text() for p in heading.find_all(cls='pill')], ['Working demo'])
+
+    def test_status_block_replaces_two_faq_answers(self):
+        ids = [s.attrs.get('id') for s in self.sections]
+        faq = next(s for s in self.sections if 'faq' in s.classes)
+        self.assertLess(ids.index('where-things-stand'), self.sections.index(faq))
+        self.assertEqual([s.text() for s in faq.find_all(tag='summary')],
+                         ['Who is it being designed for?', 'How will personal information be handled?', 'Is AddvancedFocus a medical product?'])
+
+    def test_duplicate_small_print_is_gone(self):
+        text = self.root.find(tag='main').text()
+        self.assertNotIn('A working illustration of the idea', text)
+        self.assertNotIn('The final AI implementation and data practices will be explained', text)
+        self.assertEqual(self.sections[0].find(cls='button').text(), 'Try the working demo')
+
+
+class ProductPages(unittest.TestCase):
+    def test_each_product_page_uses_the_concept_status(self):
+        portfolio = {item['slug']: item for item in json.loads((ROOT / 'portfolio.json').read_text())}
+        for slug in PRODUCT_SLUGS:
+            root = load(f'/{slug}/')
+            brief = root.find(cls='product-brief')
+            self.assertEqual([p.text() for p in brief.find_all(cls='pill')], ['Concept'], slug)
+            self.assertIsNone(brief.find(cls='micro'), slug)
+            self.assertIn('Not a released application', root.find(tag='figcaption').text(), slug)
+            summaries = [s.text() for s in root.find(id='questions').find_all(tag='summary')]
+            self.assertIn(f'When can I use {portfolio[slug]["name"]}?', summaries, slug)
+
+
 if __name__ == '__main__':
     unittest.main()
