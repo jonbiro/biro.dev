@@ -74,3 +74,21 @@
   window.addEventListener('biro:routechange',()=>{setMenu(false);init();});
   init();
 })();
+
+// Section reveal: additive and optional. Sections stay visible without JavaScript or under reduced motion.
+(() => {
+  'use strict';
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const sections = document.querySelectorAll('main > *');
+  if (!sections.length) return;
+  document.documentElement.classList.add('js-reveal');
+  const reveal = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        reveal.unobserve(entry.target);
+      }
+    }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  sections.forEach((section) => reveal.observe(section));
+})();

@@ -18,3 +18,5 @@
   .split,.editorial-split{grid-template-columns:minmax(0,1fr)}
   .page-hero{padding-top:var(--space-6);padding-bottom:var(--space-8)}
 }
+.js-reveal main>*{transition:opacity var(--motion-slow) var(--ease),transform var(--motion-slow) var(--ease)}
+.js-reveal main>:not(.is-visible){opacity:0;transform:translateY(12px)}
