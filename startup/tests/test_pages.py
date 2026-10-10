@@ -309,7 +309,7 @@ class Sitewide(unittest.TestCase):
         self.assertEqual(section.find(tag='h2').attrs.get('id'), 'how-checked-title')
         cards = section.find_all(cls='card')
         self.assertEqual([c.find(tag='h3').text() for c in cards],
-                         ['A demo you can operate', 'Tested in more than one browser', 'Nothing collected', 'Status without spin'])
+                         ['A demo you can operate', 'Tested in more than one browser', 'Nothing tracked', 'Status without spin'])
         self.assertEqual([[a.attrs['href'] for a in c.find_all(tag='a')] for c in cards],
                          [['/addvancedfocus/#concept-demo'], ['/accessibility/'], ['/mission/#privacy'], ['/products/#where-things-stand']])
         text = section.text()

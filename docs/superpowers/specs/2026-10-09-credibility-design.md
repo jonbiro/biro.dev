@@ -25,14 +25,16 @@ The site is reviewer-first: it is written for people evaluating an early-stage c
   - Cards, each body ending in a text link:
     1. **A demo you can operate.** "The AddvancedFocus concept is interactive: three everyday situations, two energy levels, a session you can pause with a note, and a completion you can undo. It runs in your browser on scripted examples, not live AI." Link: "Try the working demo" → `/addvancedfocus/#concept-demo`
     2. **Tested in more than one browser.** "Every page is checked with automated tests in Chromium and WebKit, at phone and desktop widths, against WCAG 2.2 Level AA rules, with reduced motion on and with JavaScript off. The demo is also tested keyboard-only. What hasn’t been tested yet is listed too." Link: "Read the accessibility statement" → `/accessibility/`
-    3. **Nothing collected.** "There is no sign-up, live AI request, analytics script, or marketing cookie. Notes you write in the demo stay in the page’s memory." Link: "See what stays in your browser" → `/mission/#privacy`
+    3. **Nothing tracked.** "There is no sign-up, live AI request, analytics script, or marketing cookie. Notes you write in the demo stay in the page’s memory." Link: "See what stays in your browser" → `/mission/#privacy`
     4. **Status without spin.** "What works today, what’s being built, and what isn’t decided yet are listed in one place." Link: "See where things stand" → `/products/#where-things-stand`
 
 ### Home: one link
 
 "How we build" adds `See how the work is checked` → `/about/#how-the-work-is-checked`, next to "Read our design commitments".
 
-### Wording rules
+#Card 3's title was changed from "Nothing collected" to "Nothing tracked" in the final review. Emails and ordinary hosting logs do exist, so "collected" overclaimed. The body was already scoped to sign-up, AI requests, analytics and cookies.
+
+## Wording rules
 
 - No digits in the section, so there are no counts or version numbers that go stale.
 - No claim about how often the tests run. Avoid "every change" and "continuous".
@@ -43,7 +45,7 @@ The site is reviewer-first: it is written for people evaluating an early-stage c
 
 ## Styling
 
-There is no new CSS. The section uses `.section`, `.section-intro`, `.cards`, `.card` and `.text-link`. Four cards trigger the existing two-column rule for four-card grids.
+The section uses `.section`, `.section-intro`, `.cards`, `.card` and `.text-link`; four cards trigger the existing two-column rule for four-card grids. One rule was added during implementation: `.card .text-link{display:flex;width:fit-content;margin-top:var(--space-3)}`, so a card's link always sits on its own line.
 
 ## Tests
 
