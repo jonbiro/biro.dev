@@ -122,7 +122,8 @@ about = ABOUT_HERO + (ROOT / 'fragments/about.html').read_text().replace('{{PROF
 
 LOGO_FAMILY = '<div class="wrap"><figure class="logo-family"><img src="/assets/products/logo-family.webp" alt="Concept logo collection: AddvancedFocus, CareBridge, StoryReady, ClearCue, PlainPath, StepAble, SayAble, SensoryScout, and OpenCall." width="1536" height="1024" loading="lazy" decoding="async"><figcaption>Exploratory app logos. Product identities may evolve during development.</figcaption></figure></div>'
 principles = (ROOT / 'fragments/portfolio-principles.html').read_text().strip()
-assert principles.endswith('</div></section>')
+if not principles.endswith('</div></section>'):
+    raise ValueError('fragments/portfolio-principles.html must end with </div></section> so the logo family can be spliced in')
 products = (inner_hero('OUR PRODUCTS', 'Less friction.<br><em>More possibility.</em>',
         'A family of AI-powered assistive applications for everyday independence, led by AddvancedFocus.',
         aside=constellation('compact'),

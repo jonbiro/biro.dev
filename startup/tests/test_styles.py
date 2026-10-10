@@ -70,3 +70,8 @@ class HeadingBreaks(unittest.TestCase):
         for path in (ROOT / 'dist').rglob('*.html'):
             for heading in re.findall(r'<h[12][^>]*>.*?</h[12]>', path.read_text(), re.S):
                 self.assertNotRegex(heading, r'\S<br>', path.relative_to(ROOT / 'dist').as_posix())
+
+
+class GeneratorChecks(unittest.TestCase):
+    def test_generator_guards_raise_value_errors_not_asserts(self):
+        self.assertNotRegex((ROOT / 'generate.py').read_text(), r'(?m)^\s*assert\s', 'use ValueError so checks survive python -O')

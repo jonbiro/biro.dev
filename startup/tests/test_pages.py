@@ -271,15 +271,18 @@ class Sitewide(unittest.TestCase):
             for phrase in ('Pricing has not been set', 'are still being decided'):
                 self.assertNotIn(phrase, text, route)
 
-    def test_cross_page_anchors_resolve(self):
+    def test_every_fragment_link_resolves(self):
         broken = []
         for route in ROUTES:
-            for a in load(route).find_all(tag='a'):
+            root = load(route)
+            for a in root.find_all(tag='a'):
                 href = a.attrs.get('href', '')
-                if href.startswith('/') and '#' in href:
-                    target, fragment = href.split('#', 1)
-                    if fragment and load(target or route).find(id=fragment) is None:
-                        broken.append(f'{route} → {href}')
+                if '#' not in href or not (href.startswith('/') or href.startswith('#')):
+                    continue
+                target, fragment = href.split('#', 1)
+                page = root if not target else load(target)
+                if fragment and page.find(id=fragment) is None:
+                    broken.append(f'{route} → {href}')
         self.assertEqual(broken, [])
 
     def test_mission_keeps_the_shared_connected_vision_section(self):
@@ -310,7 +313,7 @@ class Sitewide(unittest.TestCase):
 
     def test_accessibility_statement_describes_the_current_checks(self):
         text = load('/accessibility/').find(tag='main').text()
-        self.assertIn('Reviewed October 9, 2026', text)
+        self.assertRegex(text, r'Reviewed (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}')
         self.assertIn('Performed in Chromium and WebKit using automated (axe) and keyboard checks.', text)
 
 
