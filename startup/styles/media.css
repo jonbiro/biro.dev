@@ -12,7 +12,7 @@
   .header,.footer,.constellation,.af-demo,.mission-image,.actions,.button,.skip,.breadcrumbs,.page-contents,.app-mockup,.portfolio-index{display:none!important}
   main *{color:black!important;background:transparent!important;box-shadow:none!important;animation:none!important}
   section,.wrap{max-width:none!important;padding:1rem 0!important;margin:0!important}
-  .cards,.feature,.founder-layout,.af-product-hero,.readiness-grid,.privacy-note,.editorial-split,.development-steps,.intent-example,.contact-note,.future-hero-grid,.product-detail-grid,.product-feedback,.focus-contexts,.horizon-guide,.evaluation-list,.company-overview,.hero-grid,.concept-list{display:block!important}
+  .cards,.feature,.founder-layout,.af-product-hero,.readiness-grid,.privacy-note,.editorial-split,.development-steps,.intent-example,.contact-note,.future-hero-grid,.product-detail-grid,.product-feedback,.focus-contexts,.horizon-guide,.evaluation-list,.hero-grid,.glance,.concept-list{display:block!important}
   h1{font-size:28pt!important}
   h2{font-size:20pt!important}
   .card,.readiness-grid article,.intent-example>div,.development-steps li,.concept-list li,.product-brief,.product-example,.product-guide tr{break-inside:avoid}

@@ -1,22 +1,12 @@
-.mission-image{height:360px;position:relative;overflow:hidden;border-radius:var(--radius-lg);max-width:1136px;background:var(--surface-3);border:1px solid var(--line)}
-.mission-image p{margin-top:90px;padding:20px 28px;font-size:var(--type-h3);position:relative;display:inline-block;border-radius:16px;line-height:1.4;letter-spacing:-1px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--surface-2);color:var(--text);border:1px solid var(--line-strong)}
-@media(max-width:62.5rem){
-  .mission-image{margin-left:24px;margin-right:24px}
-}
-@media(max-width:47.5rem){
-  .mission-image p{padding:16px;margin-top:3rem;margin-bottom:3rem;font-size:var(--type-h3)}
-  .mission-image{height:auto;min-height:17rem;margin-left:1rem;margin-right:1rem}
-}
-.mission-image img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.25;mix-blend-mode:luminosity}
-.privacy-note{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-8)}
-.privacy-note p:not(.eyebrow){color:var(--text-muted)}
-.privacy-note p:first-child{margin-top:0}
-@media(max-width:47.5rem){
-  .privacy-note{grid-template-columns:1fr;gap:var(--space-5)}
-}
-.mission-statement{padding-bottom:4rem;max-width:850px;margin-left:auto;margin-right:auto}
-.mission-statement p:not(.large){color:var(--text-muted);font-size:var(--type-lead)}
+.mission-image{position:relative;display:flex;align-items:center;max-width:1232px;min-height:22rem;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mission-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22;mix-blend-mode:luminosity}
+.mission-image p{position:relative;margin:var(--space-8) 0;font-size:var(--type-h2);font-weight:600;line-height:1.1;letter-spacing:-.04em;color:var(--text)}
+.mission-statement{max-width:56rem;margin-left:auto;margin-right:auto;padding-bottom:var(--space-8)}
+.mission-statement p:not(.large){color:var(--text-muted)}
 .mission-statement .large{margin-top:0}
+.privacy-note{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8)}
+.privacy-note p:not(.eyebrow){color:var(--text-muted)}
 @media(max-width:47.5rem){
-  .mission-statement{padding-bottom:2.5rem}
+  .privacy-note{grid-template-columns:minmax(0,1fr);gap:var(--space-5)}
+  .mission-image{min-height:16rem}
 }

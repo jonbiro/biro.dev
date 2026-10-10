@@ -20,10 +20,12 @@
 }
 .js-reveal main>*{transition:opacity var(--motion-slow) var(--ease),transform var(--motion-slow) var(--ease)}
 .js-reveal main>:not(.is-visible){opacity:0;transform:translateY(12px)}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:end;gap:var(--space-8)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start;gap:0 var(--space-8)}
 .hero-grid>*{min-width:0}
+.hero-grid>div:first-child{display:contents}
+.hero-grid .eyebrow,.hero-grid h1{grid-column:1/-1}
 @media(max-width:60rem){
-  .hero-grid{gap:var(--space-6)}
+  .hero-grid{gap:0 var(--space-6)}
 }
 @media(max-width:47.5rem){
   .hero-grid{grid-template-columns:minmax(0,1fr)}

@@ -295,10 +295,18 @@ class Sitewide(unittest.TestCase):
         self.assertEqual([p.text() for p in stage.find_all(cls='pill')], ['In development'])
         self.assertIn('/products/#where-things-stand', [a.attrs.get('href') for a in stage.find_all(tag='a')])
 
-    def test_about_stage_uses_the_status_label(self):
-        facts = load('/about/').find(cls='company-facts')
-        stage = next(div for div in facts.find_all(tag='div') if div.find(tag='dt').text() == 'Current stage')
-        self.assertEqual(stage.find(tag='dd').text(), 'In development')
+    def test_inner_pages_have_an_at_a_glance_column(self):
+        expected = {'/about/': ['Company', 'Founder', 'Based in', 'First product', 'Stage'],
+                    '/mission/': ['Design target', 'Commitments', 'This website'],
+                    '/contact/': ['Email', 'Founder', 'Based in'],
+                    '/accessibility/': ['Target', 'Reviewed', 'Tested in', 'Not yet verified']}
+        for route, terms in expected.items():
+            column = load(route).find(cls='page-hero').find(cls='glance')
+            self.assertIsNotNone(column, route)
+            self.assertEqual([dt.text() for dt in column.find_all(tag='dt')], terms, route)
+        stage = load('/about/').find(cls='glance').find_all(tag='dd')[-1]
+        self.assertEqual(stage.text(), 'In development')
+        self.assertIsNone(load('/about/').find(cls='company-overview'))
 
     def test_accessibility_statement_describes_the_current_checks(self):
         text = load('/accessibility/').find(tag='main').text()

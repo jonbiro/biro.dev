@@ -395,7 +395,7 @@ STYLE_ORDER = [
     'components/header.css', 'components/footer.css', 'components/buttons.css', 'components/pills.css',
     'components/cards.css', 'components/faq.css', 'components/notice.css', 'components/closing.css',
     'components/readiness.css', 'components/page-nav.css', 'components/steps.css', 'components/app-icon.css',
-    'components/app-mockup.css', 'components/concept-card.css', 'components/status-strip.css', 'components/concept-list.css', 'components/constellation.css', 'components/demo.css',
+    'components/app-mockup.css', 'components/concept-card.css', 'components/status-strip.css', 'components/concept-list.css', 'components/constellation.css', 'components/glance.css', 'components/demo.css',
     'pages/home.css', 'pages/about.css', 'pages/products.css', 'pages/addvancedfocus.css',
     'pages/mission.css', 'pages/contact.css', 'pages/product-page.css', 'media.css',
 ]
@@ -421,6 +421,7 @@ _PARTITION_SOURCE = {
     'components/status-strip.css': 'status-strip',
     'components/concept-list.css': 'concept-list concept-row',
     'components/constellation.css': 'constellation',
+    'components/glance.css': 'glance',
     # .example is the old demo's scenario button. No page uses it, but the word appears in site.js prose,
     # so the conservative usage scan keeps it. Delete it in the visual redesign.
     'components/demo.css': 'example',
