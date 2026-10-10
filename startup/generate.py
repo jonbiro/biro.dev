@@ -120,7 +120,18 @@ home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE
 ABOUT_HERO = inner_hero('ABOUT BIRO.DEV', 'Human needs.<br><em>Technical ambition.</em>', 'Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.', aside=glance([('Company', 'Biro.dev'), ('Founder', 'Jonathan Biro' + (' · ' + render_profile_links(PROFILE_LINKS, 'text-link', ' · ') if PROFILE_LINKS else '')), ('Based in', 'Los Angeles, California'), ('First product', 'AddvancedFocus'), ('Stage', status_pill('development'))]))
 about = ABOUT_HERO + (ROOT / 'fragments/about.html').read_text().replace('{{PROFILE_LINKS}}', f'<p class="founder-profiles">{render_profile_links(PROFILE_LINKS, "text-link")}</p>' if PROFILE_LINKS else '') + (ROOT / 'fragments/company-evaluation.html').read_text() + cta()
 
-LOGO_FAMILY = '<div class="wrap"><figure class="logo-family"><img src="/assets/products/logo-family.webp" alt="Concept logo collection: AddvancedFocus, CareBridge, StoryReady, ClearCue, PlainPath, StepAble, SayAble, SensoryScout, and OpenCall." width="1536" height="1024" loading="lazy" decoding="async"><figcaption>Exploratory app logos. Product identities may evolve during development.</figcaption></figure></div>'
+_family_products = [{'slug': 'addvancedfocus', 'name': 'AddvancedFocus'}] + json.loads((ROOT / 'portfolio.json').read_text())
+_family_cards = ''.join(
+    '<div class="logo-family-item">'
+    + f'<img src="/assets/products/icons/{("addvancedfocus-af.svg" if item["slug"] == "addvancedfocus" else item["slug"] + ".webp")}" alt="" width="92" height="92" loading="lazy" decoding="async">'
+    + f'<span>{escape(item["name"])}</span></div>'
+    for item in _family_products
+)
+LOGO_FAMILY = ('<div class="wrap"><figure class="logo-family">'
+    '<div class="logo-family-grid" role="group" aria-label="Biro.dev product icon family">'
+    + _family_cards + '</div>'
+    '<figcaption>Current AddvancedFocus brand and exploratory concept identities for eight future products. Product identities may evolve during development.</figcaption>'
+    '</figure></div>')
 principles = (ROOT / 'fragments/portfolio-principles.html').read_text().strip()
 if not principles.endswith('</div></section>'):
     raise ValueError('fragments/portfolio-principles.html must end with </div></section> so the logo family can be spliced in')
@@ -137,7 +148,7 @@ products = (inner_hero('OUR PRODUCTS', 'Less friction.<br><em>More possibility.<
     + principles[:-len('</section>')] + LOGO_FAMILY + '</section>'
     + (ROOT / 'fragments/portfolio-faq.html').read_text() + cta())
 
-AF_MOCKUP = '<figure class="wrap app-mockup"><img src="/assets/products/addvancedfocus.webp" alt="AddvancedFocus concept interface and app icon, showing one small next step and a short focus session." width="1536" height="1024" loading="lazy" decoding="async"><figcaption><span>AddvancedFocus · Interface and logo concept</span><span>Illustrative design. <a href="#concept-demo">Try the working website prototype</a>.</span></figcaption></figure>'
+AF_MOCKUP = '<figure class="wrap app-mockup"><img src="/assets/products/addvancedfocus-modern.webp" alt="AddvancedFocus concept interface and app icon, showing one small next step and a short focus session." width="1536" height="1024" loading="lazy" decoding="async"><figcaption><span>AddvancedFocus · Interface and logo concept</span><span>Illustrative design. <a href="#concept-demo">Try the working website prototype</a>.</span></figcaption></figure>'
 addvancedfocus = ('<section class="wrap af-product-hero"><div><img class="af-hero-icon" src="/assets/products/icons/addvancedfocus-af.svg" alt="" width="80" height="80" decoding="async"><p class="eyebrow">MEET ADDVANCEDFOCUS</p>' + status_pill('development') + '<h1>Less deciding.<br><em>More beginning.</em></h1>'
     '<p class="intro">An AI-powered executive-function assistant being developed for ADHD, autism, and the everyday work of starting, planning, and following through.</p>'
     '<div class="actions"><a class="button" href="#concept-demo">Try the working demo</a><a class="text-link" href="#explore">See the product direction</a></div></div>'
@@ -208,7 +219,7 @@ favicon = "/assets/brand/biro-favicon.svg"
 BRAND_LINK = '<a class="brand" aria-label="Biro.dev home" href="/"><picture><source media="print" srcset="/assets/brand/biro-horizontal-mono-light.svg"><img class="brand-logo" src="/assets/brand/biro-horizontal-dark.svg" alt="" width="1080" height="350" decoding="async"></picture></a>'
 for route, (title, desc, content) in pages.items():
     product_name = next((p['name'] for p in portfolio if p['slug'] == route), 'AddvancedFocus' if route == 'addvancedfocus' else None)
-    social_asset = '/assets/products/' + route + '.jpg' if product_name else '/og.jpg'
+    social_asset = ('/assets/products/addvancedfocus-modern.jpg' if route == 'addvancedfocus' else '/assets/products/' + route + '.jpg') if product_name else '/og.jpg'
     social_alt = product_name + ' — illustrative app interface and concept logo.' if product_name else 'Biro.dev — Technology for everyday possibility. Thoughtful AI. More agency. Less overwhelm.'
     social_width, social_height = (1536, 1024) if product_name else (1734, 907)
     nav = ''.join(f'<a href="{link(r)}"'+(' aria-current="page"' if r==route else ' aria-current="location"' if r=='products' and route in {p['slug'] for p in portfolio} else '')+f'>{label}</a>' for r,label in NAV)
