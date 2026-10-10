@@ -2,7 +2,7 @@ from pathlib import Path
 import json, os, re
 from urllib.parse import quote
 from product_pages import render_product
-from site_parts import profile_links, render_profile_links, status_pill, where_things_stand
+from site_parts import concept_list, constellation, glance, inner_hero, profile_links, render_profile_links, status_pill, where_things_stand
 from heading_breaks import heading_breaks
 from html import escape
 
@@ -40,6 +40,9 @@ STYLE_SOURCES = [
     'components/app-icon.css',
     'components/app-mockup.css',
     'components/concept-card.css',
+    'components/status-strip.css',
+    'components/concept-list.css',
+    'components/constellation.css',
     'components/demo.css',
     'pages/home.css',
     'pages/about.css',
@@ -103,11 +106,10 @@ FOUNDER_CLOSE = ('<section class="closing wrap founder-close"><p class="eyebrow"
     '<p>Biro.dev was founded by Jonathan Biro in Los Angeles. ' + render_profile_links(PROFILE_LINKS, 'text-link') + '</p>'
     '<a class="button" href="/contact/">Talk with the founder</a></section>')
 home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</p><h1>Life is complex.<br>Support should<br>feel <em>simple.</em></h1>'
-    '<p class="intro">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus, an executive-function assistant.</p>'
+    '<p class="lead">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus, an executive-function assistant.</p>'
     '<div class="actions"><a class="button" href="/addvancedfocus/#concept-demo">Try the working demo</a><a class="text-link" href="/addvancedfocus/">Meet AddvancedFocus</a></div>'
     '<p class="micro">Founded in Los Angeles by Jonathan Biro · Pre-release</p></div>'
-    '<div class="hero-visual"><img decoding="async" class="ribbon" src="/assets/hero.webp" alt="" width="1536" height="1024" fetchpriority="high">' + concept
-    + '<p class="visual-caption">Less to hold in your head.<br>More room to be yourself.</p></div></section>'
+    + constellation('home') + '</section>' + where_things_stand('strip')
     + '<section class="section wrap">' + section_intro('WHY WE’RE HERE', 'Knowing what to do<br>is only part of the work.', 'Daily life involves more than keeping a list. It means deciding where to begin, remembering context, adjusting when plans change, and carrying responsibilities that other people may never see.')
     + cards([('Support that meets you where you are', 'For neurodivergent people, individuals with disabilities, and families navigating the demands of daily life.'),
              ('Less effort to get going', 'Tools designed to reduce decisions, make the next step clearer, and help turn intention into action.'),
@@ -115,7 +117,7 @@ home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE
     + '<section class="feature-section"><div class="wrap feature"><div><p class="eyebrow">OUR FIRST PRODUCT</p><div class="title-row"><h2>Meet AddvancedFocus.</h2>' + status_pill('development') + '</div>'
     '<p class="large">Help with starting, planning,<br>and keeping everyday life moving.</p><p>Our flagship AI-powered executive-function assistant is being developed to support ADHD, autism, and the everyday work of planning, routines, and household coordination.</p>'
     '<a class="button" href="/addvancedfocus/">Explore AddvancedFocus</a></div><div class="flow-list"><div><span>01</span><h3>Find a starting point</h3><p>Turn a big intention into a manageable first step.</p></div><div><span>02</span><h3>Make a little space</h3><p>Bring plans, routines, and open loops into view.</p></div><div><span>03</span><h3>Begin again, without the guilt</h3><p>Build support around interruptions and changing energy.</p></div></div></div></section>'
-    + where_things_stand('compact') + HOW_WE_BUILD + (ROOT / 'fragments/portfolio-teaser.html').read_text() + FOUNDER_CLOSE)
+    + HOW_WE_BUILD + (ROOT / 'fragments/portfolio-teaser.html').read_text().replace('{{CONCEPT_LIST}}', concept_list(json.loads((ROOT / 'portfolio.json').read_text()))) + FOUNDER_CLOSE)
 
 about = (ROOT / 'fragments/about.html').read_text().replace('{{PROFILE_LINKS}}', f'<p class="founder-profiles">{render_profile_links(PROFILE_LINKS, "text-link")}</p>' if PROFILE_LINKS else '') + (ROOT / 'fragments/company-evaluation.html').read_text() + cta()
 

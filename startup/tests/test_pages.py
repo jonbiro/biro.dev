@@ -60,7 +60,7 @@ class Home(unittest.TestCase):
 
     def test_seven_sections_in_the_reviewer_order(self):
         self.assertEqual([first_eyebrow(s) for s in self.sections],
-                         ['AI-POWERED ASSISTIVE TECHNOLOGY', 'WHY WE’RE HERE', 'OUR FIRST PRODUCT', 'WHERE THINGS STAND',
+                         ['AI-POWERED ASSISTIVE TECHNOLOGY', 'WHERE THINGS STAND', 'WHY WE’RE HERE', 'OUR FIRST PRODUCT',
                           'HOW WE BUILD', 'BEYOND THE FLAGSHIP', 'FOUNDED WITH PURPOSE'])
 
     def test_hero_leads_with_the_working_demo(self):
@@ -71,13 +71,28 @@ class Home(unittest.TestCase):
         self.assertIn('Biro.dev is building affordable, accessible software for neurodivergent people', hero.text())
         self.assertEqual(hero.find(cls='micro').text(), 'Founded in Los Angeles by Jonathan Biro · Pre-release')
 
-    def test_concept_card_has_no_status_pill_and_links_to_the_demo(self):
-        card = self.root.find(cls='concept')
-        self.assertIsNone(card.find(cls='pill'))
-        self.assertIn('Try the working demo', card.text())
+    def test_hero_shows_the_decorative_constellation(self):
+        hero = self.sections[0]
+        figure = hero.find(cls='constellation')
+        self.assertEqual(figure.attrs.get('aria-hidden'), 'true')
+        self.assertEqual(len(figure.find_all(tag='img')), 9)
+        self.assertIsNone(self.root.find(cls='concept'))
+        self.assertIsNone(self.root.find(cls='hero-visual'))
+
+    def test_status_strip_sits_directly_under_the_hero(self):
+        strip = self.sections[1] if 'status-strip' in self.sections[1].classes else None
+        self.assertIsNotNone(strip)
+        self.assertEqual(strip.attrs.get('id'), 'where-things-stand')
+
+    def test_family_section_lists_every_concept_with_its_status(self):
+        rows = self.sections[5].find_all(cls='concept-row')
+        self.assertEqual(len(rows), 8)
+        for row in rows:
+            self.assertEqual([p.text() for p in row.find_all(cls='pill')], ['Concept'])
+            self.assertIsNotNone(row.find(cls='app-icon'))
 
     def test_flagship_section_uses_the_status_pill_without_small_print(self):
-        feature = self.sections[2]
+        feature = self.sections[3]
         self.assertEqual([p.text() for p in feature.find_all(cls='pill')], ['In development'])
         self.assertIsNone(feature.find(cls='micro'))
 

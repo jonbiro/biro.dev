@@ -46,3 +46,16 @@ test('with motion, sections reveal once as they scroll into view', async ({ brow
   expect(unrevealed).toBe(0);
   await context.close();
 });
+
+test('the constellation pauses when it is off-screen', async ({ browser }) => {
+  const context = await browser.newContext({ baseURL: BASE_URL, reducedMotion: 'no-preference', viewport: { width: 1280, height: 800 } });
+  const page = await context.newPage();
+  await page.goto('/');
+  const orbit = page.locator('.constellation');
+  await expect(orbit).not.toHaveClass(/is-paused/);
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(orbit).toHaveClass(/is-paused/);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(orbit).not.toHaveClass(/is-paused/);
+  await context.close();
+});

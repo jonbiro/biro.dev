@@ -15,7 +15,7 @@ h4{margin:var(--space-4) 0 var(--space-2);font-size:var(--type-body);line-height
 h1 em,h2 em{font-style:normal;color:var(--accent)}
 main :is(h1,h2,h3,h4,p,a,span,li,dd){overflow-wrap:break-word}
 .eyebrow{display:block;margin:0 0 var(--space-4);font-size:var(--type-eyebrow);font-weight:700;letter-spacing:.14em;line-height:1.4;text-transform:uppercase;color:var(--accent-strong)}
-.intro{max-width:34ch;font-size:var(--type-lead);line-height:1.5;color:var(--text-soft)}
+.intro,.lead{max-width:34ch;font-size:var(--type-lead);line-height:1.5;color:var(--text-soft)}
 .large{font-size:var(--type-lead);line-height:1.5;color:var(--text-soft)}
 .micro,.muted{font-size:var(--type-small);color:var(--text-muted)}
 .micro{margin-top:var(--space-5)}

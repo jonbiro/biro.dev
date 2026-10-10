@@ -1,0 +1,7 @@
+.status-strip{background:var(--surface-1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.status-strip>.wrap{padding-top:var(--space-7);padding-bottom:var(--space-7)}
+.status-strip h2{margin-bottom:0;font-size:var(--type-h3)}
+.status-strip .readiness-grid{margin-top:var(--space-5)}
+.status-strip .readiness-grid article{padding-top:var(--space-4)}
+.status-strip .readiness-grid h3{font-size:var(--type-lead)}
+.status-strip .readiness-grid ul{font-size:var(--type-ui)}

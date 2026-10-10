@@ -92,3 +92,20 @@
   }, { rootMargin: '0px 0px -8% 0px' });
   sections.forEach((section) => reveal.observe(section));
 })();
+
+// Pause the constellation's drift while it is off-screen or the tab is hidden.
+(() => {
+  'use strict';
+  const orbits = document.querySelectorAll('.constellation');
+  if (!orbits.length || !('IntersectionObserver' in window)) return;
+  const visible = new Map();
+  const update = (orbit) => orbit.classList.toggle('is-paused', document.hidden || !visible.get(orbit));
+  const watch = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      visible.set(entry.target, entry.isIntersecting);
+      update(entry.target);
+    }
+  });
+  orbits.forEach((orbit) => watch.observe(orbit));
+  document.addEventListener('visibilitychange', () => orbits.forEach(update));
+})();
