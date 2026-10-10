@@ -74,10 +74,11 @@ def where_things_stand(variant: str) -> str:
             + inner + '</section>')
 
 
-def glance(rows: list) -> str:
-    """The ruled "at a glance" column for inner-page heroes. Values are HTML (links, pills)."""
+def glance(rows: list, note: str = '') -> str:
+    """The ruled "at a glance" column for inner-page heroes. Values are HTML (links, pills); the note is plain text."""
     items = ''.join(f'<div><dt>{escape(term)}</dt><dd>{value}</dd></div>' for term, value in rows)
-    return f'<aside class="glance" aria-label="At a glance"><p class="eyebrow">AT A GLANCE</p><dl>{items}</dl></aside>'
+    after = f'<p class="micro">{escape(note)}</p>' if note else ''
+    return f'<aside class="glance" aria-label="At a glance"><p class="eyebrow">AT A GLANCE</p><dl>{items}</dl>{after}</aside>'
 
 
 def inner_hero(eyebrow: str, title_html: str, intro_html: str, aside: str = '', below: str = '') -> str:
@@ -94,9 +95,9 @@ def concept_list(items: list, detailed: bool = False) -> str:
                 'loading="lazy" decoding="async">')
         tail = status_pill(item.get('status', 'concept')) + '<span class="concept-row-arrow" aria-hidden="true">→</span>'
         if detailed:
-            text = (f'<span class="concept-row-text"><span class="eyebrow">{escape(item["category"])}</span>'
+            text = (f'<div class="concept-row-text"><span class="eyebrow">{escape(item["category"])}</span>'
                     f'<h3 id="{slug}-title">{name}</h3><span class="concept-row-tagline">{escape(item["tagline"])}</span>'
-                    f'<span class="concept-row-description">{escape(item["description"])}</span></span>')
+                    f'<span class="concept-row-description">{escape(item["description"])}</span></div>')
             rows.append(f'<li id="{slug}" tabindex="-1"><a class="concept-row concept-row-detailed" href="/{slug}/" '
                         f'aria-labelledby="{slug}-title">{icon}{text}{tail}</a></li>')
         else:

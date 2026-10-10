@@ -302,7 +302,7 @@ class Sitewide(unittest.TestCase):
         expected = {'/about/': ['Company', 'Founder', 'Based in', 'First product', 'Stage'],
                     '/mission/': ['Design target', 'Commitments', 'This website'],
                     '/contact/': ['Email', 'Founder', 'Based in'],
-                    '/accessibility/': ['Target', 'Reviewed', 'Tested in', 'Not yet verified']}
+                    '/accessibility/': ['Target', 'Last reviewed', 'Tested in', 'Not yet verified']}
         for route, terms in expected.items():
             column = load(route).find(cls='page-hero').find(cls='glance')
             self.assertIsNotNone(column, route)
@@ -310,6 +310,17 @@ class Sitewide(unittest.TestCase):
         stage = load('/about/').find(cls='glance').find_all(tag='dd')[-1]
         self.assertEqual(stage.text(), 'In development')
         self.assertIsNone(load('/about/').find(cls='company-overview'))
+
+    def test_accessibility_glance_matches_the_statement(self):
+        root = load('/accessibility/')
+        dds = root.find(cls='glance').find_all(tag='dd')
+        pill = next(p.text() for p in root.find_all(cls='pill') if p.text().startswith('Reviewed '))
+        self.assertEqual('Reviewed ' + dds[1].text(), pill)
+        self.assertIn('An independent accessibility audit', dds[3].text())
+
+    def test_contact_glance_carries_the_email_note(self):
+        note = load('/contact/').find(cls='glance').find(cls='micro')
+        self.assertEqual(note.text(), 'Opens your email app. You can review your message before sending.')
 
     def test_accessibility_statement_describes_the_current_checks(self):
         text = load('/accessibility/').find(tag='main').text()

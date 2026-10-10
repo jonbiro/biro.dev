@@ -31,14 +31,14 @@
 .af-step{font-size:var(--type-body);color:var(--text-soft);max-width:32rem;line-height:1.7;margin-bottom:1.25rem}
 .af-why{margin-bottom:1.5rem}
 .af-why summary{font-size:var(--type-small);color:var(--accent-strong);cursor:pointer;min-height:2rem}
-.af-why p{font-size:var(--type-ui);color:var(--text-muted);padding:.75rem 1rem;border-left:2px solid var(--line-contrast);background:var(--surface-3);border-radius:0 .5rem .5rem 0}
+.af-why p{font-size:var(--type-ui);color:var(--text-muted);padding:.75rem 1rem;border-left:2px solid var(--line-contrast);background:var(--surface-3);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .af-session{border:1px solid var(--line);background:var(--surface-3);border-radius:var(--radius-md);padding:1.25rem}
 .af-clock{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap}
 #af-timer{font-size:var(--type-h3);font-variant-numeric:tabular-nums;letter-spacing:-.04em;line-height:1.25}
 #af-session-label{font-size:var(--type-small);color:var(--text-soft)}
 .af-session-actions{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-top:1rem}
 .af-session-actions .button{font-size:var(--type-small);min-height:2.75rem;padding:.625rem 1rem}
-.af-quiet{background:transparent;border:1px solid transparent;color:var(--accent-strong);font-size:var(--type-small);padding:.5rem;min-height:2.75rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px;border-radius:.4rem}
+.af-quiet{background:transparent;border:1px solid transparent;color:var(--accent-strong);font-size:var(--type-small);padding:.5rem;min-height:2.75rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px;border-radius:var(--radius-sm)}
 .af-quiet:hover{background:var(--surface-3);color:var(--text)}
 .af-checkpoint{margin-top:1.25rem}
 .af-checkpoint label{display:block;font-size:var(--type-ui);font-weight:600;margin-bottom:.75rem}
@@ -46,7 +46,7 @@
 .af-checkpoint textarea{width:100%;resize:vertical;min-height:6rem;background:var(--surface-1);border:1px solid var(--line-contrast);border-radius:var(--radius-md);padding:1rem;color:var(--text);font-size:var(--type-body);line-height:1.5}
 .af-checkpoint textarea::placeholder{color:var(--text-muted)}
 .af-checkpoint .micro{margin-top:.5rem}
-.af-completion{border-left:2px solid var(--accent);padding:.75rem 1rem;margin-top:1.25rem;background:var(--surface-3);border-radius:0 .5rem .5rem 0}
+.af-completion{border-left:2px solid var(--accent);padding:.75rem 1rem;margin-top:1.25rem;background:var(--surface-3);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .af-completion p{font-size:var(--type-ui);color:var(--accent-strong);margin:.25rem 0 0}
 .af-task-list{display:grid;gap:var(--space-3);margin-top:1.5rem}
 .af-task-list button{border:1px solid var(--line-strong);border-radius:var(--radius-md);text-align:left;padding:1rem;background:var(--surface-3);color:var(--text);cursor:pointer}
@@ -88,7 +88,7 @@
 #af-progress::-webkit-progress-bar{background:var(--line)}
 #af-progress::-webkit-progress-value{background:var(--accent);border-radius:var(--radius-md)}
 #af-progress::-moz-progress-bar{background:var(--accent);border-radius:var(--radius-md)}
-.af-return-hint{color:var(--accent-strong);font-size:var(--type-ui);background:var(--surface-3);border-left:2px solid var(--accent);padding:.75rem 1rem;border-radius:0 .5rem .5rem 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.af-return-hint{color:var(--accent-strong);font-size:var(--type-ui);background:var(--surface-3);border-left:2px solid var(--accent);padding:.75rem 1rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:47.5rem){
   .af-sidebar{border-right:0;border-bottom:1px solid var(--line);padding:1rem 1.25rem}
   .af-workspace{padding-top:1rem}
