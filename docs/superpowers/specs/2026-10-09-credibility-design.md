@@ -50,7 +50,7 @@ There is no new CSS. The section uses `.section`, `.section-intro`, `.cards`, `.
 - **About:** the section exists after the founder layout, has four cards, and each card has exactly one link. The links point to the four targets above.
 - **Home:** "How we build" links to `/about/#how-the-work-is-checked`.
 - **Section text** contains no digits.
-- **Existing checks still pass:** the fragment-anchor test (all four targets resolve), the status-phrase placement test, the undecided-items test, the About word budget if any, the browser suite (`npm --prefix startup/qa test`) with no new known issues, and `csskit check`.
+- **Existing checks still pass:** the fragment-anchor test (all four targets resolve), the status-phrase placement test, the undecided-items test, the browser suite (`npm --prefix startup/qa test`) with no new known issues, and `csskit check`.
 
 ## Acceptance
 
