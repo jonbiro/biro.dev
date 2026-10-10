@@ -1,0 +1,56 @@
+<h2>Design section 3: inner pages and shared components</h2>
+<p class="subtitle">Inner heroes use the same editorial headline with a ruled "at a glance" column. Below them is the component sheet that every page draws from. Desktop width.</p>
+
+<style>
+  .site { --bg:#090f1b; --s1:#0d1727; --s2:#101d30; --s3:#142238; --line:#304965; --ls:#1e2f47; --lc:#6685af; --text:#e7eef9; --soft:#c1cfe0; --muted:#acbad0; --accent:#8bb6ff; --as:#b4cfff; --on:#091321;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); border-radius:14px; }
+  .site .eyebrow { font-size:11px; letter-spacing:.14em; font-weight:700; color:var(--as); }
+  .site .h1 { font-size:80px; line-height:.98; letter-spacing:-.05em; font-weight:600; margin:20px 0 22px; } .site .h1 em { font-style:normal; color:var(--accent); }
+  .site .lead { font-size:21px; line-height:1.5; color:var(--soft); max-width:34ch; border-top:1px solid var(--line); padding-top:20px; margin:0; }
+  .ih { display:grid; grid-template-columns:1.4fr 1fr; gap:56px; padding:56px 48px 72px; align-items:end; }
+  .glance { border-left:1px solid var(--line); padding-left:32px; }
+  .glance dl { display:grid; grid-template-columns:auto 1fr; gap:14px 22px; margin:18px 0 0; font-size:16px; }
+  .glance dt { color:var(--muted); } .glance dd { margin:0; } .glance a { text-decoration:underline; text-underline-offset:5px; text-decoration-color:var(--lc); }
+  .comp { padding:40px 48px 48px; display:grid; gap:36px; }
+  .comp .label { font-size:12px; color:var(--lc); font-family:ui-monospace,Menlo,monospace; margin-bottom:12px; }
+  .btn { display:inline-block; background:var(--accent); color:var(--on); font-weight:600; font-size:15px; padding:14px 24px; border-radius:999px; }
+  .btn2 { display:inline-block; border:1px solid var(--lc); color:var(--text); font-weight:600; font-size:15px; padding:13px 23px; border-radius:999px; }
+  .tl { font-weight:600; font-size:15px; text-decoration:underline; text-underline-offset:6px; text-decoration-thickness:2px; text-decoration-color:var(--lc); }
+  .pill { display:inline-block; font-size:13px; font-weight:600; padding:5px 12px; border-radius:999px; background:var(--s3); border:1px solid var(--line); color:var(--as); }
+  .pill.demo { background:#8bb6ff1f; border-color:#8bb6ff66; color:var(--as); } .pill.dev { color:var(--text); } .pill.concept { color:var(--muted); }
+  .rulecards { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; }
+  .rulecards article { border-top:1px solid var(--line); padding-top:22px; }
+  .rulecards .n { font-size:13px; color:var(--accent); font-weight:600; } .rulecards h4 { font-size:30px; letter-spacing:-.02em; margin:14px 0 10px; font-weight:600; } .rulecards p { color:var(--muted); font-size:17px; line-height:1.6; margin:0; }
+  .faq div { border-top:1px solid var(--line); padding:22px 0; display:flex; justify-content:space-between; font-size:22px; font-weight:500; }
+  .faq span { color:var(--accent); font-size:26px; line-height:1; }
+  .concepts { display:grid; grid-template-columns:repeat(2,1fr); gap:0 40px; }
+  .concepts a { display:grid; grid-template-columns:56px 1fr auto; gap:18px; align-items:center; border-top:1px solid var(--line); padding:20px 0; text-decoration:none; }
+  .concepts img { width:56px; border-radius:22%; } .concepts b { font-size:22px; letter-spacing:-.02em; display:block; } .concepts small { color:var(--muted); font-size:15px; } .concepts i { color:var(--accent); font-style:normal; font-size:20px; }
+</style>
+
+<h3>About hero · "at a glance" column</h3>
+<div class="site"><div class="ih">
+  <div><div class="eyebrow">ABOUT BIRO.DEV</div><div class="h1">Human needs.<br><em>Technical ambition.</em></div><p class="lead">Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.</p></div>
+  <div class="glance"><div class="eyebrow">AT A GLANCE</div><dl><dt>Company</dt><dd>Biro.dev</dd><dt>Founder</dt><dd>Jonathan Biro · <a>GitHub</a></dd><dt>Based in</dt><dd>Los Angeles, California</dd><dt>First product</dt><dd>AddvancedFocus</dd><dt>Stage</dt><dd><span class="pill dev">In development</span></dd></dl></div>
+</div></div>
+
+<h3 style="margin-top:28px;">Component sheet</h3>
+<div class="site"><div class="comp">
+  <div><div class="label">actions: primary · secondary · text link</div><span class="btn">Try the working demo</span> &nbsp; <span class="btn2">Talk with the founder</span> &nbsp; <span class="tl">Meet AddvancedFocus</span></div>
+  <div><div class="label">status pills: each label has its own tone, so the three read differently at a glance</div><span class="pill demo">Working demo</span> &nbsp; <span class="pill dev">In development</span> &nbsp; <span class="pill concept">Concept</span></div>
+  <div><div class="label">cards become ruled columns (no boxes); used for "Why we're here", "How we build", Mission commitments</div>
+    <div class="rulecards"><article><span class="n">01</span><h4>Accessibility</h4><p>WCAG 2.2 Level AA is the design target for this website.</p></article><article><span class="n">02</span><h4>Privacy</h4><p>This website has no sign-up, live AI request, analytics script, or marketing cookie.</p></article><article><span class="n">03</span><h4>User autonomy</h4><p>In the demo, you can stop a session without marking the step complete, and undo a completion.</p></article></div></div>
+  <div><div class="label">concept list (Products, Home "Beyond the flagship"): icon · name · category, ruled rows instead of boxes</div>
+    <div class="concepts"><a><img src="http://localhost:8080/assets/products/icons/carebridge.webp" alt=""><span><b>CareBridge</b><small>Family care coordination</small></span><i>→</i></a><a><img src="http://localhost:8080/assets/products/icons/storyready.webp" alt=""><span><b>StoryReady</b><small>Visual stories &amp; transitions</small></span><i>→</i></a><a><img src="http://localhost:8080/assets/products/icons/clearcue.webp" alt=""><span><b>ClearCue</b><small>Speech comprehension &amp; follow-through</small></span><i>→</i></a><a><img src="http://localhost:8080/assets/products/icons/plainpath.webp" alt=""><span><b>PlainPath</b><small>Written information &amp; action</small></span><i>→</i></a></div></div>
+  <div class="faq"><div class="label" style="border:0;padding:0;font-size:12px;">FAQ disclosure: large question, plus sign turns into minus</div><div>How are you deciding what to build first?<span>+</span></div><div>Can I help shape a product?<span>+</span></div></div>
+</div></div>
+
+<div class="section" style="margin-top:20px;">
+  <h3>Also in this section</h3>
+  <ul>
+    <li><b>Header:</b> taller (26px padding) with the active page underlined in accent and Contact as an outline pill. On phones, the menu opens as a full-width sheet.</li>
+    <li><b>Footer:</b> the ruled editorial grid of brand, navigation and founder (with GitHub), with the status line set as small print.</li>
+    <li><b>Product pages:</b> the overview box becomes the ruled column. Workflow steps use ruled columns, and the mockup gets a framed "screen" treatment with its caption.</li>
+    <li><b>Spacing:</b> sections get 128px of vertical space, and section headings use the 54px step.</li>
+  </ul>
+</div>

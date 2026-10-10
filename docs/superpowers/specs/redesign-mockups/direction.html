@@ -1,0 +1,102 @@
+<h2>Which design direction should the redesign take?</h2>
+<p class="subtitle">All three keep the dark navy, the blue accents, system fonts and the reviewer-first content. They differ in what the eye lands on first. Each mockup is the Home hero at desktop width, using real copy and the real app icons.</p>
+
+<style>
+  .dir { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#090f1b; color:#e7eef9; border-radius:14px; overflow:hidden; height:340px; position:relative; }
+  .dir .nav { display:flex; justify-content:space-between; align-items:center; padding:14px 22px; font-size:11px; color:#acbad0; }
+  .dir .nav b { color:#e7eef9; font-size:14px; }
+  .dir .nav b span { color:#acbad0; font-weight:500; }
+  .dir .pill { display:inline-block; font-size:9px; padding:3px 8px; border-radius:99px; background:#142238; border:1px solid #304965; color:#b4cfff; }
+  .dir .btn { display:inline-block; font-size:10px; font-weight:600; padding:7px 12px; border-radius:99px; background:#8bb6ff; color:#091321; }
+  .dir .link { font-size:10px; font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .dir .eyebrow { font-size:8px; letter-spacing:.14em; color:#8bb6ff; font-weight:700; }
+  .dir img { display:block; }
+</style>
+
+<div class="cards">
+
+  <div class="card" data-choice="editorial" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="dir">
+        <div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · AddvancedFocus · Mission · Contact</span></div>
+        <div style="padding:18px 22px 0;display:grid;grid-template-columns:1.6fr 1fr;gap:22px;">
+          <div>
+            <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+            <div style="font-size:44px;line-height:1.02;letter-spacing:-.04em;font-weight:600;margin:10px 0 12px;">Life is complex.<br>Support should<br>feel <span style="color:#8bb6ff">simple.</span></div>
+            <div style="border-top:1px solid #304965;padding-top:10px;font-size:10px;color:#acbad0;max-width:300px;">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families.</div>
+            <div style="margin-top:12px;display:flex;gap:12px;align-items:center;"><span class="btn">Try the working demo</span><span class="link">Meet AddvancedFocus</span></div>
+          </div>
+          <div style="border-left:1px solid #304965;padding-left:16px;font-size:10px;color:#acbad0;">
+            <div class="eyebrow" style="margin-bottom:10px;">WHERE THINGS STAND</div>
+            <div style="color:#e7eef9;font-weight:600;margin-bottom:4px;">Built and working</div><div style="margin-bottom:10px;">Interactive AddvancedFocus concept</div>
+            <div style="color:#e7eef9;font-weight:600;margin-bottom:4px;">In development</div><div style="margin-bottom:10px;">AI-assisted planning and routines</div>
+            <div style="color:#e7eef9;font-weight:600;margin-bottom:4px;">Not yet decided</div><div>Launch date, pricing, platforms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Editorial calm</h3>
+      <p>Very large type, generous space, thin rules and an asymmetric grid. The status facts sit beside the headline. It reads like a confident publication: quiet, credible, typographic.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="product" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="dir" style="background:radial-gradient(ellipse at 50% 85%, #1a3a6e 0%, #090f1b 60%);">
+        <div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · AddvancedFocus · Mission · Contact</span></div>
+        <div style="text-align:center;padding:4px 22px 0;">
+          <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+          <div style="font-size:30px;line-height:1.05;letter-spacing:-.03em;font-weight:600;margin:8px 0 10px;">Life is complex. Support should feel <span style="color:#8bb6ff">simple.</span></div>
+          <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:14px;"><span class="btn">Try the working demo</span><span class="link">Meet AddvancedFocus</span></div>
+          <div style="margin:0 auto;width:78%;background:#101d30;border:1px solid #3b5576;border-radius:12px 12px 0 0;padding:10px 12px;text-align:left;box-shadow:0 -10px 40px #3b6fd055;">
+            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:8px;"><b>Addvanced<span style="color:#8bb6ff">Focus</span></b><span class="pill">Working demo</span></div>
+            <div style="display:flex;gap:10px;font-size:9px;color:#acbad0;margin-bottom:8px;"><span style="color:#e7eef9;border-bottom:2px solid #8bb6ff;">Now</span><span>Today</span><span>Upcoming</span><span>Later</span></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#142238;border-radius:8px;padding:10px;">
+              <div><div class="eyebrow">ONE USEFUL STEP</div><div style="font-size:13px;font-weight:600;margin-top:4px;">Open a blank document.</div><div style="font-size:9px;color:#acbad0;">Give it a working title. The rest can wait.</div></div>
+              <div style="text-align:center;"><div style="font-size:18px;font-weight:600;">02:00</div><span class="btn" style="font-size:8px;padding:4px 8px;">Start 2 minutes</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Product on stage</h3>
+      <p>The working demo is the hero centerpiece, lit from below like a product launch. Shorter headline, centered. Proof of execution comes first, the strongest signal for reviewers.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="constellation" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="dir">
+        <div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · AddvancedFocus · Mission · Contact</span></div>
+        <div style="padding:14px 22px 0;display:grid;grid-template-columns:1.15fr 1fr;gap:18px;align-items:center;">
+          <div>
+            <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+            <div style="font-size:34px;line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:10px 0 10px;">Life is complex.<br>Support should<br>feel <span style="color:#8bb6ff">simple.</span></div>
+            <div style="font-size:10px;color:#acbad0;margin-bottom:12px;max-width:260px;">Starting with AddvancedFocus, an executive-function assistant, and eight early concepts.</div>
+            <div style="display:flex;gap:12px;align-items:center;"><span class="btn">Try the working demo</span><span class="link">Meet AddvancedFocus</span></div>
+          </div>
+          <div style="position:relative;height:250px;">
+            <div style="position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle,#1a3a6e88,transparent 70%);"></div>
+            <img src="http://localhost:8080/assets/products/icons/addvancedfocus.webp" style="position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:22%;box-shadow:0 0 40px #8bb6ff66;">
+            <img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="position:absolute;left:12%;top:10%;width:38px;border-radius:22%;opacity:.85;">
+            <img src="http://localhost:8080/assets/products/icons/storyready.webp" style="position:absolute;left:48%;top:2%;width:34px;border-radius:22%;opacity:.8;">
+            <img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="position:absolute;right:6%;top:16%;width:36px;border-radius:22%;opacity:.8;">
+            <img src="http://localhost:8080/assets/products/icons/plainpath.webp" style="position:absolute;left:2%;top:46%;width:34px;border-radius:22%;opacity:.75;">
+            <img src="http://localhost:8080/assets/products/icons/stepable.webp" style="position:absolute;right:2%;top:52%;width:36px;border-radius:22%;opacity:.8;">
+            <img src="http://localhost:8080/assets/products/icons/sayable.webp" style="position:absolute;left:14%;bottom:6%;width:36px;border-radius:22%;opacity:.8;">
+            <img src="http://localhost:8080/assets/products/icons/sensoryscout.webp" style="position:absolute;left:50%;bottom:0;width:34px;border-radius:22%;opacity:.75;">
+            <img src="http://localhost:8080/assets/products/icons/opencall.webp" style="position:absolute;right:12%;bottom:10%;width:36px;border-radius:22%;opacity:.8;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Icon constellation</h3>
+      <p>The nine app icons become the signature motif: AddvancedFocus glows at the center, with the eight concepts around it. It says "one flagship, a family behind it" in a single image, and recurs across pages.</p>
+    </div>
+  </div>
+
+</div>
+<p class="subtitle" style="margin-top:18px;">Pick one, or tell me which parts of each you'd combine.</p>

@@ -1,0 +1,9 @@
+.glance{padding-left:var(--space-6);border-left:1px solid var(--line)}
+.glance dl{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:baseline;gap:var(--space-3) var(--space-5);margin:0}
+.glance dl>div{display:contents}
+.glance dt{color:var(--text-muted)}
+.glance dd{margin:0;color:var(--text)}
+.glance dd a{text-decoration:underline;text-underline-offset:5px;text-decoration-color:var(--line-contrast)}
+@media(max-width:47.5rem){
+  .glance{margin-top:var(--space-6);padding-left:0;padding-top:var(--space-5);border-left:0;border-top:1px solid var(--line)}
+}

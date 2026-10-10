@@ -1,11 +1,10 @@
-.readiness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-5);margin-top:2rem}
-.readiness-grid article{padding:1.75rem;border:1px solid var(--border-2);border-radius:1.25rem;background:var(--surface-2)}
-.readiness-grid h3{font-size:1.25rem;margin:1.25rem 0 1rem}
-.readiness-grid ul{padding-left:1.25rem;color:var(--text-subtle)}
-.readiness-grid li{margin-bottom:.6rem}
+.readiness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-6);margin-top:var(--space-6)}
+.readiness-grid article{padding-top:var(--space-5);border-top:1px solid var(--line)}
+.readiness-grid h3{margin:var(--space-4) 0 var(--space-3)}
+.readiness-grid ul{margin:0 0 var(--space-4);padding-left:1.1em;color:var(--text-muted)}
+.readiness-grid li{margin-bottom:var(--space-2)}
+.readiness .where-stages{margin-top:var(--space-8)}
+.readiness .where-more{margin-top:var(--space-5)}
 @media(max-width:60rem){
-  .readiness-grid{grid-template-columns:1fr}
-  .readiness-grid article{padding:1.5rem}
-  .readiness-grid ul{margin-bottom:0}
+  .readiness-grid{grid-template-columns:minmax(0,1fr)}
 }
-.readiness .where-stages{margin-top:3rem}

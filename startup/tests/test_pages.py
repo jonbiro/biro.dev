@@ -60,7 +60,7 @@ class Home(unittest.TestCase):
 
     def test_seven_sections_in_the_reviewer_order(self):
         self.assertEqual([first_eyebrow(s) for s in self.sections],
-                         ['AI-POWERED ASSISTIVE TECHNOLOGY', 'WHY WE’RE HERE', 'OUR FIRST PRODUCT', 'WHERE THINGS STAND',
+                         ['AI-POWERED ASSISTIVE TECHNOLOGY', 'WHERE THINGS STAND', 'WHY WE’RE HERE', 'OUR FIRST PRODUCT',
                           'HOW WE BUILD', 'BEYOND THE FLAGSHIP', 'FOUNDED WITH PURPOSE'])
 
     def test_hero_leads_with_the_working_demo(self):
@@ -71,13 +71,28 @@ class Home(unittest.TestCase):
         self.assertIn('Biro.dev is building affordable, accessible software for neurodivergent people', hero.text())
         self.assertEqual(hero.find(cls='micro').text(), 'Founded in Los Angeles by Jonathan Biro · Pre-release')
 
-    def test_concept_card_has_no_status_pill_and_links_to_the_demo(self):
-        card = self.root.find(cls='concept')
-        self.assertIsNone(card.find(cls='pill'))
-        self.assertIn('Try the working demo', card.text())
+    def test_hero_shows_the_decorative_constellation(self):
+        hero = self.sections[0]
+        figure = hero.find(cls='constellation')
+        self.assertEqual(figure.attrs.get('aria-hidden'), 'true')
+        self.assertEqual(len(figure.find_all(tag='img')), 9)
+        self.assertIsNone(self.root.find(cls='concept'))
+        self.assertIsNone(self.root.find(cls='hero-visual'))
+
+    def test_status_strip_sits_directly_under_the_hero(self):
+        strip = self.sections[1] if 'status-strip' in self.sections[1].classes else None
+        self.assertIsNotNone(strip)
+        self.assertEqual(strip.attrs.get('id'), 'where-things-stand')
+
+    def test_family_section_lists_every_concept_with_its_status(self):
+        rows = self.sections[5].find_all(cls='concept-row')
+        self.assertEqual(len(rows), 8)
+        for row in rows:
+            self.assertEqual([p.text() for p in row.find_all(cls='pill')], ['Concept'])
+            self.assertIsNotNone(row.find(cls='app-icon'))
 
     def test_flagship_section_uses_the_status_pill_without_small_print(self):
-        feature = self.sections[2]
+        feature = self.sections[3]
         self.assertEqual([p.text() for p in feature.find_all(cls='pill')], ['In development'])
         self.assertIsNone(feature.find(cls='micro'))
 
@@ -133,13 +148,21 @@ class Products(unittest.TestCase):
         block = self.root.find(id='where-things-stand')
         self.assertEqual(len(block.find(cls='development-steps').find_all(tag='li')), 3)
 
-    def test_concept_cards_are_compact(self):
-        cards = self.root.find_all(cls='portfolio-card')
-        self.assertEqual(len(cards), 8)
-        for card in cards:
-            self.assertIsNotNone(card.find(cls='app-icon'), card.attrs['id'])
-            self.assertEqual([p.text() for p in card.find_all(cls='pill')], ['Concept'], card.attrs['id'])
-            self.assertIsNone(card.find(tag='details'), card.attrs['id'])
+    def test_concepts_are_ruled_rows_with_status(self):
+        rows = self.root.find(id='future-products').find_all(cls='concept-row')
+        self.assertEqual(len(rows), 8)
+        for row in rows:
+            self.assertIsNotNone(row.find(cls='app-icon'))
+            self.assertEqual([p.text() for p in row.find_all(cls='pill')], ['Concept'])
+            self.assertIsNone(row.find(tag='details'))
+        index = [a.attrs['href'][1:] for a in self.root.find(cls='portfolio-index').find_all(tag='a')]
+        for slug in index:
+            self.assertIsNotNone(self.root.find(id=slug), slug)
+
+    def test_hero_has_the_compact_constellation(self):
+        hero = self.sections[0]
+        self.assertIsNotNone(hero.find(cls='hero-grid'))
+        self.assertIn('constellation-compact', hero.find(cls='constellation').classes)
 
     def test_connected_vision_holds_the_logo_family(self):
         vision = self.root.find(id='connected-vision')
@@ -211,6 +234,14 @@ class ProductPages(unittest.TestCase):
             self.assertIn(f'When can I use {portfolio[slug]["name"]}?', summaries, slug)
 
 
+    def test_related_products_are_concept_rows_with_their_status(self):
+        for slug in PRODUCT_SLUGS:
+            rows = load(f'/{slug}/').find_all(cls='concept-row')
+            self.assertGreaterEqual(len(rows), 2, slug)
+            for row in rows:
+                pills = [p.text() for p in row.find_all(cls='pill')]
+                self.assertIn(pills, (['Concept'], ['In development']), slug)
+
 PHRASES = ('not a released', 'not yet publicly available', 'release timing', 'have not been announced', 'pre-release')
 
 
@@ -240,15 +271,18 @@ class Sitewide(unittest.TestCase):
             for phrase in ('Pricing has not been set', 'are still being decided'):
                 self.assertNotIn(phrase, text, route)
 
-    def test_cross_page_anchors_resolve(self):
+    def test_every_fragment_link_resolves(self):
         broken = []
         for route in ROUTES:
-            for a in load(route).find_all(tag='a'):
+            root = load(route)
+            for a in root.find_all(tag='a'):
                 href = a.attrs.get('href', '')
-                if href.startswith('/') and '#' in href:
-                    target, fragment = href.split('#', 1)
-                    if fragment and load(target or route).find(id=fragment) is None:
-                        broken.append(f'{route} → {href}')
+                if '#' not in href or not (href.startswith('/') or href.startswith('#')):
+                    continue
+                target, fragment = href.split('#', 1)
+                page = root if not target else load(target)
+                if fragment and page.find(id=fragment) is None:
+                    broken.append(f'{route} → {href}')
         self.assertEqual(broken, [])
 
     def test_mission_keeps_the_shared_connected_vision_section(self):
@@ -264,14 +298,22 @@ class Sitewide(unittest.TestCase):
         self.assertEqual([p.text() for p in stage.find_all(cls='pill')], ['In development'])
         self.assertIn('/products/#where-things-stand', [a.attrs.get('href') for a in stage.find_all(tag='a')])
 
-    def test_about_stage_uses_the_status_label(self):
-        facts = load('/about/').find(cls='company-facts')
-        stage = next(div for div in facts.find_all(tag='div') if div.find(tag='dt').text() == 'Current stage')
-        self.assertEqual(stage.find(tag='dd').text(), 'In development')
+    def test_inner_pages_have_an_at_a_glance_column(self):
+        expected = {'/about/': ['Company', 'Founder', 'Based in', 'First product', 'Stage'],
+                    '/mission/': ['Design target', 'Commitments', 'This website'],
+                    '/contact/': ['Email', 'Founder', 'Based in'],
+                    '/accessibility/': ['Target', 'Reviewed', 'Tested in', 'Not yet verified']}
+        for route, terms in expected.items():
+            column = load(route).find(cls='page-hero').find(cls='glance')
+            self.assertIsNotNone(column, route)
+            self.assertEqual([dt.text() for dt in column.find_all(tag='dt')], terms, route)
+        stage = load('/about/').find(cls='glance').find_all(tag='dd')[-1]
+        self.assertEqual(stage.text(), 'In development')
+        self.assertIsNone(load('/about/').find(cls='company-overview'))
 
     def test_accessibility_statement_describes_the_current_checks(self):
         text = load('/accessibility/').find(tag='main').text()
-        self.assertIn('Reviewed October 9, 2026', text)
+        self.assertRegex(text, r'Reviewed (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}')
         self.assertIn('Performed in Chromium and WebKit using automated (axe) and keyboard checks.', text)
 
 

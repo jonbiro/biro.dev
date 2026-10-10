@@ -74,3 +74,49 @@
   window.addEventListener('biro:routechange',()=>{setMenu(false);init();});
   init();
 })();
+
+// Section reveal: additive and optional. Sections stay visible without JavaScript or under reduced motion.
+(() => {
+  'use strict';
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const sections = document.querySelectorAll('main > *');
+  if (!sections.length) return;
+  // Anything already on screen stays put, so a late script never hides what the visitor can see.
+  sections.forEach((section) => { if (section.getBoundingClientRect().top < window.innerHeight) section.classList.add('is-visible'); });
+  document.documentElement.classList.add('js-reveal');
+  const reveal = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        reveal.unobserve(entry.target);
+      }
+    }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  sections.forEach((section) => { if (!section.classList.contains('is-visible')) reveal.observe(section); });
+  // Keyboard focus reveals its section at once, without the fade, so focus never lands on something invisible.
+  document.querySelector('main').addEventListener('focusin', (event) => {
+    const section = event.target.closest('main > *');
+    if (section && !section.classList.contains('is-visible')) {
+      section.style.transition = 'none';
+      section.classList.add('is-visible');
+      reveal.unobserve(section);
+    }
+  });
+})();
+
+// Pause the constellation's drift while it is off-screen or the tab is hidden.
+(() => {
+  'use strict';
+  const orbits = document.querySelectorAll('.constellation');
+  if (!orbits.length || !('IntersectionObserver' in window)) return;
+  const visible = new Map();
+  const update = (orbit) => orbit.classList.toggle('is-paused', document.hidden || !visible.get(orbit));
+  const watch = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      visible.set(entry.target, entry.isIntersecting);
+      update(entry.target);
+    }
+  });
+  orbits.forEach((orbit) => watch.observe(orbit));
+  document.addEventListener('visibilitychange', () => orbits.forEach(update));
+})();

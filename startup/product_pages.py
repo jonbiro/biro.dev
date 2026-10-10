@@ -2,7 +2,7 @@
 from html import escape
 from urllib.parse import quote
 
-from site_parts import status_pill
+from site_parts import concept_list, status_pill
 
 
 def render_product(item, portfolio, email):
@@ -11,11 +11,9 @@ def render_product(item, portfolio, email):
     steps = ''.join(f'<li><h3>{escape(title)}</h3><p>{escape(body)}</p></li>' for title, body in item['workflow'])
     features = ''.join(f'<li>{escape(feature)}</li>' for feature in item['features'])
     faq = ''.join(f'<details><summary>{escape(question)}</summary><p>{escape(answer)}</p></details>' for question, answer in item['questions'])
-    related = []
-    by_slug = {x['slug']:x for x in portfolio}
-    for other_slug in item['related']:
-        other = by_slug.get(other_slug, {'name':'AddvancedFocus','category':'Executive function & getting started'})
-        related.append(f'<a class="related-product" href="/{other_slug}/"><img class="app-icon" src="/assets/products/icons/{other_slug}.webp" alt="" width="44" height="44" loading="lazy" decoding="async"><strong>{escape(other["name"])}</strong><span>{escape(other["category"])}</span></a>')
+    by_slug = {x['slug']: x for x in portfolio}
+    flagship = {'slug': 'addvancedfocus', 'name': 'AddvancedFocus', 'category': 'Executive function & getting started', 'status': 'development'}
+    related = concept_list([by_slug.get(other, flagship) for other in item['related']])
     email_href = 'mailto:' + escape(email, quote=True) + '?subject=' + quote(name + ' — product feedback')
     headline = '<br>'.join(escape(line) for line in item['headline'].split('<br>'))
     return f'''<section class="wrap future-product-hero">
@@ -29,4 +27,4 @@ def render_product(item, portfolio, email):
 <section class="feature-section"><div class="section wrap editorial-split"><div><p class="eyebrow">ACCESSIBILITY &amp; CONTROL</p><h2>Designed around<br>the person using it.</h2></div><div class="editorial-copy"><p class="large">{escape(item['access'])}</p><p>Privacy, affordability, and user autonomy are shared Biro.dev design principles. Product-specific data practices, supported access methods, and any offline capabilities would be explained before public release.</p><a class="text-link" href="/mission/">Read our design commitments</a></div></div></section>
 <section class="section wrap faq" id="questions" tabindex="-1"><p class="eyebrow">QUESTIONS ABOUT {name.upper()}</p><h2>A clearer picture.</h2>{faq}<details><summary>When can I use {name}?</summary><p>{name} is in early concept development. There is no public release date, price, or supported-platform list yet. The next step is to develop and evaluate the intended experience.</p></details></section>
 <section class="wrap product-feedback" id="feedback" tabindex="-1"><div><p class="eyebrow">HELP INFORM THE DIRECTION</p><h2>What would make {name}<br>useful in your everyday life?</h2><p>Share a challenge, a useful detail, or a question. You do not need to share sensitive personal information.</p></div><a class="button" href="{email_href}">Email about {name}</a></section>
-<section class="section wrap"><p class="eyebrow">RELATED PRODUCT DIRECTIONS</p><h2>Other parts of the picture.</h2><div class="related-grid">{''.join(related)}</div><a class="text-link" href="/products/#future-products">View the full portfolio</a></section>'''
+<section class="section wrap"><p class="eyebrow">RELATED PRODUCT DIRECTIONS</p><h2>Other parts of the picture.</h2>{related}<a class="text-link" href="/products/#future-products">View the full portfolio</a></section>'''

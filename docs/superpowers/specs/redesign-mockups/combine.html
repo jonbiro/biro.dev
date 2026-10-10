@@ -1,0 +1,98 @@
+<h2>How should Editorial (A) and Constellation (C) combine?</h2>
+<p class="subtitle">Both use A's large type, thin rules and calm spacing. They differ in where the constellation lives. Each mockup shows the Home hero plus the start of the next band.</p>
+
+<style>
+  .m { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#090f1b; color:#e7eef9; border-radius:14px; overflow:hidden; }
+  .m .nav { display:flex; justify-content:space-between; align-items:center; padding:14px 26px; font-size:11px; color:#acbad0; }
+  .m .nav b { color:#e7eef9; font-size:14px; } .m .nav b span { color:#acbad0; font-weight:500; }
+  .m .eyebrow { font-size:8px; letter-spacing:.14em; color:#8bb6ff; font-weight:700; }
+  .m .btn { display:inline-block; font-size:10px; font-weight:600; padding:7px 12px; border-radius:99px; background:#8bb6ff; color:#091321; }
+  .m .link { font-size:10px; font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .m .h { font-size:52px; line-height:1; letter-spacing:-.045em; font-weight:600; }
+  .m .rule { border-top:1px solid #304965; }
+  .m .muted { color:#acbad0; font-size:10px; }
+  .m .fact b { display:block; color:#e7eef9; font-size:10px; margin-bottom:3px; }
+  .orbit { position:relative; }
+  .orbit img { position:absolute; border-radius:22%; }
+  .orbit .core { box-shadow:0 0 44px #8bb6ff66; }
+  .orbit .ring { position:absolute; border:1px dashed #304965; border-radius:50%; }
+</style>
+
+<div class="options">
+
+  <div class="option" data-choice="hero-constellation" onclick="toggleSelect(this)">
+    <div class="letter">1</div>
+    <div class="content" style="width:100%">
+      <h3>Constellation in the hero, status as a ruled strip</h3>
+      <p>The headline sits left, the nine icons orbit on the right. A's "Where things stand" facts become a thin three-column strip under the hero, which is the first thing a reviewer scans after the headline.</p>
+      <div class="m" style="margin-top:12px;">
+        <div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · AddvancedFocus · Mission · Contact</span></div>
+        <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:20px;padding:10px 26px 22px;align-items:center;">
+          <div>
+            <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+            <div class="h" style="margin:12px 0 14px;">Life is complex.<br>Support should<br>feel <span style="color:#8bb6ff">simple.</span></div>
+            <div class="muted rule" style="padding-top:10px;max-width:330px;">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus.</div>
+            <div style="margin-top:12px;display:flex;gap:12px;align-items:center;"><span class="btn">Try the working demo</span><span class="link">Meet AddvancedFocus</span></div>
+          </div>
+          <div class="orbit" style="height:250px;">
+            <div class="ring" style="inset:30px 20px;"></div><div class="ring" style="inset:70px 60px;"></div>
+            <img class="core" src="http://localhost:8080/assets/products/icons/addvancedfocus.webp" style="left:50%;top:50%;width:80px;margin:-40px 0 0 -40px;">
+            <img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="left:14%;top:12%;width:36px;">
+            <img src="http://localhost:8080/assets/products/icons/storyready.webp" style="left:47%;top:2%;width:32px;">
+            <img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="right:10%;top:14%;width:34px;">
+            <img src="http://localhost:8080/assets/products/icons/plainpath.webp" style="left:3%;top:47%;width:32px;">
+            <img src="http://localhost:8080/assets/products/icons/stepable.webp" style="right:3%;top:50%;width:34px;">
+            <img src="http://localhost:8080/assets/products/icons/sayable.webp" style="left:15%;bottom:6%;width:34px;">
+            <img src="http://localhost:8080/assets/products/icons/sensoryscout.webp" style="left:48%;bottom:0;width:32px;">
+            <img src="http://localhost:8080/assets/products/icons/opencall.webp" style="right:13%;bottom:9%;width:34px;">
+          </div>
+        </div>
+        <div class="rule" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:14px 26px 18px;background:#0d1727;">
+          <div class="fact"><span class="eyebrow">BUILT AND WORKING</span><b style="margin-top:6px">Interactive AddvancedFocus concept</b><span class="muted">Three situations, two energy levels, pause and undo</span></div>
+          <div class="fact"><span class="eyebrow">IN DEVELOPMENT</span><b style="margin-top:6px">The AddvancedFocus app</b><span class="muted">AI-assisted starting, planning and routines</span></div>
+          <div class="fact"><span class="eyebrow">NOT YET DECIDED</span><b style="margin-top:6px">Launch, pricing, platforms</b><span class="muted">AI provider and data practices</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="band-constellation" onclick="toggleSelect(this)">
+    <div class="letter">2</div>
+    <div class="content" style="width:100%">
+      <h3>Editorial hero, constellation as a recurring band</h3>
+      <p>The hero is pure A: a huge headline with the status facts in a ruled side column. The constellation appears lower, as a full-width band introducing the product family. Smaller echoes of it (a single icon with orbit rings) mark each product page.</p>
+      <div class="m" style="margin-top:12px;">
+        <div class="nav"><b>biro<span>.dev</span></b><span>Home · About · Products · AddvancedFocus · Mission · Contact</span></div>
+        <div style="display:grid;grid-template-columns:1.7fr 1fr;gap:24px;padding:10px 26px 22px;">
+          <div>
+            <div class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</div>
+            <div class="h" style="font-size:60px;margin:12px 0 14px;">Life is complex.<br>Support should<br>feel <span style="color:#8bb6ff">simple.</span></div>
+            <div style="display:flex;gap:12px;align-items:center;"><span class="btn">Try the working demo</span><span class="link">Meet AddvancedFocus</span></div>
+          </div>
+          <div style="border-left:1px solid #304965;padding-left:18px;" class="fact">
+            <div class="eyebrow" style="margin-bottom:12px;">WHERE THINGS STAND</div>
+            <b>Built and working</b><div class="muted" style="margin-bottom:12px;">Interactive AddvancedFocus concept</div>
+            <b>In development</b><div class="muted" style="margin-bottom:12px;">AI-assisted planning and routines</div>
+            <b>Not yet decided</b><div class="muted">Launch, pricing, platforms</div>
+          </div>
+        </div>
+        <div class="rule" style="display:grid;grid-template-columns:1fr 1.2fr;gap:20px;padding:18px 26px;background:#0d1727;align-items:center;">
+          <div><div class="eyebrow">ONE FLAGSHIP. A FAMILY BEHIND IT.</div><div style="font-size:22px;font-weight:600;letter-spacing:-.03em;margin:8px 0;">More ways to support<br>everyday independence.</div><div class="muted">Early concepts, each with its own page.</div></div>
+          <div class="orbit" style="height:120px;">
+            <div class="ring" style="inset:6px 40px;"></div>
+            <img class="core" src="http://localhost:8080/assets/products/icons/addvancedfocus.webp" style="left:50%;top:50%;width:52px;margin:-26px 0 0 -26px;">
+            <img src="http://localhost:8080/assets/products/icons/carebridge.webp" style="left:8%;top:30%;width:28px;">
+            <img src="http://localhost:8080/assets/products/icons/storyready.webp" style="left:24%;top:4%;width:26px;">
+            <img src="http://localhost:8080/assets/products/icons/clearcue.webp" style="left:28%;bottom:2%;width:26px;">
+            <img src="http://localhost:8080/assets/products/icons/plainpath.webp" style="right:28%;top:2%;width:26px;">
+            <img src="http://localhost:8080/assets/products/icons/stepable.webp" style="right:8%;top:28%;width:28px;">
+            <img src="http://localhost:8080/assets/products/icons/sayable.webp" style="right:24%;bottom:2%;width:26px;">
+            <img src="http://localhost:8080/assets/products/icons/sensoryscout.webp" style="left:0;bottom:8%;width:24px;">
+            <img src="http://localhost:8080/assets/products/icons/opencall.webp" style="right:0;bottom:10%;width:24px;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

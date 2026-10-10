@@ -85,6 +85,14 @@ export async function settle(page) {
       image.addEventListener('error', resolve, { once: true });
     }))));
     await Promise.all([...document.images].map((image) => image.decode().catch(() => {})));
+    // Reveal every section and freeze endless animations at their start, so captures are deterministic.
+    document.querySelectorAll('main > *').forEach((node) => node.classList.add('is-visible'));
+    for (const animation of document.getAnimations()) {
+      if (animation.effect && animation.effect.getComputedTiming().iterations === Infinity) {
+        animation.pause();
+        animation.currentTime = 0;
+      }
+    }
     const finite = document.getAnimations().filter((animation) => animation.effect && animation.effect.getComputedTiming().iterations !== Infinity);
     await Promise.all(finite.map((animation) => animation.finished.catch(() => {})));
     await document.fonts.ready;
