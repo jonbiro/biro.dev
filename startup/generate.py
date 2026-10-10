@@ -84,12 +84,9 @@ def cta():
 
 def future_portfolio():
     items = json.loads((ROOT / 'portfolio.json').read_text())
-    rendered = []
-    for item in items:
-        slug, name = item['slug'], escape(item['name'])
-        rendered.append(f'<article class="portfolio-card" id="{slug}" tabindex="-1" aria-labelledby="{slug}-title"><img class="app-icon" src="/assets/products/icons/{slug}.webp" alt="" width="44" height="44" loading="lazy" decoding="async"><p class="eyebrow">{escape(item["category"])}</p><h3 id="{slug}-title">{name}</h3><p class="portfolio-tagline">{escape(item["tagline"])}</p>{status_pill("concept")}<p>{escape(item["description"])}</p><a class="text-link portfolio-page-link" href="/{slug}/">Explore {name}</a></article>')
     return ('<section class="section wrap portfolio-section" id="future-products" tabindex="-1" aria-labelledby="portfolio-heading"><div class="section-intro"><p class="eyebrow">THE FUTURE PRODUCT FAMILY</p><h2 id="portfolio-heading">Different needs.<br>One shared commitment.</h2><p>Each concept addresses a distinct everyday challenge and has its own page with the intended workflow, planned capabilities, and questions.</p></div>'
-            '<nav class="portfolio-index" aria-label="Future product index">' + ''.join(f'<a href="#{x["slug"]}">{escape(x["name"])}</a>' for x in items) + '</nav><div class="portfolio-grid">' + ''.join(rendered) + '</div></section>')
+            '<nav class="portfolio-index" aria-label="Future product index">' + ''.join(f'<a href="#{x["slug"]}">{escape(x["name"])}</a>' for x in items) + '</nav>'
+            + concept_list(items, detailed=True) + '</section>')
 
 
 concept = '''<div class="concept"><div class="concept-top"><strong>AddvancedFocus</strong></div><p class="muted">A little less to hold. A place to begin.</p><div class="af-mini-horizons" aria-label="Plan horizons"><strong>Now</strong><span>Today</span><span>Upcoming</span><span>Later</span></div><h2>Start smaller.<br>Keep your place.</h2><div class="task"><div><span class="eyebrow">ONE USEFUL STEP</span><strong>Open a blank document.</strong><p>Give it a working title. The rest can wait.</p></div></div><div class="task-meta"><span>2 minutes · Low effort</span><span>At your pace</span></div><a class="text-link" href="/addvancedfocus/#concept-demo">Try the working demo</a></div>'''
@@ -124,9 +121,11 @@ about = (ROOT / 'fragments/about.html').read_text().replace('{{PROFILE_LINKS}}',
 LOGO_FAMILY = '<div class="wrap"><figure class="logo-family"><img src="/assets/products/logo-family.webp" alt="Concept logo collection: AddvancedFocus, CareBridge, StoryReady, ClearCue, PlainPath, StepAble, SayAble, SensoryScout, and OpenCall." width="1536" height="1024" loading="lazy" decoding="async"><figcaption>Exploratory app logos. Product identities may evolve during development.</figcaption></figure></div>'
 principles = (ROOT / 'fragments/portfolio-principles.html').read_text().strip()
 assert principles.endswith('</div></section>')
-products = ('<section class="page-hero wrap"><p class="eyebrow">OUR PRODUCTS</p><h1>Less friction.<br><em>More possibility.</em></h1><p class="intro">A family of AI-powered assistive applications for everyday independence, led by AddvancedFocus.</p>'
-    '<nav class="page-contents" aria-label="On the products page"><a href="#flagship">Flagship</a><a href="#where-things-stand">Where things stand</a><a href="#product-guide">Find your starting point</a><a href="#future-products">Concepts</a><a href="#portfolio-questions">Questions</a></nav></section>'
-    '<section class="wrap product-large" id="flagship" tabindex="-1"><div>' + status_pill('demo') + status_pill('development') + '<h2>AddvancedFocus</h2><p class="large">An executive-function assistant<br>built around real life.</p>'
+products = (inner_hero('OUR PRODUCTS', 'Less friction.<br><em>More possibility.</em>',
+        'A family of AI-powered assistive applications for everyday independence, led by AddvancedFocus.',
+        aside=constellation('compact'),
+        below='<nav class="page-contents" aria-label="On the products page"><a href="#flagship">Flagship</a><a href="#where-things-stand">Where things stand</a><a href="#product-guide">Find your starting point</a><a href="#future-products">Concepts</a><a href="#portfolio-questions">Questions</a></nav>')
+    + '<section class="wrap product-large" id="flagship" tabindex="-1"><div>' + status_pill('demo') + status_pill('development') + '<h2>AddvancedFocus</h2><p class="large">An executive-function assistant<br>built around real life.</p>'
     '<p>We’re developing AI-powered support for getting started, building routines, planning, and managing household responsibilities—with ADHD and autism among the needs informing its design.</p>'
     '<div class="tags"><span>Task initiation</span><span>Routines</span><span>Planning</span><span>Household mental load</span></div>'
     '<div class="actions"><a class="button" href="/addvancedfocus/#concept-demo">Try the working demo</a><a class="text-link" href="/addvancedfocus/">Explore AddvancedFocus</a></div></div>'

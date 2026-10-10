@@ -15,10 +15,14 @@
 .constellation-orbit img:nth-child(8){left:12.9%;top:12.9%}
 .constellation-core{position:absolute;left:50%;top:50%;width:24%;height:auto;border-radius:22%;transform:translate(-50%,-50%);box-shadow:0 0 70px var(--accent-tint-line),0 0 0 10px var(--accent-tint)}
 .constellation.is-paused .constellation-orbit,.constellation.is-paused .constellation-orbit img{animation-play-state:paused}
+.constellation-compact{max-width:360px}
 @keyframes constellation-drift{to{transform:rotate(360deg)}}
 @media(max-width:60rem){
   .constellation{max-width:360px;margin:var(--space-6) auto 0}
 }
 @media(max-width:47.5rem){
   .constellation{max-width:280px}
+}
+@media(max-width:27.5rem){
+  .constellation-compact{display:none}
 }

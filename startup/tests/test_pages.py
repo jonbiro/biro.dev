@@ -148,13 +148,21 @@ class Products(unittest.TestCase):
         block = self.root.find(id='where-things-stand')
         self.assertEqual(len(block.find(cls='development-steps').find_all(tag='li')), 3)
 
-    def test_concept_cards_are_compact(self):
-        cards = self.root.find_all(cls='portfolio-card')
-        self.assertEqual(len(cards), 8)
-        for card in cards:
-            self.assertIsNotNone(card.find(cls='app-icon'), card.attrs['id'])
-            self.assertEqual([p.text() for p in card.find_all(cls='pill')], ['Concept'], card.attrs['id'])
-            self.assertIsNone(card.find(tag='details'), card.attrs['id'])
+    def test_concepts_are_ruled_rows_with_status(self):
+        rows = self.root.find(id='future-products').find_all(cls='concept-row')
+        self.assertEqual(len(rows), 8)
+        for row in rows:
+            self.assertIsNotNone(row.find(cls='app-icon'))
+            self.assertEqual([p.text() for p in row.find_all(cls='pill')], ['Concept'])
+            self.assertIsNone(row.find(tag='details'))
+        index = [a.attrs['href'][1:] for a in self.root.find(cls='portfolio-index').find_all(tag='a')]
+        for slug in index:
+            self.assertIsNotNone(self.root.find(id=slug), slug)
+
+    def test_hero_has_the_compact_constellation(self):
+        hero = self.sections[0]
+        self.assertIsNotNone(hero.find(cls='hero-grid'))
+        self.assertIn('constellation-compact', hero.find(cls='constellation').classes)
 
     def test_connected_vision_holds_the_logo_family(self):
         vision = self.root.find(id='connected-vision')
