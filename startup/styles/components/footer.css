@@ -24,3 +24,4 @@
   .footer-bottom{flex-wrap:wrap;gap:10px;align-items:center}
 }
 .footer-email{display:inline-flex;align-items:center;min-height:2.75rem;text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}
+.footer-status{display:block;margin-top:14px}
