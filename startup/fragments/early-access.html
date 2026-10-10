@@ -1,0 +1,27 @@
+<section class="early-access feature-section" id="early-access" tabindex="-1" aria-labelledby="early-access-title">
+  <div class="wrap early-access-layout">
+    <div>
+      <p class="eyebrow">STAY IN THE LOOP</p>
+      <h2 id="early-access-title">Get an update<br>when we’re ready.</h2>
+      <p class="large">AddvancedFocus is still in development. Leave your email if you’d like to hear about meaningful progress and future beta opportunities.</p>
+      <p>No public release date or guaranteed beta invitation. No need to share a diagnosis, story, or other sensitive information.</p>
+    </div>
+    <form class="early-access-form" name="biro-early-access" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="bot-field" aria-labelledby="early-access-form-title">
+      <input type="hidden" name="form-name" value="biro-early-access">
+      <p class="form-honeypot" aria-hidden="true"><label>Leave this field blank<input type="text" name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <h3 id="early-access-form-title">Request product updates</h3>
+      <label for="signup-email">Email address <span aria-hidden="true">*</span></label>
+      <input id="signup-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required maxlength="254">
+      <label for="signup-interest">I’m interested in</label>
+      <select id="signup-interest" name="interest">
+        <option value="AddvancedFocus">AddvancedFocus (flagship)</option>
+        <option value="OpenCall">OpenCall</option>
+        <option value="CareBridge">CareBridge</option>
+        <option value="Other Biro.dev products">Other Biro.dev products</option>
+      </select>
+      <label class="early-access-consent"><input type="checkbox" name="consent" value="yes" required><span>Yes, Biro.dev may email me about progress and early-access opportunities for my selected product. I can opt out at any time.</span></label>
+      <button class="button" type="submit">Request updates</button>
+      <p class="early-access-privacy">Submitted details are processed and stored through Netlify Forms. We use them for the updates you requested, not to run the demo. <a href="/mission/#early-access-privacy">How your signup is handled</a>.</p>
+    </form>
+  </div>
+</section>
