@@ -1,6 +1,6 @@
 .header{max-width:1328px;margin:0 auto;padding:26px 48px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-5)}
-.brand{font-size:var(--type-h3);font-weight:700;letter-spacing:-.04em;line-height:1}
-.brand span{font-weight:500;color:var(--text-muted)}
+.brand{display:inline-flex;align-items:center;flex:none;line-height:1}
+.brand-logo{display:block;width:9.5rem;height:auto;max-width:100%}
 .header nav{display:flex;align-items:center;gap:var(--space-5);font-size:var(--type-ui);font-weight:500;color:var(--text-soft)}
 .header nav a{display:inline-flex;align-items:center;min-height:2.75rem}
 .header nav a:hover{color:var(--accent)}
