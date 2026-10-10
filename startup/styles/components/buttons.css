@@ -1,9 +1,5 @@
-.text-link:hover{color:var(--accent)}
-.actions{display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:30px}
-@media(max-width:27.5rem){
-  .actions{gap:20px}
-}
-.text-link{font-size:var(--type-ui);font-weight:600;text-underline-offset:6px;text-decoration:underline;text-decoration-color:var(--line-contrast);display:inline-flex;align-items:center;min-height:2.75rem}
-.button{display:inline-flex;justify-content:center;align-items:center;min-height:50px;padding:12px 24px;border:1px solid var(--accent);border-radius:var(--radius-pill);font-weight:600;font-size:var(--type-ui);cursor:pointer;transition:background .2s,transform .2s;color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4) var(--space-5);margin-top:var(--space-6)}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:0 var(--space-5);border:1px solid var(--accent);border-radius:var(--radius-pill);background:var(--accent);color:var(--on-accent);font-size:var(--type-ui);font-weight:600;cursor:pointer;transition:transform var(--motion-fast) var(--ease),background-color var(--motion-fast) var(--ease)}
 .button:hover{transform:translateY(-2px);background:var(--accent-strong);border-color:var(--accent-strong)}
-.button:focus-visible{outline:3px solid var(--accent-strong);outline-offset:5px}
+.text-link{display:inline-flex;align-items:center;min-height:2.75rem;font-size:var(--type-ui);font-weight:600;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-color:var(--line-contrast);transition:color var(--motion-fast) var(--ease)}
+.text-link:hover{color:var(--accent);text-decoration-color:var(--accent)}

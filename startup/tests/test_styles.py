@@ -48,6 +48,10 @@ class Tokens(unittest.TestCase):
         sizes = {d.value for r in ck.parse(css) if isinstance(r, ck.Rule) for d in r.decls if d.prop == 'font-size'}
         self.assertLessEqual(len(sizes), 12, sorted(sizes))
 
+    def test_old_demo_button_rules_are_gone(self):
+        css = (STYLES / 'components/demo.css').read_text()
+        self.assertNotRegex(css, r'\.example(?![\w-])')
+
     def test_generator_and_csskit_list_the_same_partials(self):
         text = (ROOT / 'generate.py').read_text()
         sources = re.findall(r"^    '([^']+\.css)',$", re.search(r"STYLE_SOURCES = \[\n(.*?)\n\]", text, re.S).group(1), re.M)

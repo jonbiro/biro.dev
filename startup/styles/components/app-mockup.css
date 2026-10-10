@@ -1,9 +1,10 @@
-.app-mockup{margin-top:1rem;margin-bottom:0}
-.app-mockup img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface-1)}
-.app-mockup figcaption{display:flex;justify-content:space-between;gap:.75rem 2rem;flex-wrap:wrap;font-size:var(--type-small);color:var(--text-muted);padding:1rem .25rem}
-.app-mockup figcaption span:first-child{color:var(--accent-strong)}
+.app-mockup{margin-top:var(--space-5);margin-bottom:0}
+.app-mockup img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface-1);box-shadow:0 40px 100px var(--shadow)}
+.app-mockup figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-2) var(--space-6);padding:var(--space-4) var(--space-1);font-size:var(--type-small);color:var(--text-muted)}
+.app-mockup figcaption span:first-child{color:var(--text-soft)}
+.app-mockup figcaption a{text-decoration:underline;text-underline-offset:4px}
 @media(max-width:47.5rem){
   .app-mockup img{border-radius:var(--radius-md)}
   .app-mockup figcaption{display:block}
-  .app-mockup figcaption span{display:block;margin-bottom:.4rem}
+  .app-mockup figcaption span{display:block;margin-bottom:var(--space-1)}
 }
