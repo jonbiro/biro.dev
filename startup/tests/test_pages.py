@@ -234,6 +234,14 @@ class ProductPages(unittest.TestCase):
             self.assertIn(f'When can I use {portfolio[slug]["name"]}?', summaries, slug)
 
 
+    def test_related_products_are_concept_rows_with_their_status(self):
+        for slug in PRODUCT_SLUGS:
+            rows = load(f'/{slug}/').find_all(cls='concept-row')
+            self.assertGreaterEqual(len(rows), 2, slug)
+            for row in rows:
+                pills = [p.text() for p in row.find_all(cls='pill')]
+                self.assertIn(pills, (['Concept'], ['In development']), slug)
+
 PHRASES = ('not a released', 'not yet publicly available', 'release timing', 'have not been announced', 'pre-release')
 
 
