@@ -106,7 +106,7 @@ summary{min-height:2.75rem;cursor:pointer}
   .footer-top>p{grid-column:1/-1;margin:0}
   .footer-bottom{width:calc(100% - 40px)}
 }
-@media(max-width:24rem){
+@media(max-width:30rem){
   .footer-top{grid-template-columns:minmax(0,1fr)}
 }
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4) var(--space-5);margin-top:var(--space-6)}
@@ -243,7 +243,7 @@ summary{min-height:2.75rem;cursor:pointer}
   .concept-row-detailed{grid-template-columns:48px minmax(0,1fr)}
   .concept-row-detailed .pill{grid-column:2;justify-self:start}
 }
-.constellation{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin-left:auto}
+.constellation{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin-left:auto;overflow:clip;overflow-clip-margin:24px}
 .constellation::before{content:'';position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 68%);opacity:.8}
 .constellation-ring{position:absolute;border:1px dashed var(--line);border-radius:50%}
 .constellation-ring-outer{inset:4%}
@@ -561,6 +561,7 @@ summary{min-height:2.75rem;cursor:pointer}
 @media print{
   html,body{background:white!important;color:black!important}
   .header,.footer,.constellation,.af-demo,.mission-image,.actions,.button,.skip,.breadcrumbs,.page-contents,.app-mockup,.portfolio-index{display:none!important}
+  .js-reveal main>*{opacity:1!important;transform:none!important;transition:none!important}
   main *{color:black!important;background:transparent!important;box-shadow:none!important;animation:none!important}
   section,.wrap{max-width:none!important;padding:1rem 0!important;margin:0!important}
   .cards,.feature,.founder-layout,.af-product-hero,.readiness-grid,.privacy-note,.editorial-split,.development-steps,.intent-example,.contact-note,.future-hero-grid,.product-detail-grid,.product-feedback,.focus-contexts,.horizon-guide,.evaluation-list,.hero-grid,.glance,.concept-list{display:block!important}

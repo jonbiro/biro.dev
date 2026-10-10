@@ -13,6 +13,6 @@
   .footer-top>p{grid-column:1/-1;margin:0}
   .footer-bottom{width:calc(100% - 40px)}
 }
-@media(max-width:24rem){
+@media(max-width:30rem){
   .footer-top{grid-template-columns:minmax(0,1fr)}
 }

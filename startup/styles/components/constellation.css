@@ -1,4 +1,4 @@
-.constellation{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin-left:auto}
+.constellation{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin-left:auto;overflow:clip;overflow-clip-margin:24px}
 .constellation::before{content:'';position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 68%);opacity:.8}
 .constellation-ring{position:absolute;border:1px dashed var(--line);border-radius:50%}
 .constellation-ring-outer{inset:4%}

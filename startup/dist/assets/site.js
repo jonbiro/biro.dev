@@ -81,6 +81,8 @@
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const sections = document.querySelectorAll('main > *');
   if (!sections.length) return;
+  // Anything already on screen stays put, so a late script never hides what the visitor can see.
+  sections.forEach((section) => { if (section.getBoundingClientRect().top < window.innerHeight) section.classList.add('is-visible'); });
   document.documentElement.classList.add('js-reveal');
   const reveal = new IntersectionObserver((entries) => {
     for (const entry of entries) {
@@ -90,7 +92,16 @@
       }
     }
   }, { rootMargin: '0px 0px -8% 0px' });
-  sections.forEach((section) => reveal.observe(section));
+  sections.forEach((section) => { if (!section.classList.contains('is-visible')) reveal.observe(section); });
+  // Keyboard focus reveals its section at once, without the fade, so focus never lands on something invisible.
+  document.querySelector('main').addEventListener('focusin', (event) => {
+    const section = event.target.closest('main > *');
+    if (section && !section.classList.contains('is-visible')) {
+      section.style.transition = 'none';
+      section.classList.add('is-visible');
+      reveal.unobserve(section);
+    }
+  });
 })();
 
 // Pause the constellation's drift while it is off-screen or the tab is hidden.
