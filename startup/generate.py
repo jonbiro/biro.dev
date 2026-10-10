@@ -85,7 +85,7 @@ def cta():
 
 def future_portfolio():
     items = json.loads((ROOT / 'portfolio.json').read_text())
-    return ('<section class="section wrap portfolio-section" id="future-products" tabindex="-1" aria-labelledby="portfolio-heading"><div class="section-intro"><p class="eyebrow">THE FUTURE PRODUCT FAMILY</p><h2 id="portfolio-heading">Different needs.<br>One shared commitment.</h2><p>Each concept addresses a distinct everyday challenge and has its own page with the intended workflow, planned capabilities, and questions.</p></div>'
+    return ('<section class="section wrap portfolio-section" id="future-products" tabindex="-1" aria-labelledby="portfolio-heading"><div class="section-intro"><p class="eyebrow">THE FUTURE PRODUCT FAMILY</p><h2 id="portfolio-heading">Different needs.<br>One shared commitment.</h2><p>Each product direction addresses a distinct everyday challenge. Some have active prototypes; others remain concepts. Their pages explain intended workflows, plans, and limitations.</p></div>'
             '<nav class="portfolio-index" aria-label="Future product index">' + ''.join(f'<a href="#{x["slug"]}">{escape(x["name"])}</a>' for x in items) + '</nav>'
             + concept_list(items, detailed=True) + '</section>')
 
@@ -96,18 +96,18 @@ concept = '''<div class="concept"><div class="concept-top"><strong>AddvancedFocu
 HOW_WE_BUILD = ('<section class="section wrap" id="how-we-build">'
     + section_intro('HOW WE BUILD', 'Care belongs<br>in the details.', 'These principles guide the choices we’re making as we develop our products.')
     + cards([('Accessibility', 'WCAG 2.2 Level AA is the design target for this website. <a class="text-link" href="/accessibility/">Read the accessibility statement</a>'),
-             ('Privacy', 'This website has no sign-up, live AI request, analytics script, or marketing cookie.'),
+             ('Privacy', 'The browser demo keeps notes in the current page. Optional early-access emails use Netlify Forms with consent; there are no analytics scripts or marketing cookies.'),
              ('User autonomy', 'In the demo, you can stop a session without marking the step complete, and undo a completion.'),
              ('Affordability', 'Practical value at an accessible price is a design requirement.')])
     + '<a class="text-link" href="/mission/">Read our design commitments</a></section>')
 FOUNDER_CLOSE = ('<section class="closing wrap founder-close"><p class="eyebrow">FOUNDED WITH PURPOSE</p><h2>Technology should<br>adapt to people.</h2>'
     '<p>Biro.dev was founded by Jonathan Biro in Los Angeles. ' + render_profile_links(PROFILE_LINKS, 'text-link') + '</p>'
-    '<a class="button" href="/contact/">Talk with the founder</a></section>')
+    '<div class="actions"><a class="button" href="/#early-access">Get product updates</a><a class="text-link" href="/contact/">Talk with the founder</a></div></section>')
 home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE TECHNOLOGY</p><h1>Life is complex.<br>Support should<br>feel <em>simple.</em></h1>'
     '<p class="lead">Biro.dev is building affordable, accessible software for neurodivergent people, people with disabilities, and families, starting with AddvancedFocus, an executive-function assistant.</p>'
-    '<div class="actions"><a class="button" href="/addvancedfocus/#concept-demo">Try the working demo</a><a class="text-link" href="/addvancedfocus/">Meet AddvancedFocus</a></div>'
+    '<div class="actions"><a class="button" href="/addvancedfocus/#concept-demo">Try the working demo</a><a class="text-link" href="/#early-access">Get early-access updates</a></div>'
     '<p class="micro">Founded in Los Angeles by Jonathan Biro · Pre-release</p></div>'
-    + constellation('home') + '</section>' + where_things_stand('strip')
+    + '<a class="hero-product-link" href="/addvancedfocus/#concept-demo" aria-label="Explore the AddvancedFocus interactive demo"><img src="/assets/products/addvancedfocus-modern.webp" alt="Illustrative AddvancedFocus interface showing one suggested next step and a focus timer" width="1536" height="1024" fetchpriority="high" decoding="async"><span class="hero-product-caption"><span>AddvancedFocus · Product concept</span><span>Try the demo →</span></span></a></section>' + where_things_stand('strip')
     + '<section class="section wrap">' + section_intro('WHY WE’RE HERE', 'Knowing what to do<br>is only part of the work.', 'Daily life involves more than keeping a list. It means deciding where to begin, remembering context, adjusting when plans change, and carrying responsibilities that other people may never see.')
     + cards([('Support that meets you where you are', 'For neurodivergent people, individuals with disabilities, and families navigating the demands of daily life.'),
              ('Less effort to get going', 'Tools designed to reduce decisions, make the next step clearer, and help turn intention into action.'),
@@ -115,7 +115,7 @@ home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE
     + '<section class="feature-section"><div class="wrap feature"><div><p class="eyebrow">OUR FIRST PRODUCT</p><div class="title-row"><h2>Meet AddvancedFocus.</h2>' + status_pill('development') + '</div>'
     '<p class="large">Help with starting, planning,<br>and keeping everyday life moving.</p><p>Our flagship AI-powered executive-function assistant is being developed to support ADHD, autism, and the everyday work of planning, routines, and household coordination.</p>'
     '<a class="button" href="/addvancedfocus/">Explore AddvancedFocus</a></div><div class="flow-list"><div><span>01</span><h3>Find a starting point</h3><p>Turn a big intention into a manageable first step.</p></div><div><span>02</span><h3>Make a little space</h3><p>Bring plans, routines, and open loops into view.</p></div><div><span>03</span><h3>Begin again, without the guilt</h3><p>Build support around interruptions and changing energy.</p></div></div></div></section>'
-    + HOW_WE_BUILD + (ROOT / 'fragments/portfolio-teaser.html').read_text().replace('{{CONCEPT_LIST}}', concept_list(json.loads((ROOT / 'portfolio.json').read_text()))) + FOUNDER_CLOSE)
+    + (ROOT / 'fragments/early-access.html').read_text() + HOW_WE_BUILD + (ROOT / 'fragments/portfolio-teaser.html').read_text().replace('{{CONCEPT_LIST}}', concept_list(json.loads((ROOT / 'portfolio.json').read_text()))) + FOUNDER_CLOSE)
 
 ABOUT_HERO = inner_hero('ABOUT BIRO.DEV', 'Human needs.<br><em>Technical ambition.</em>', 'Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.', aside=glance([('Company', 'Biro.dev'), ('Founder', 'Jonathan Biro' + (' · ' + render_profile_links(PROFILE_LINKS, 'text-link', ' · ') if PROFILE_LINKS else '')), ('Based in', 'Los Angeles, California'), ('First product', 'AddvancedFocus'), ('Stage', status_pill('development'))]))
 about = ABOUT_HERO + (ROOT / 'fragments/about.html').read_text().replace('{{PROFILE_LINKS}}', f'<p class="founder-profiles">{render_profile_links(PROFILE_LINKS, "text-link")}</p>' if PROFILE_LINKS else '') + (ROOT / 'fragments/company-evaluation.html').read_text() + cta()
