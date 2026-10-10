@@ -402,7 +402,7 @@ STYLE_ORDER = [
 
 # Class → file, from the class-usage map of the generated pages (2026-10-09).
 _PARTITION_SOURCE = {
-    'base.css': 'skip sr-only muted large intro micro eyebrow wide-copy divider',
+    'base.css': 'skip muted large intro micro eyebrow wide-copy divider',
     'layout.css': 'wrap section section-intro page-hero split feature-section editorial-split editorial-copy title-row',
     'components/header.css': 'header brand menu-toggle js-enabled open',
     'components/footer.css': 'footer footer-top footer-bottom footer-email',
@@ -422,16 +422,13 @@ _PARTITION_SOURCE = {
     'components/concept-list.css': 'concept-list concept-row',
     'components/constellation.css': 'constellation',
     'components/glance.css': 'glance',
-    # .example is the old demo's scenario button. No page uses it, but the word appears in site.js prose,
-    # so the conservative usage scan keeps it. Delete it in the visual redesign.
-    'components/demo.css': 'example',
-    'pages/home.css': 'hero hero-visual ribbon visual-caption principle-strip feature flow-list founder-teaser home-product-grid portfolio-teaser',
-    'pages/about.css': 'founder-layout founder-panel monogram prose company-overview company-facts evaluation-list founder-contact',
-    'pages/products.css': 'product-large product-art product-guide portfolio-card portfolio-detail portfolio-grid portfolio-image-link portfolio-index portfolio-page-link portfolio-tagline logo-family brand-family',
+    'pages/home.css': 'hero feature flow-list portfolio-teaser',
+    'pages/about.css': 'founder-layout founder-panel monogram prose evaluation-list founder-contact',
+    'pages/products.css': 'product-large product-art product-guide portfolio-index logo-family',
     'pages/addvancedfocus.css': 'af-product-hero af-product-promise focus-contexts horizon-guide concept-section concept-section-heading intent-example example-intention example-label approach-cards',
     'pages/mission.css': 'mission-image mission-statement privacy-note',
     'pages/contact.css': 'contact-address contact-card contact-layout contact-note contact-ready contact-stage contact-topics',
-    'pages/product-page.css': 'future-product-hero future-hero-grid product-brief product-brief-head product-brief-tagline product-detail-grid product-example example-boundary capability-list product-feedback related-grid related-product',
+    'pages/product-page.css': 'future-product-hero future-hero-grid product-brief product-brief-head product-brief-tagline product-detail-grid product-example example-boundary capability-list product-feedback',
 }
 PARTITION = {name: file for file, names in _PARTITION_SOURCE.items() for name in names.split()}
 # Selector member, or (member, media context), → file, for rules that must sit later than their owner to keep

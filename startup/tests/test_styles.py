@@ -75,3 +75,24 @@ class HeadingBreaks(unittest.TestCase):
 class GeneratorChecks(unittest.TestCase):
     def test_generator_guards_raise_value_errors_not_asserts(self):
         self.assertNotRegex((ROOT / 'generate.py').read_text(), r'(?m)^\s*assert\s', 'use ValueError so checks survive python -O')
+
+
+class Radii(unittest.TestCase):
+    ALLOWED = {'0', '50%', '22%', '2px'}  # square, circle, app-icon squircle, and the tight focus-ring corner
+
+    def test_every_radius_is_a_token(self):
+        bad = []
+        for path in STYLES.rglob('*.css'):
+            if path.name == 'tokens.css':
+                continue
+            for r in rules(path):
+                for d in r.decls:
+                    if 'radius' in d.prop and any(p not in self.ALLOWED and not p.startswith('var(--radius-') for p in d.value.split()):
+                        bad.append(f'{path.name} {r.selector} {{ {d.prop}: {d.value} }}')
+        self.assertEqual(bad, [])
+
+
+class CsskitPartition(unittest.TestCase):
+    def test_partition_names_only_classes_that_exist(self):
+        is_used = ck.load_usage(ROOT / 'dist')
+        self.assertEqual(sorted(name for name in ck.PARTITION if not is_used(name)), [])

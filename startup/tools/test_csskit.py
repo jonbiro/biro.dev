@@ -316,7 +316,7 @@ class MergeWithOverlap(unittest.TestCase):
 
 class Split(unittest.TestCase):
     def test_owner_is_the_leftmost_class_outside_pseudos(self):
-        self.assertEqual(ck.owner_file('.hero-visual .concept', ''), 'pages/home.css')
+        self.assertEqual(ck.owner_file('.hero .lead', ''), 'pages/home.css')
         self.assertEqual(ck.owner_file('.js-enabled .header nav', ''), 'components/header.css')
         self.assertEqual(ck.owner_file('main :is(h1,h2)', ''), 'base.css')
         self.assertEqual(ck.owner_file('#af-progress', ''), 'components/demo.css')

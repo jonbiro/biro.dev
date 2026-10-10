@@ -83,6 +83,9 @@ class Glance(unittest.TestCase):
                                '<div><dt>Company</dt><dd>Biro.dev</dd></div>'
                                '<div><dt>Stage</dt><dd><span class="pill pill-development">In development</span></dd></div></dl></aside>')
 
+    def test_an_optional_note_follows_the_list(self):
+        self.assertTrue(sp.glance([('Email', 'x')], note='Opens your email app.').endswith('</dl><p class="micro">Opens your email app.</p></aside>'))
+
     def test_terms_are_escaped(self):
         self.assertIn('<dt>A &amp; B</dt>', sp.glance([('A & B', 'x')]))
 
@@ -113,7 +116,7 @@ class ConceptList(unittest.TestCase):
     def test_detailed_rows_keep_anchor_ids_heading_tagline_and_description(self):
         html = sp.concept_list(ITEMS[:1], detailed=True)
         self.assertIn('<li id="carebridge" tabindex="-1"><a class="concept-row concept-row-detailed" href="/carebridge/" aria-labelledby="carebridge-title">', html)
-        self.assertIn('<h3 id="carebridge-title">CareBridge</h3>', html)
+        self.assertIn('<div class="concept-row-text"><span class="eyebrow">Family care coordination</span><h3 id="carebridge-title">CareBridge</h3>', html)
         self.assertIn('<span class="concept-row-tagline">Less paperwork. More progress.</span>', html)
         self.assertIn('<span class="concept-row-description">An AI family assistant.</span>', html)
 
