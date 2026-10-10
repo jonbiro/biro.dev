@@ -94,3 +94,24 @@
   .af-workspace{padding-top:1rem}
   .af-context-line{line-height:1.5}
 }
+
+
+/* Progressive disclosure: the useful step stays in view on the first visit.
+   Changing scenario or energy is a secondary, expandable choice. */
+.af-body{display:flex;flex-direction:column}
+.af-sidebar{border-right:0;border-bottom:1px solid var(--line);padding:1rem 1.75rem}
+.af-settings>summary{font-size:var(--type-ui);font-weight:600;color:var(--accent-strong);width:max-content;max-width:100%;min-height:2.75rem;display:list-item;align-content:center}
+.af-settings-content{padding-top:var(--space-4)}
+.af-scenarios{grid-template-columns:repeat(3,minmax(0,1fr))}
+.af-energy{margin-top:var(--space-5)}
+.af-workspace{padding:var(--space-5) var(--space-7) var(--space-6)}
+.af-workspace [role=tabpanel]{min-height:0}
+.af-workspace .af-tabs{margin-bottom:var(--space-5)}
+.af-session-actions .button{font-size:var(--type-ui)}
+@media(max-width:60rem){.af-workspace{padding:var(--space-5)}}
+@media(max-width:47.5rem){
+  .af-sidebar{padding:.75rem var(--space-4)}
+  .af-scenarios{grid-template-columns:1fr}
+  .af-workspace{padding:var(--space-4)}
+  .af-tabs button{font-size:var(--type-ui)}
+}

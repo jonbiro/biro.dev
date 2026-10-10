@@ -388,9 +388,10 @@
   {
     "name": "OpenCall",
     "slug": "opencall",
+    "status": "development",
     "category": "Accessible scam awareness",
     "tagline": "A clearer pause before you act.",
-    "description": "An accessibility-focused direction for OpenCall: help people with cognitive support needs recognize potentially fraudulent messages and calls, understand the warning signs, and consider safer next steps.",
+    "description": "OpenCall has a separate native iOS development codebase for call and message protection. Biro.dev is also exploring accessible explanations of suspicious interactions; public release is pending.",
     "features": [
       "Explore checks for suspicious messages and calls.",
       "Explain warning signs in clear, accessible language.",
@@ -398,7 +399,7 @@
       "Keep the decision with the user rather than automatically acting on a message."
     ],
     "example": "An urgent payment request could be explained in plain language, with its warning signs highlighted and a suggestion to verify the request using independently known contact details.",
-    "principle": "A scam assessment would be guidance, not a guarantee. The accessibility-focused experience is a future product direction; no detection accuracy or released capability is claimed.",
+    "principle": "A scam assessment would be guidance, not a guarantee. The accessibility-focused experience remains a direction alongside the native prototype; no public release or detection accuracy guarantee is claimed.",
     "headline": "A moment to pause.<br>A clearer next move.",
     "audience": "People who would benefit from accessible explanations of suspicious messages or calls, including people with cognitive support needs and age-related difficulties.",
     "problem": "An urgent request can make someone feel they must act before checking. A warning label alone may not explain what is concerning or give the person an understandable next step.",
@@ -406,7 +407,7 @@
     "workflow": [
       [
         "Review a concerning interaction",
-        "The future accessibility-focused experience would help examine a suspicious message or call. Capture methods and supported platforms remain to be defined."
+        "The proposed accessibility-focused experience would explain a suspicious interaction and offer reviewable next steps. This website does not accept or check calls or messages; a public release is pending."
       ],
       [
         "Understand the warning signs",

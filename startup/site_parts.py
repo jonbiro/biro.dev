@@ -49,9 +49,9 @@ def where_things_stand(variant: str) -> str:
         '<li>This website and its accessibility statement</li></ul>'
         '<a class="text-link" href="/addvancedfocus/#concept-demo">Try the working demo</a></article>'
         f'<article>{status_pill("development")}<h3>What we’re building</h3><ul>'
-        '<li>AI-assisted task initiation and planning</li><li>Flexible routines and household coordination</li>'
+        '<li>AI-assisted task initiation and planning</li><li>Flexible routines and household coordination</li><li>Separate native and web prototype codebases exist, but no public AddvancedFocus mobile app has been released.</li>'
         '<li>Privacy, affordability, and user control</li></ul></article>'
-        '<article><h3>Not yet decided</h3><ul><li>Public launch date</li><li>Pricing</li><li>Supported platforms</li>'
+        '<article><h3>Not yet decided</h3><ul><li>Public launch date</li><li>Pricing</li><li>Supported launch platforms</li>'
         '<li>AI provider</li><li>Data practices</li></ul><p class="micro">We’ll explain these before public release.</p></article>'
         '</div>'
     )

@@ -46,7 +46,7 @@
   function init(){
     const next=document.querySelector('[data-af-demo]');if(next===root)return;
     if(interval)clearInterval(interval);interval=null;root=next;if(!root)return;
-    model=globalThis.AddvancedFocusModel.create();$('af-settings').open=window.matchMedia('(min-width: 47.501rem)').matches;render();
+    model=globalThis.AddvancedFocusModel.create();$('af-settings').open=false;render();
     root.addEventListener('click',event=>{
       const horizon=event.target.closest('[data-horizon]');if(horizon){showHorizon(horizon.dataset.horizon);return;}
       const scenario=event.target.closest('[data-scenario]');if(scenario&&!scenario.disabled){model.act('scenario',scenario.dataset.scenario);render();announce('New situation. Pick a step that feels doable.');return;}
