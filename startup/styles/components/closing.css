@@ -1,4 +1,5 @@
 .closing{max-width:1136px;margin:0 auto var(--space-9);padding-top:var(--space-9);padding-bottom:var(--space-9);text-align:center;background:var(--surface-1);border:1px solid var(--line);border-radius:var(--radius-lg)}
+.closing .actions{justify-content:center;flex-wrap:wrap}
 .closing h2{margin-bottom:var(--space-4)}
 .closing>p:not(.eyebrow){max-width:52ch;margin:0 auto var(--space-6);color:var(--text-muted)}
 @media(max-width:62.5rem){
