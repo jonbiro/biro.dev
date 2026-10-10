@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">AddvancedFocus app icon</title>
+  <desc id="desc">Blue AF monogram with an integrated teal checkmark on a rounded midnight-navy square.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#142B4C"/>
+      <stop offset="0.48" stop-color="#07172B"/>
+      <stop offset="1" stop-color="#060F1D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="48%" cy="30%" r="71%">
+      <stop offset="0" stop-color="#2F6AAF" stop-opacity="0.19"/>
+      <stop offset="1" stop-color="#2F6AAF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="letterA" x1="0.1" y1="0.15" x2="0.95" y2="1">
+      <stop offset="0" stop-color="#C6EAFF"/>
+      <stop offset="0.44" stop-color="#86C4FF"/>
+      <stop offset="1" stop-color="#3B8EF6"/>
+    </linearGradient>
+    <linearGradient id="letterF" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#338AFF"/>
+      <stop offset="1" stop-color="#9BD4FF"/>
+    </linearGradient>
+    <linearGradient id="check" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0CA6D6"/>
+      <stop offset="0.58" stop-color="#13D9CD"/>
+      <stop offset="1" stop-color="#35F5CF"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="115" fill="url(#glow)"/>
+  <path d="M303 374V169H427" fill="none" stroke="url(#letterF)" stroke-width="61" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M303 268H374" fill="none" stroke="url(#letterF)" stroke-width="58" stroke-linecap="round"/>
+  <path d="M82 371L183 158Q192 137 201 158L298 371" fill="none" stroke="url(#letterA)" stroke-width="62" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M141 283H246" fill="none" stroke="url(#letterA)" stroke-width="55" stroke-linecap="round"/>
+  <path d="M322 290L364 332L449 239" fill="none" stroke="#05203B" stroke-width="51" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M322 290L364 332L449 239" fill="none" stroke="url(#check)" stroke-width="39" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
