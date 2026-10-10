@@ -54,4 +54,39 @@ test.describe('AddvancedFocus demo, keyboard only', () => {
     await expect(primary).toBeFocused();
     await expect(primary).toHaveText('Start 2 minutes');
   });
+
+  test('every visible control is reachable with Tab, and a session runs on keys alone', async ({ page, browserName }) => {
+    // Safari moves focus through buttons and links with Option+Tab; plain Tab reaches only form fields there.
+    const TAB = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+    const reached = new Set();
+    await page.locator('#concept-demo').focus();
+    for (let step = 0; step < 80; step += 1) {
+      await page.keyboard.press(TAB);
+      const inside = await page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el.closest('.af-demo')) return null;
+        el.dataset.tabReached = 'yes';
+        return true;
+      });
+      if (inside === null && reached.size) break;
+      if (inside) reached.add(step);
+    }
+    const missed = await page.evaluate(() => [...document.querySelectorAll(
+      '.af-demo :is(a[href], button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"]))')]
+      .filter((el) => !el.disabled && el.checkVisibility() && el.tabIndex >= 0 && !(el.type === 'radio' && !el.checked))
+      .filter((el) => el.dataset.tabReached !== 'yes')
+      .map((el) => el.id || el.textContent.trim().slice(0, 30)));
+    expect(missed).toEqual([]);
+
+    const primary = page.locator('#af-primary');
+    await page.locator('#concept-demo').focus();
+    for (let step = 0; step < 80 && !(await primary.evaluate((el) => el === document.activeElement)); step += 1) await page.keyboard.press(TAB);
+    await expect(primary).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(primary).toHaveText('Pause & keep my place');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#af-return-note')).toBeFocused();
+    await page.keyboard.type('Pick up at the second paragraph');
+    await expect(page.locator('#af-return-note')).toHaveValue('Pick up at the second paragraph');
+  });
 });

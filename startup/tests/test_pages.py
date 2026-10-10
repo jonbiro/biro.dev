@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pagecheck import DIST, ROOT, ROUTES, load, page_path, parse
+from pagecheck import DIST, ROOT, ROUTES, load, main_sections, page_path, parse
 
 GITHUB = 'https://github.com/jonbiro'
 STATUS_LINE = 'Biro.dev is pre-release. Concepts and artwork are illustrative, not released apps.'
@@ -297,6 +297,32 @@ class Sitewide(unittest.TestCase):
         stage = load('/contact/').find(cls='contact-stage')
         self.assertEqual([p.text() for p in stage.find_all(cls='pill')], ['In development'])
         self.assertIn('/products/#where-things-stand', [a.attrs.get('href') for a in stage.find_all(tag='a')])
+
+    def test_about_shows_how_the_work_is_checked(self):
+        sections = main_sections(load('/about/'))
+        ids = [s.attrs.get('id') for s in sections]
+        self.assertIn('how-the-work-is-checked', ids)
+        index = ids.index('how-the-work-is-checked')
+        self.assertIn('founder-layout', sections[index - 1].classes)
+        section = sections[index]
+        self.assertEqual(section.attrs.get('aria-labelledby'), 'how-checked-title')
+        self.assertEqual(section.find(tag='h2').attrs.get('id'), 'how-checked-title')
+        cards = section.find_all(cls='card')
+        self.assertEqual([c.find(tag='h3').text() for c in cards],
+                         ['A demo you can operate', 'Tested in more than one browser', 'Nothing tracked', 'Status without spin'])
+        self.assertEqual([[a.attrs['href'] for a in c.find_all(tag='a')] for c in cards],
+                         [['/addvancedfocus/#concept-demo'], ['/accessibility/'], ['/mission/#privacy'], ['/products/#where-things-stand']])
+        text = section.text()
+        copy = text.replace('WCAG 2.2', '')  # the standard's name, not a count
+        for number in section.find_all(cls='card-number'):
+            copy = copy.replace(number.text(), '', 1)  # decorative card numbering
+        self.assertNotRegex(copy, r'\d', 'no counts or versions that go stale')
+        for banned in ('every change', 'continuous', 'github'):
+            self.assertNotIn(banned, text.lower())
+
+    def test_home_how_we_build_links_to_the_checks(self):
+        section = load('/').find(id='how-we-build')
+        self.assertIn('/about/#how-the-work-is-checked', [a.attrs.get('href') for a in section.find_all(tag='a')])
 
     def test_inner_pages_have_an_at_a_glance_column(self):
         expected = {'/about/': ['Company', 'Founder', 'Based in', 'First product', 'Stage'],
