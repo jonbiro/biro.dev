@@ -3,6 +3,7 @@ import json, os, re
 from urllib.parse import quote
 from product_pages import render_product
 from site_parts import profile_links, render_profile_links, status_pill, where_things_stand
+from heading_breaks import heading_breaks
 from html import escape
 
 
@@ -212,7 +213,7 @@ for route, (title, desc, content) in pages.items():
     html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{title} | Biro.dev</title><meta name="description" content="{desc}"><meta name="robots" content="{ROBOTS_POLICY}"><meta name="theme-color" content="#090f1b"><meta name="color-scheme" content="dark"><link rel="canonical" href="{ORIGIN}{link(route)}"><link rel="icon" href="{favicon}"><link rel="stylesheet" href="/assets/site.css"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:site_name" content="Biro.dev"><meta property="og:title" content="{title} | Biro.dev"><meta property="og:description" content="{desc}"><meta property="og:url" content="{ORIGIN}{link(route)}"><meta property="og:image" content="{ORIGIN}{social_asset}"><meta property="og:image:alt" content="{escape(social_alt, quote=True)}"><meta property="og:image:width" content="{social_width}"><meta property="og:image:height" content="{social_height}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{title} | Biro.dev"><meta name="twitter:description" content="{desc}"><meta name="twitter:image" content="{ORIGIN}{social_asset}"><meta name="twitter:image:alt" content="{escape(social_alt, quote=True)}"><script type="application/ld+json">{json.dumps(page_schema)}</script><script src="/assets/concept-model.js" defer></script><script src="/assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="header"><a class="brand" aria-label="Biro.dev home" href="/">biro<span>.dev</span></a><button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation">{nav}</nav></header><main id="main" tabindex="-1">{content}</main><footer class="footer"><div class="wrap footer-top"><div><a class="brand" href="/">biro<span>.dev</span></a><p>Thoughtful technology.<br>Everyday possibility.</p></div><nav aria-label="Footer navigation">{nav}</nav><p>Founded by Jonathan Biro<br>Los Angeles, California<br><a class="footer-email" href="mailto:{escape(EMAIL, quote=True)}">{escape(EMAIL)}</a>{FOOTER_PROFILES}<span class="footer-status">Biro.dev is pre-release. Concepts and artwork are illustrative, not released apps.</span></p></div><div class="wrap footer-bottom"><span>© 2026 Biro.dev</span><a href="/mission/#privacy">Privacy in this demo</a><a href="/accessibility/">Accessibility</a><span>Made with care. Built for different minds.</span></div></footer></body></html>'''
     directory = OUT / route
     directory.mkdir(parents=True,exist_ok=True)
-    (directory/'index.html').write_text(html)
+    (directory/'index.html').write_text(heading_breaks(html))
 
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: ' + ORIGIN + '/sitemap.xml\n' if INDEXING_ENABLED else 'User-agent: *\nDisallow: /\n')
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{ORIGIN}{link(r)}</loc></url>' for r in pages)+'</urlset>')
@@ -225,7 +226,7 @@ not_found = re.sub(r'<link rel="canonical"[^>]*>', '', not_found)
 not_found = re.sub(r'<meta (?:property="og:[^"]+"|name="twitter:[^"]+")[^>]*>', '', not_found)
 not_found = re.sub(r'<script type="application/ld\+json">.*?</script>', '', not_found)
 not_found = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="This page could not be found. Explore Biro.dev and AddvancedFocus.">', not_found)
-(OUT/'404.html').write_text(not_found)
+(OUT/'404.html').write_text(heading_breaks(not_found))
 
 print(f'Generated {len(pages)} pages, 404, sitemap, and configured robots policy.')
 

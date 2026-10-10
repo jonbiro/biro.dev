@@ -1,7 +1,7 @@
 .app-mockup{margin-top:1rem;margin-bottom:0}
-.app-mockup img{display:block;width:100%;height:auto;border:1px solid var(--border-2);border-radius:var(--radius-lg);background:#0c1523}
-.app-mockup figcaption{display:flex;justify-content:space-between;gap:.75rem 2rem;flex-wrap:wrap;font-size:.875rem;color:var(--text-muted);padding:1rem .25rem}
-.app-mockup figcaption span:first-child{color:var(--accent-text-soft)}
+.app-mockup img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface-1)}
+.app-mockup figcaption{display:flex;justify-content:space-between;gap:.75rem 2rem;flex-wrap:wrap;font-size:var(--type-small);color:var(--text-muted);padding:1rem .25rem}
+.app-mockup figcaption span:first-child{color:var(--accent-strong)}
 @media(max-width:47.5rem){
   .app-mockup img{border-radius:var(--radius-md)}
   .app-mockup figcaption{display:block}

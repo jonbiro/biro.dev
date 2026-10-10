@@ -1,7 +1,7 @@
 .cards{gap:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
-.card{padding:28px 8px 16px 0;border-top:1px solid #2e435e}
-.card-number{font-size:13px;font-weight:600;color:var(--accent)}
-.card p{font-size:16px;color:var(--text-muted);margin-bottom:0}
+.card{padding:28px 8px 16px 0;border-top:1px solid var(--line)}
+.card-number{font-size:var(--type-small);font-weight:600;color:var(--accent)}
+.card p{font-size:var(--type-body);color:var(--text-muted);margin-bottom:0}
 @media(max-width:62.5rem){
   .cards{gap:22px}
 }

@@ -1,4 +1,4 @@
-.notice{border-left:3px solid var(--accent);background:#111f33;padding:32px 40px;max-width:900px}
+.notice{border-left:3px solid var(--accent);background:var(--surface-2);padding:32px 40px;max-width:900px}
 .notice p{color:var(--text-muted);max-width:700px}
 @media(max-width:47.5rem){
   .notice{padding:24px}

@@ -1,3 +1,3 @@
 .tags{display:flex;flex-wrap:wrap;gap:9px;margin:25px 0}
-.tags span{border:1px solid #496283;padding:5px 12px;border-radius:var(--radius-pill);font-size:.875rem}
-.pill{display:inline-flex;align-items:center;border:1px solid var(--border-3);color:var(--accent-text-soft);background:#192e48;padding:4px 10px;border-radius:var(--radius-pill);font-weight:600;letter-spacing:0;font-size:.875rem;white-space:normal;line-height:1.5}
+.tags span{border:1px solid var(--line-contrast);padding:5px 12px;border-radius:var(--radius-pill);font-size:var(--type-small)}
+.pill{display:inline-flex;align-items:center;border:1px solid var(--line-strong);color:var(--accent-strong);background:var(--surface-3);padding:4px 10px;border-radius:var(--radius-pill);font-weight:600;letter-spacing:0;font-size:var(--type-small);white-space:normal;line-height:1.5}
