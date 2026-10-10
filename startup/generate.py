@@ -99,7 +99,7 @@ HOW_WE_BUILD = ('<section class="section wrap" id="how-we-build">'
              ('Privacy', 'This website has no sign-up, live AI request, analytics script, or marketing cookie.'),
              ('User autonomy', 'In the demo, you can stop a session without marking the step complete, and undo a completion.'),
              ('Affordability', 'Practical value at an accessible price is a design requirement.')])
-    + '<a class="text-link" href="/mission/">Read our design commitments</a></section>')
+    + '<div class="actions"><a class="text-link" href="/mission/">Read our design commitments</a><a class="text-link" href="/about/#how-the-work-is-checked">See how the work is checked</a></div></section>')
 FOUNDER_CLOSE = ('<section class="closing wrap founder-close"><p class="eyebrow">FOUNDED WITH PURPOSE</p><h2>Technology should<br>adapt to people.</h2>'
     '<p>Biro.dev was founded by Jonathan Biro in Los Angeles. ' + render_profile_links(PROFILE_LINKS, 'text-link') + '</p>'
     '<a class="button" href="/contact/">Talk with the founder</a></section>')
@@ -117,8 +117,16 @@ home = ('<section class="hero wrap"><div><p class="eyebrow">AI-POWERED ASSISTIVE
     '<a class="button" href="/addvancedfocus/">Explore AddvancedFocus</a></div><div class="flow-list"><div><span>01</span><h3>Find a starting point</h3><p>Turn a big intention into a manageable first step.</p></div><div><span>02</span><h3>Make a little space</h3><p>Bring plans, routines, and open loops into view.</p></div><div><span>03</span><h3>Begin again, without the guilt</h3><p>Build support around interruptions and changing energy.</p></div></div></div></section>'
     + HOW_WE_BUILD + (ROOT / 'fragments/portfolio-teaser.html').read_text().replace('{{CONCEPT_LIST}}', concept_list(json.loads((ROOT / 'portfolio.json').read_text()))) + FOUNDER_CLOSE)
 
+HOW_CHECKED = ('<section class="section wrap" id="how-the-work-is-checked" tabindex="-1" aria-labelledby="how-checked-title">'
+    + section_intro('HOW THE WORK IS CHECKED', 'Checked before <br>it’s claimed.',
+                    'Jonathan’s background is in QA automation, so this website is held to the same standard. Each claim below points to something you can check yourself.').replace('<h2>', '<h2 id="how-checked-title">', 1)
+    + cards([('A demo you can operate', 'The AddvancedFocus concept is interactive: three everyday situations, two energy levels, a session you can pause with a note, and a completion you can undo. It runs in your browser on scripted examples, not live AI. <a class="text-link" href="/addvancedfocus/#concept-demo">Try the working demo</a>'),
+             ('Tested in more than one browser', 'Every page is checked with automated tests in Chromium and WebKit, at phone and desktop widths, against WCAG 2.2 Level AA rules, with reduced motion on and with JavaScript off. The demo is also tested keyboard-only. What hasn’t been tested yet is listed too. <a class="text-link" href="/accessibility/">Read the accessibility statement</a>'),
+             ('Nothing collected', 'There is no sign-up, live AI request, analytics script, or marketing cookie. Notes you write in the demo stay in the page’s memory. <a class="text-link" href="/mission/#privacy">See what stays in your browser</a>'),
+             ('Status without spin', 'What works today, what’s being built, and what isn’t decided yet are listed in one place. <a class="text-link" href="/products/#where-things-stand">See where things stand</a>')])
+    + '</section>')
 ABOUT_HERO = inner_hero('ABOUT BIRO.DEV', 'Human needs.<br><em>Technical ambition.</em>', 'Biro.dev is an early-stage technology company building AI-powered assistive applications for the practical demands of everyday life.', aside=glance([('Company', 'Biro.dev'), ('Founder', 'Jonathan Biro' + (' · ' + render_profile_links(PROFILE_LINKS, 'text-link', ' · ') if PROFILE_LINKS else '')), ('Based in', 'Los Angeles, California'), ('First product', 'AddvancedFocus'), ('Stage', status_pill('development'))]))
-about = ABOUT_HERO + (ROOT / 'fragments/about.html').read_text().replace('{{PROFILE_LINKS}}', f'<p class="founder-profiles">{render_profile_links(PROFILE_LINKS, "text-link")}</p>' if PROFILE_LINKS else '') + (ROOT / 'fragments/company-evaluation.html').read_text() + cta()
+about = ABOUT_HERO + (ROOT / 'fragments/about.html').read_text().replace('<section class="feature-section">', HOW_CHECKED + '<section class="feature-section">', 1).replace('{{PROFILE_LINKS}}', f'<p class="founder-profiles">{render_profile_links(PROFILE_LINKS, "text-link")}</p>' if PROFILE_LINKS else '') + (ROOT / 'fragments/company-evaluation.html').read_text() + cta()
 
 LOGO_FAMILY = '<div class="wrap"><figure class="logo-family"><img src="/assets/products/logo-family.webp" alt="Concept logo collection: AddvancedFocus, CareBridge, StoryReady, ClearCue, PlainPath, StepAble, SayAble, SensoryScout, and OpenCall." width="1536" height="1024" loading="lazy" decoding="async"><figcaption>Exploratory app logos. Product identities may evolve during development.</figcaption></figure></div>'
 principles = (ROOT / 'fragments/portfolio-principles.html').read_text().strip()
