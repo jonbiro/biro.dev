@@ -16,7 +16,12 @@
 .portfolio-index a{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 var(--space-4);border:1px solid var(--line-contrast);border-radius:var(--radius-pill);font-size:var(--type-ui);color:var(--text-soft)}
 .portfolio-index a:hover{border-color:var(--accent);color:var(--text)}
 .logo-family{max-width:58rem;margin:var(--space-7) 0 0}
-.logo-family img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:0 30px 80px var(--shadow)}
+.logo-family-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4)}
+.logo-family-item{display:flex;align-items:center;gap:var(--space-4);min-width:0;padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface-1)}
+.logo-family-item img{display:block;flex:none;width:clamp(3.5rem,6vw,5.75rem);height:clamp(3.5rem,6vw,5.75rem);border-radius:22%;box-shadow:0 8px 20px var(--shadow)}
+.logo-family-item span{font-size:var(--type-body);font-weight:600;color:var(--text-soft);overflow-wrap:anywhere}
+@media(max-width:60rem){.logo-family-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:35rem){.logo-family-grid{grid-template-columns:1fr}.logo-family-item{padding:var(--space-3)}}
 .logo-family figcaption{padding-top:var(--space-4);font-size:var(--type-small);color:var(--text-muted)}
 @media(max-width:47.5rem){
   .product-large{grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
