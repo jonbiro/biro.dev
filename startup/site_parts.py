@@ -118,4 +118,4 @@ def constellation(variant: str = 'home') -> str:
     return (f'<div class="{css_class}" aria-hidden="true"><span class="constellation-ring constellation-ring-outer"></span>'
             '<span class="constellation-ring constellation-ring-inner"></span>'
             f'<div class="constellation-orbit">{"".join(icons)}</div>'
-            f'<img class="constellation-core" src="/assets/products/icons/addvancedfocus.webp" alt="" width="112" height="112"{lazy} decoding="async"></div>')
+            f'<img class="constellation-core" src="/assets/products/icons/addvancedfocus-af.svg" alt="" width="112" height="112"{lazy} decoding="async"></div>')
